@@ -1,4 +1,5 @@
 // File: /api/admins/create/route.ts
+// File: /api/admins/create/route.ts
 import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -14,10 +15,10 @@ export async function POST(req: NextRequest) {
     try {
         const supabase = createClient(
             String(process.env.NEXT_PUBLIC_SUPABASE_URL),
-            String(process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY) // <-- Kunci RAHASIA
+            String(process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY) // <-- Menggunakan Kunci Rahasia
         );
 
-        // --- Langkah 1: Buat user di Auth ---
+        // Langkah 1: Buat user di Auth
         const { data: authData, error: authError } = await supabase.auth.admin.createUser({
             email: body.email,
             password: body.password,
@@ -28,32 +29,29 @@ export async function POST(req: NextRequest) {
             throw new Error(authError?.message || 'Failed to create auth user.');
         }
 
-        // --- Langkah 2: Masukkan profil ke tabel 'users' ---
+        // Langkah 2: Masukkan profil ke tabel 'users' dengan 'uid' sebagai Primary Key
         const { data: profileData, error: dbError } = await supabase
             .from('users')
             .insert({
-                id: authData.user.id, // Pastikan nama kolom Primary Key adalah 'id'
+                uid: authData.user.id, // <-- Menyimpan auth id ke kolom 'uid'
                 name: body.name,
                 email: body.email,
             })
             .select()
             .single();
 
-        // --- Langkah 3: Rollback jika Langkah 2 Gagal ---
+        // Langkah 3: Rollback jika Langkah 2 Gagal
         if (dbError) {
-            // Hapus lagi user di Auth yang sudah terlanjur dibuat
-            await supabase.auth.admin.deleteUser(authData.user.id);
-            throw new Error(`Failed to insert user profile: ${dbError.message}`);
+            await supabase.auth.admin.deleteUser(authData.user.id); // Hapus user Auth
+            throw new Error(`Database insert failed: ${dbError.message}`);
         }
 
-        // Jika semua berhasil, kirim data user yang baru dibuat ke frontend
         return NextResponse.json({ data: profileData, message: 'Admin created successfully.' }, { status: 200 });
 
     } catch (error: any) {
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
 }
-
 
 
 // import { createClient } from '@supabase/supabase-js'

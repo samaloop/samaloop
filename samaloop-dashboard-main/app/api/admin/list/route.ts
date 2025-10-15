@@ -8,7 +8,7 @@ export async function GET(req: NextRequest) {
     try {
         const supabase = createClient(
             String(process.env.NEXT_PUBLIC_SUPABASE_URL),
-            String(process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY) // <-- Kunci RAHASIA
+            String(process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY) // <-- Menggunakan Kunci Rahasia
         );
 
         const page = parseInt(req.nextUrl.searchParams.get('page') || '1');
@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
 
         const { data, error, count } = await supabase
             .from('users')
-            .select('id, name, email', { count: 'exact' }) // <-- Hapus 'uid' jika tidak perlu
+            .select('uid, name, email', { count: 'exact' }) // <-- Menggunakan 'uid'
             .order('created_at', { ascending: false })
             .range(from, to);
 

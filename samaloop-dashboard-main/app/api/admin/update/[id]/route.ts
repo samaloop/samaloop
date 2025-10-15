@@ -1,50 +1,47 @@
-// File: /api/admins/update/[id]/route.ts
+// File: /api/admins/update/[uid]/route.ts
 import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
 
-export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
-    const userId = params.id;
+export async function POST(req: NextRequest, { params }: { params: { uid: string } }) {
+    const userUid = params.uid;
     const body = await req.json();
 
-    if (!userId) {
-        return NextResponse.json({ error: 'User ID is required' }, { status: 400 });
+    if (!userUid) {
+        return NextResponse.json({ error: 'User UID is required' }, { status: 400 });
     }
 
     try {
         const supabase = createClient(
             String(process.env.NEXT_PUBLIC_SUPABASE_URL),
-            String(process.env.NETX_PUBLIC_SUPABASE_SERVICE_ROLE_KEY) // <-- Kunci RAHASIA
+            String(process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY) // <-- Menggunakan Kunci Rahasia
         );
 
-        // Ambil data user lama untuk rollback jika perlu
-        const { data: oldUser } = await supabase.auth.admin.getUserById(userId);
+        const { data: oldUser } = await supabase.auth.admin.getUserById(userUid);
         if (!oldUser || !oldUser.user) throw new Error("User not found in auth.");
 
-        // --- Langkah 1: Update Auth ---
+        // Langkah 1: Update Auth
         const authAttributes: any = {};
         if (body.email) authAttributes.email = body.email;
         if (body.password) authAttributes.password = body.password;
 
-        const { error: authError } = await supabase.auth.admin.updateUserById(userId, authAttributes);
-        if (authError) throw new Error(`Auth update failed: ${authError.message}`);
+        if (Object.keys(authAttributes).length > 0) {
+            const { error: authError } = await supabase.auth.admin.updateUserById(userUid, authAttributes);
+            if (authError) throw new Error(`Auth update failed: ${authError.message}`);
+        }
 
-        // --- Langkah 2: Update tabel 'users' ---
+        // Langkah 2: Update tabel 'users'
         const { data: profileData, error: dbError } = await supabase
             .from('users')
             .update({ name: body.name, email: body.email })
-            .eq('id', userId)
+            .eq('uid', userUid) // <-- Menggunakan 'uid'
             .select()
             .single();
 
-        // --- Langkah 3: Rollback jika Langkah 2 Gagal ---
+        // Langkah 3: Rollback jika Langkah 2 Gagal
         if (dbError) {
-            // Kembalikan data auth ke state semula
-            await supabase.auth.admin.updateUserById(userId, {
-                email: oldUser.user.email
-                // Password tidak bisa di-rollback, jadi ini batasan
-            });
+            await supabase.auth.admin.updateUserById(userUid, { email: oldUser.user.email });
             throw new Error(`Database update failed: ${dbError.message}`);
         }
 
