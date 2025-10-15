@@ -21,7 +21,7 @@ export async function GET(
         (parseInt(page) * limit) - 1
     ];
 
-    let query: any = supabase.from('users').select('id,uid,name,email,phone', { count: 'exact' });
+    let query: any = supabase.from('users').select('id,uid,name,email', { count: 'exact' });
     query = query.order('created_at', { ascending: false });
     query = query.range(range[0], range[1]);
 
