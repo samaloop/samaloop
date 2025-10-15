@@ -1,61 +1,55 @@
+// File: /api/admins/create/route.ts
 import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
 
-export async function POST(
-    req: NextRequest
-) {
+export async function POST(req: NextRequest) {
     const body = await req.json();
 
-    // Validasi input dasar
     if (!body.email || !body.password || !body.name) {
         return NextResponse.json({ error: 'Email, password, and name are required' }, { status: 400 });
     }
 
     try {
-        // 1. Ganti ke Service Key yang AMAN (tanpa NEXT_PUBLIC_)
         const supabase = createClient(
             String(process.env.NEXT_PUBLIC_SUPABASE_URL),
-            String(process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY) // <--- UBAH INI DI .env.local JUGA
+            String(process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY) // <-- Kunci RAHASIA
         );
 
-        // --- LANGKAH 1: Buat user di sistem Auth Supabase ---
+        // --- Langkah 1: Buat user di Auth ---
         const { data: authData, error: authError } = await supabase.auth.admin.createUser({
             email: body.email,
             password: body.password,
-            email_confirm: true, // Otomatis konfirmasi email
+            email_confirm: true,
         });
 
-        // Jika gagal bikin user di Auth, langsung stop dan kasih error
         if (authError || !authData.user) {
             throw new Error(authError?.message || 'Failed to create auth user.');
         }
 
-        // --- LANGKAH 2: Masukkan data profil ke tabel 'users' ---
-        // Pake .select() biar Supabase ngembaliin data yang baru di-insert
+        // --- Langkah 2: Masukkan profil ke tabel 'users' ---
         const { data: profileData, error: dbError } = await supabase
             .from('users')
             .insert({
-                uid: authData.user.id, // Pastikan nama kolomnya 'id', bukan 'uid'
+                id: authData.user.id, // Pastikan nama kolom Primary Key adalah 'id'
                 name: body.name,
-                email: body.email
+                email: body.email,
             })
-            .select() // <-- INI KUNCINYA biar dapet data balikan
-            .single(); // Ambil sebagai satu objek, bukan array
+            .select()
+            .single();
 
-        // Jika gagal insert ke tabel, ini error serius
+        // --- Langkah 3: Rollback jika Langkah 2 Gagal ---
         if (dbError) {
-            // Sebaiknya kita juga hapus user auth yang udah terlanjur dibuat
+            // Hapus lagi user di Auth yang sudah terlanjur dibuat
             await supabase.auth.admin.deleteUser(authData.user.id);
             throw new Error(`Failed to insert user profile: ${dbError.message}`);
         }
 
-        // 3. JIKA SEMUA BERHASIL, kirim balik data profil yang baru dibuat
-        return NextResponse.json({ data: profileData, message: 'Create Admin is Success.' }, { status: 200 });
+        // Jika semua berhasil, kirim data user yang baru dibuat ke frontend
+        return NextResponse.json({ data: profileData, message: 'Admin created successfully.' }, { status: 200 });
 
     } catch (error: any) {
-        // Tangkap semua jenis error dan kirim respons yang jelas
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
 }
