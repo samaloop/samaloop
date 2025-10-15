@@ -68,7 +68,7 @@ const FormSearch = () => {
                 aria-label="Search"
               />
               <button className="btn" type="submit">
-                <BiSearchAlt color="white"/>
+                <BiSearchAlt />
               </button>
             </form>
           </div>

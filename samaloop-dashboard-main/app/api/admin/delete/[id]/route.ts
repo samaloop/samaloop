@@ -7,10 +7,6 @@ export async function POST(
     req: NextRequest,
     { params }: any
 ) {
-    const userId = params.id;
-    if (!userId) {
-        return NextResponse.json({ error: 'User ID is required' }, { status: 400 });
-    }
     const supabase = createClient(
         String(process.env.NEXT_PUBLIC_SUPABASE_URL),
         String(process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY)

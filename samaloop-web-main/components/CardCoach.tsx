@@ -65,8 +65,7 @@ const CardCoach = ({ coach }: any) => {
                 ))}
               </div>
             </div>
-              
-              <div className="col-6">
+            <div className="col-6">
               <div className="font-weight-bold mb-1">{t("Client Type", locale)}</div>
               <ul className="list-client-type">
                 {coach.profile_client_types.map((value: any, index: number) => (
@@ -78,7 +77,6 @@ const CardCoach = ({ coach }: any) => {
                 ))}
               </ul>
             </div>
-            
           </div>
         </div>
         <div className="specialist text-center">
@@ -93,7 +91,7 @@ const CardCoach = ({ coach }: any) => {
                   )
               )}
               {coach.profile_specialities.length > 3 ? (
-                <div>+ {coach.profile_specialities.length - 3} {t("Others", locale)}</div>
+                <div>+ {coach.profile_specialities.length - 3} lainnya</div>
               ) : (
                 <div>&nbsp;</div>
               )}
@@ -119,13 +117,11 @@ const CardCoach = ({ coach }: any) => {
             </>
           )}
         </div>
-
         <div className="text-center btn-profile-container">
           <LocalizedLink href={"/coach/" + coach.slug}>
             <div className="btn btn-profile">{t("View Profile", locale)}</div>
           </LocalizedLink>
         </div>
-
       </div>
     </div>
   );

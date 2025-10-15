@@ -109,7 +109,6 @@ export default function PlacementList() {
                     </td>
                   </tr>
                 ) : (
-                  data.data.data &&
                   data.data.data.map((value: any, index: number) => (
                     <tr key={"email" + index}>
                       <td>{(page - 1) * data.data.limit + index + 1}</td>

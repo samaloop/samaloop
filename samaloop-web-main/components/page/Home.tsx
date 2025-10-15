@@ -23,16 +23,14 @@ export default function Home() {
           <div className="spinner-border">
             <span className="visually-hidden">Loading...</span>
           </div>
-           </div>
+        </div>
       ) : (
         <>
           <section id="home">
             <Hero />
           </section>
-          
           <section id="form-search" />
           <FormSearch />
-
           <div className="container container-swiper my-5">
             <div className="swiper-button-prev-custom"></div>
             <div className="swiper-button-next-custom"></div>
@@ -67,7 +65,6 @@ export default function Home() {
                 </SwiperSlide>
               ))}
             </Swiper>
-
           </div>
           <section id="about-us" />
           <AboutUs />
