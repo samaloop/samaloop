@@ -37,7 +37,7 @@ export async function POST(
         const { data: profileData, error: dbError } = await supabase
             .from('users')
             .insert({
-                id: authData.user.id, // Pastikan nama kolomnya 'id', bukan 'uid'
+                uid: authData.user.id, // Pastikan nama kolomnya 'id', bukan 'uid'
                 name: body.name,
                 email: body.email
             })
