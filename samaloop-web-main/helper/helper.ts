@@ -69,9 +69,9 @@ export function t(key: string, locale: string) {
             en: 'Awards',
             id: 'Penghargaan'
         },
-        'Contact Me Via': {
-            en: 'Contact Me Via',
-            id: 'Hubungi Saya Melalui'
+        'Social Media': {
+            en: 'Social Media',
+            id: 'Sosial Media'
         },
         'Share': {
             en: 'Share',
