@@ -244,7 +244,7 @@ export default function Coach({ slug }: any) {
                 coach.data.data[0].contact.email !== undefined ? (
                   <div className="contact mb-4">
                     <div className="font-weight-bold mb-2">
-                      {t("Contact Me Via", locale)}
+                      {t("Social Media", locale)}
                     </div>
                     <div>
                       {coach.data.data[0].contact.linkedin !== undefined &&
