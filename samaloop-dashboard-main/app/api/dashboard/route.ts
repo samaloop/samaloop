@@ -10,8 +10,9 @@ export async function GET() {
     );
 
     try {
-        const profiles: any = await supabase.from('profiles').select('id', { count: 'exact', head: true });
-        const users: any = await supabase.from('users').select('id', { count: 'exact', head: true });
+        // const profiles: any = await supabase.from('profiles').select('id', { count: 'exact', head: true });
+        const profiles: any = await supabase.from('profiles').select('id', { count: 'exact', head: true }).not('created_at','is',null);
+        const users: any = await supabase.from('users').select('id', { count: 'exact', head: true }).not('created_at','is',null);
         const genders: any = await supabase.from('genders').select('id', { count: 'exact', head: true });
         const ages: any = await supabase.from('ages').select('id', { count: 'exact', head: true });
         const credentials: any = await supabase.from('credentials').select('id', { count: 'exact', head: true });
