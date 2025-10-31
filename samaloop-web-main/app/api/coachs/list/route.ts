@@ -107,12 +107,17 @@ export async function GET(req: NextRequest) {
             .in('credential', credentialIds);
 
         // 3️ Gabungkan hasil jadi list ID unik
-        const profileIds = [
-            ...new Set([
-                ...(mainCred.data?.map((p) => p.id) ?? []),
-                ...(subCred.data?.map((p) => p.profile) ?? []),
-            ]),
-        ];
+
+        const mainCredData = mainCred.data ?? [];
+        const subCredData = subCred.data ?? [];
+
+          const profileIds = Array.from(
+          new Set([
+            ...mainCredData.map((p) => p.id),
+            ...subCredData.map((p) => p.profile),
+          ])
+        );
+
 
         // 4️ Filter base query pakai ID hasil gabungan
         if (profileIds.length > 0) {
@@ -221,7 +226,6 @@ export async function GET(req: NextRequest) {
     const pageTotal = Math.ceil((count ?? 0) / limit);
     return NextResponse.json({ data, count, pageTotal, limit });
 }
-
 
 
 
