@@ -77,6 +77,10 @@ export function t(key: string, locale: string) {
             en: 'Share',
             id: 'Bagikan'
         },
+        'Contact Us': {
+            en: 'Contact Us',
+            id: 'Hubungi Kami'
+        },
         'Hello, I am': {
             en: 'Hello, I am',
             id: 'Halo, Saya'

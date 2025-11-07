@@ -327,21 +327,35 @@ export default function Coach({ slug }: any) {
 
               </div>
               <div className="">
-                  <a href={"https://wa.me/6285770916736?text=Halo%20Admin%20Samaloop,%0ASaya%20mau%20bertanya%20tentang%20layanan%20coaching."} target="_blank" rel="noopener noreferrer" >
-                  <button
-                    className="w-100 btn"
+                  <a href={"https://wa.me/6285770916736?text=Halo%20Admin%20Samaloop,%0ASaya%20mau%20bertanya%20tentang%20layanan%20coaching."} target="_blank" rel="noopener noreferrer" 
+                  className="w-100 btn"
                     style={{
                       backgroundColor: "#f59e42",
                       //borderColor: "#000000",
                       color: "#ffffff",
                     }}
-                  >Hubungi Kami</button>
+                  >
+                    {t("Contact Us", locale)}
                   </a>
                 </div>
             </div>
             
             <div className="col-12 col-md-9 ps-4">
-              <div className="subtitle">{coach.data.data[0].profession}</div>
+              {/* <div className="subtitle">{coach.data.data[0].profession}</div> */}
+              <div className="d-flex flex-wrap column-gap-2 row-gap-0 justify-content-center justify-content-md-start" >
+                 {coach.data.data[0].profile_specialities.map(
+                      (value: any, index: number) => (
+                        <div key={uuidv4()} className="subtitle">
+                          {locale === "en"
+                            ? value.speciality.name.en
+                            : value.speciality.name.id}{" Coach, "}
+                        </div>
+                      )
+                    )}
+              </div>
+              <div className="text mb-5">{coach.data.data[0].profession}</div>
+                  
+
               <div
                 className="text mb-4"
                 dangerouslySetInnerHTML={{
