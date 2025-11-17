@@ -158,6 +158,19 @@ export default function Coach({ slug }: any) {
                     )
                   )}
 
+                  <div className="d-flex align-items-center justify-content-center justify-content-md-start mt-2 gap-2">
+                    <button
+                      onClick={handleShowToast}
+                      className="btn p-1"
+                      title={t("Copy link", locale) as string}
+                      style={{
+                        backgroundColor: "#f59e42",
+                        color: "#ffffff",
+                      }}>
+                      <FaShareFromSquare size={20} />
+                    </button>
+                     <div className="me-2 ">{t("Share", locale)}</div>
+                  </div>
 
                 </div>
                 <div className="other-info">
