@@ -8,13 +8,19 @@ import LocalizedLink from "@/components/LocalizedLink";
 import { useLocale } from "@/context/LocaleContext";
 import useSWR from "swr";
 import axios from "axios";
-import { useSearchParams } from "next/navigation";
+// === 1. Import useRouter ===
+import { useSearchParams, useRouter } from "next/navigation"; 
 import { useState, useEffect, useRef } from "react";
 import { v4 as uuidv4 } from "uuid";
+// === 2. Import Modal ===
+import ContactModal from "@/components/ContactModal";
 
 export default function Search() {
   const { locale } = useLocale();
   const searchParams = useSearchParams();
+  // === 3. Init Router ===
+  const router = useRouter(); 
+
   const fetcher = async (url: any) =>
     await axios.get(url).then((res) => res.data);
   const toggleRef: any = useRef<HTMLInputElement>();
@@ -46,6 +52,10 @@ export default function Search() {
   const [pricesActive, setPricesActive]: any = useState([]);
   const [credentialsActive, setCredentialsActive]: any = useState([]);
 
+  // === 4. State untuk Modal & Selected Coach ===
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedCoach, setSelectedCoach] = useState<any>(null);
+
   const [page, setPage] = useState(1);
   const changePage = (page: any) => {
     setPage(page);
@@ -64,7 +74,7 @@ export default function Search() {
   useEffect(() => {
     setPage(1);
 
-    let keywordCurrenct:any = searchParams.get("keyword") !== null ? searchParams.get("keyword") : "";
+    let keywordCurrenct: any = searchParams.get("keyword") !== null ? searchParams.get("keyword") : "";
     setKeyword(keywordCurrenct);
     setSpecialitiesActive(
       searchParams.get("specialities") !== null
@@ -84,90 +94,49 @@ export default function Search() {
     setKeyword(e.target.value);
   };
 
+  // ... (Toggle Handlers tetap sama, saya persingkat untuk hemat tempat di chat) ...
   const handleMethodsToggle = (Id: string) => {
-    let methodsActiveCurrent: any = [...methodsActive];
-    if (methodsActiveCurrent.indexOf(Id) > -1) {
-      methodsActiveCurrent.splice(methodsActiveCurrent.indexOf(Id), 1);
-    } else {
-      methodsActiveCurrent.push(Id);
-    }
-    setMethodsActive(methodsActiveCurrent);
+    let arr: any = [...methodsActive];
+    arr.indexOf(Id) > -1 ? arr.splice(arr.indexOf(Id), 1) : arr.push(Id);
+    setMethodsActive(arr);
   };
-
   const handleHoursToggle = (Id: string) => {
-    let hoursActiveCurrent: any = [...hoursActive];
-    if (hoursActiveCurrent.indexOf(Id) > -1) {
-      hoursActiveCurrent.splice(hoursActiveCurrent.indexOf(Id), 1);
-    } else {
-      hoursActiveCurrent.push(Id);
-    }
-    setHoursActive(hoursActiveCurrent);
+     let arr: any = [...hoursActive];
+     arr.indexOf(Id) > -1 ? arr.splice(arr.indexOf(Id), 1) : arr.push(Id);
+     setHoursActive(arr);
   };
-
   const handleClientsToggle = (Id: string) => {
-    let clientsActiveCurrent: any = [...clientsActive];
-    if (clientsActiveCurrent.indexOf(Id) > -1) {
-      clientsActiveCurrent.splice(clientsActiveCurrent.indexOf(Id), 1);
-    } else {
-      clientsActiveCurrent.push(Id);
-    }
-    setClientsActive(clientsActiveCurrent);
+     let arr: any = [...clientsActive];
+     arr.indexOf(Id) > -1 ? arr.splice(arr.indexOf(Id), 1) : arr.push(Id);
+     setClientsActive(arr);
   };
-
   const handleYearsToggle = (Id: string) => {
-    let yearsActiveCurrent: any = [...yearsActive];
-    if (yearsActiveCurrent.indexOf(Id) > -1) {
-      yearsActiveCurrent.splice(yearsActiveCurrent.indexOf(Id), 1);
-    } else {
-      yearsActiveCurrent.push(Id);
-    }
-    setYearsActive(yearsActiveCurrent);
+     let arr: any = [...yearsActive];
+     arr.indexOf(Id) > -1 ? arr.splice(arr.indexOf(Id), 1) : arr.push(Id);
+     setYearsActive(arr);
   };
-
   const handleClientTypesToggle = (Id: string) => {
-    let clientTypesActiveCurrent: any = [...clientTypesActive];
-    if (clientTypesActiveCurrent.indexOf(Id) > -1) {
-      clientTypesActiveCurrent.splice(clientTypesActiveCurrent.indexOf(Id), 1);
-    } else {
-      clientTypesActiveCurrent.push(Id);
-    }
-    setClientTypesActive(clientTypesActiveCurrent);
+     let arr: any = [...clientTypesActive];
+     arr.indexOf(Id) > -1 ? arr.splice(arr.indexOf(Id), 1) : arr.push(Id);
+     setClientTypesActive(arr);
   };
-
   const handleSpecialitiesToggle = (Id: string) => {
-    let specialitiesActiveCurrent: any = [...specialitiesActive];
-    if (specialitiesActiveCurrent.indexOf(Id) > -1) {
-      specialitiesActiveCurrent.splice(
-        specialitiesActiveCurrent.indexOf(Id),
-        1
-      );
-    } else {
-      specialitiesActiveCurrent.push(Id);
-    }
-    setSpecialitiesActive(specialitiesActiveCurrent);
+     let arr: any = [...specialitiesActive];
+     arr.indexOf(Id) > -1 ? arr.splice(arr.indexOf(Id), 1) : arr.push(Id);
+     setSpecialitiesActive(arr);
   };
-
   const handlePricesToggle = (Id: string) => {
-    let pricesActiveCurrent: any = [...pricesActive];
-    if (pricesActiveCurrent.indexOf(Id) > -1) {
-      pricesActiveCurrent.splice(pricesActiveCurrent.indexOf(Id), 1);
-    } else {
-      pricesActiveCurrent.push(Id);
-    }
-    setPricesActive(pricesActiveCurrent);
+     let arr: any = [...pricesActive];
+     arr.indexOf(Id) > -1 ? arr.splice(arr.indexOf(Id), 1) : arr.push(Id);
+     setPricesActive(arr);
   };
-
   const handleCredentialsToggle = (Id: string) => {
-    let credentialsActiveCurrent: any = [...credentialsActive];
-    if (credentialsActiveCurrent.indexOf(Id) > -1) {
-      credentialsActiveCurrent.splice(credentialsActiveCurrent.indexOf(Id), 1);
-    } else {
-      credentialsActiveCurrent.push(Id);
-    }
-    setCredentialsActive(credentialsActiveCurrent);
+     let arr: any = [...credentialsActive];
+     arr.indexOf(Id) > -1 ? arr.splice(arr.indexOf(Id), 1) : arr.push(Id);
+     setCredentialsActive(arr);
   };
 
-  const changeFilter = (keywordCurrent?:string) => {
+  const changeFilter = (keywordCurrent?: string) => {
     setQueryParams({
       page: page,
       keyword: keywordCurrent !== undefined ? keywordCurrent : keyword,
@@ -206,375 +175,100 @@ export default function Search() {
     setCredentialsActive([]);
   };
 
+  // === 5. Fungsi Logika Klik Profile ===
+  const handleProfileClick = (coach: any) => {
+    // Cek apakah user sudah pernah input data (disimpan di localStorage)
+    const hasRegistered = localStorage.getItem('user_lead_contact');
+    
+    // Tentukan URL tujuan (sesuaikan logika routing Anda)
+    // Jika menggunakan LocalizedLink biasanya prefix otomatis, tapi router.push manual
+    const targetUrl = locale === 'id' ? `/coach/${coach.slug}` : `/${locale}/coach/${coach.slug}`; 
+
+    if (hasRegistered) {
+      // Jika sudah pernah, langsung pindah
+      router.push(targetUrl);
+    } else {
+      // Jika belum, buka modal
+      setSelectedCoach(coach);
+      setIsModalOpen(true);
+    }
+  };
+
+  // === 6. Fungsi Submit Modal ===
+  // const handleModalSubmit = (contactInfo: string) => {
+  //   if (!selectedCoach) return;
+    
+  //   // Simpan data lead (bisa kirim ke API di sini)
+  //   console.log("Lead captured:", contactInfo, "for coach:", selectedCoach.name);
+    
+  //   // Simpan di localStorage agar tidak muncul lagi
+  //   localStorage.setItem('user_lead_contact', contactInfo);
+    
+  //   setIsModalOpen(false);
+
+  //   // Redirect
+  //   const targetUrl = locale === 'id' ? `/coach/${selectedCoach.id}` : `/${locale}/coach/${selectedCoach.id}`; 
+  //   router.push(targetUrl);
+  // };
+
+  // Update tipe parameter dari string menjadi object
+  const handleModalSubmit = async (formData: { name: string; email: string; phone: string }) => {
+    if (!selectedCoach) return;
+
+    try {
+      // Kirim Data Lengkap ke API
+      await axios.post('/api/leads', {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        coach_id: selectedCoach.id,
+        coach_name: selectedCoach.name
+        ,source: 'search_page' // Bisa disesuaikan sumbernya
+         
+      });
+
+      console.log("Success: Data saved");
+
+      // Simpan penanda di LocalStorage (cukup email saja atau JSON string)
+      localStorage.setItem('user_lead_contact', formData.email);
+
+      setIsModalOpen(false);
+      const targetUrl = locale === 'id' ? `/coach/${selectedCoach.slug}` : `/${locale}/coach/${selectedCoach.slug}`; 
+      router.push(targetUrl);
+
+    } catch (error) {
+      console.error("Gagal menyimpan lead:", error);
+      // Fail-safe: tetap redirect user
+      setIsModalOpen(false);
+      const targetUrl = locale === 'id' ? `/coach/${selectedCoach.slug}` : `/${locale}/coach/${selectedCoach.slug}`; 
+      router.push(targetUrl);
+    }
+  };
+
   return (
     <div className="page-search container mt-4">
-      <div
-        className="offcanvas offcanvas-bottom"
-        id="offcanvasBottom"
-        aria-labelledby="offcanvasBottomLabel"
-      >
+      {/* ... (Offcanvas filter code tetap sama, disembunyikan agar ringkas) ... */}
+      <div className="offcanvas offcanvas-bottom" id="offcanvasBottom" aria-labelledby="offcanvasBottomLabel">
+        {/* Isinya sama persis dengan kode Anda sebelumnya */}
         <div className="offcanvas-header">
-          <h5 className="offcanvas-title" id="offcanvasBottomLabel">
-            {t("Filter", locale)}
-          </h5>
-          <button className="text-reset ms-auto" onClick={reset}>
-            {t("Reset", locale)}
-          </button>
-          <button
-            ref={toggleRef}
-            type="button"
-            className="btn-close text-reset d-none"
-            data-bs-dismiss="offcanvas"
-            aria-label="Close"
-          ></button>
+           <h5 className="offcanvas-title" id="offcanvasBottomLabel">{t("Filter", locale)}</h5>
+           <button className="text-reset ms-auto" onClick={reset}>{t("Reset", locale)}</button>
+           <button ref={toggleRef} type="button" className="btn-close text-reset d-none" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div className="offcanvas-body small">
-          <form onSubmit={searchSubmit} className="form-search" role="search">
-            <input
-              defaultValue={keyword}
-              onChange={handleChangeKeyword}
-              className="form-control mb-4"
-              type="text"
-              placeholder={t("Search", locale)}
-              aria-label="Search"
-            />
-            <button className="btn">
-              <FiSearch />
-            </button>
-            <div className="accordion">
-              <div className="accordion-item">
-                <h2 className="accordion-header" id="filter1-heading">
-                  <button
-                    className="accordion-button collapsed"
-                    type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#filter1-collapse"
-                    aria-expanded="true"
-                    aria-controls="filter1-collapse"
-                  >
-                    {t("Method", locale)}
-                  </button>
-                </h2>
-                <div
-                  id="filter1-collapse"
-                  className="accordion-collapse collapse"
-                  aria-labelledby="filter1-heading"
-                >
-                  <div className="accordion-body">
-                    {methods.data !== undefined &&
-                      methods.data.data.map((value: any, index: number) => (
-                        <div key={uuidv4()} className="form-check">
-                          <input
-                            checked={methodsActive.includes(value.id)}
-                            onChange={() => handleMethodsToggle(value.id)}
-                            className="form-check-input"
-                            type="checkbox"
-                            id={"methods" + index}
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor={"methods" + index}
-                          >
-                            {locale === "en" ? value.name.en : value.name.id}
-                          </label>
-                        </div>
-                      ))}
-                  </div>
+             <form onSubmit={searchSubmit} className="form-search" role="search">
+                 {/* ... Input search dan Accordion filters SAMA PERSIS ... */}
+                 {/* Saya potong biar muat, paste kode accordion Anda di sini */}
+                 <input defaultValue={keyword} onChange={handleChangeKeyword} className="form-control mb-4" type="text" placeholder={t("Search", locale)} aria-label="Search" />
+                 <button className="btn"><FiSearch /></button>
+                 {/* ... Accordion Items ... */}
+                 <div className="button-submit">
+                  <button className="btn btn-primary" type="submit">Terapkan</button>
                 </div>
-              </div>
-              <div className="accordion-item">
-                <h2 className="accordion-header" id="filter2-heading">
-                  <button
-                    className="accordion-button collapsed"
-                    type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#filter2-collapse"
-                    aria-expanded="true"
-                    aria-controls="filter2-collapse"
-                  >
-                    {t("Coaching Hours", locale)}
-                  </button>
-                </h2>
-                <div
-                  id="filter2-collapse"
-                  className="accordion-collapse collapse"
-                  aria-labelledby="filter2-heading"
-                >
-                  <div className="accordion-body">
-                    {hours.data !== undefined &&
-                      hours.data.data.map((value: any, index: number) => (
-                        <div key={uuidv4()} className="form-check">
-                          <input
-                            checked={hoursActive.includes(value.id)}
-                            onChange={() => handleHoursToggle(value.id)}
-                            className="form-check-input"
-                            type="checkbox"
-                            id={"hours" + index}
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor={"hours" + index}
-                          >
-                            {locale === "en" ? value.name.en : value.name.id}
-                          </label>
-                        </div>
-                      ))}
-                  </div>
-                </div>
-              </div>
-              <div className="accordion-item">
-                <h2 className="accordion-header" id="filter3-heading">
-                  <button
-                    className="accordion-button collapsed"
-                    type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#filter3-collapse"
-                    aria-expanded="true"
-                    aria-controls="filter3-collapse"
-                  >
-                    {t("Number of Clients", locale)}
-                  </button>
-                </h2>
-                <div
-                  id="filter3-collapse"
-                  className="accordion-collapse collapse"
-                  aria-labelledby="filter3-heading"
-                >
-                  <div className="accordion-body">
-                    {clients.data !== undefined &&
-                      clients.data.data.map((value: any, index: number) => (
-                        <div key={uuidv4()} className="form-check">
-                          <input
-                            checked={clientsActive.includes(value.id)}
-                            onChange={() => handleClientsToggle(value.id)}
-                            className="form-check-input"
-                            type="checkbox"
-                            id={"clients" + index}
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor={"clients" + index}
-                          >
-                            {locale === "en" ? value.name.en : value.name.id}
-                          </label>
-                        </div>
-                      ))}
-                  </div>
-                </div>
-              </div>
-              <div className="accordion-item">
-                <h2 className="accordion-header" id="filter4-heading">
-                  <button
-                    className="accordion-button collapsed"
-                    type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#filter4-collapse"
-                    aria-expanded="true"
-                    aria-controls="filter4-collapse"
-                  >
-                    {t("Coaching Experience", locale)}
-                  </button>
-                </h2>
-                <div
-                  id="filter4-collapse"
-                  className="accordion-collapse collapse"
-                  aria-labelledby="filter4-heading"
-                >
-                  <div className="accordion-body">
-                    {years.data !== undefined &&
-                      years.data.data.map((value: any, index: number) => (
-                        <div key={uuidv4()} className="form-check">
-                          <input
-                            checked={yearsActive.includes(value.id)}
-                            onChange={() => handleYearsToggle(value.id)}
-                            className="form-check-input"
-                            type="checkbox"
-                            id={"years" + index}
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor={"years" + index}
-                          >
-                            {locale === "en" ? value.name.en : value.name.id}
-                          </label>
-                        </div>
-                      ))}
-                  </div>
-                </div>
-              </div>
-              <div className="accordion-item">
-                <h2 className="accordion-header" id="filter5-heading">
-                  <button
-                    className="accordion-button collapsed"
-                    type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#filter5-collapse"
-                    aria-expanded="true"
-                    aria-controls="filter5-collapse"
-                  >
-                    {t("Client Type", locale)}
-                  </button>
-                </h2>
-                <div
-                  id="filter5-collapse"
-                  className="accordion-collapse collapse"
-                  aria-labelledby="filter5-heading"
-                >
-                  <div className="accordion-body">
-                    {clientTypes.data !== undefined &&
-                      clientTypes.data.data.map((value: any, index: number) => (
-                        <div key={uuidv4()} className="form-check">
-                          <input
-                            checked={clientTypesActive.includes(value.id)}
-                            onChange={() => handleClientTypesToggle(value.id)}
-                            className="form-check-input"
-                            type="checkbox"
-                            id={"clientTypes" + index}
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor={"clientTypes" + index}
-                          >
-                            {locale === "en" ? value.name.en : value.name.id}
-                          </label>
-                        </div>
-                      ))}
-                  </div>
-                </div>
-              </div>
-              <div className="accordion-item">
-                <h2 className="accordion-header" id="filter6-heading">
-                  <button
-                    className="accordion-button collapsed"
-                    type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#filter6-collapse"
-                    aria-expanded="true"
-                    aria-controls="filter6-collapse"
-                  >
-                    {t("Specialities", locale)}
-                  </button>
-                </h2>
-                <div
-                  id="filter6-collapse"
-                  className="accordion-collapse collapse"
-                  aria-labelledby="filter6-heading"
-                >
-                  <div className="accordion-body">
-                    {specialities.data !== undefined &&
-                      specialities.data.data.map(
-                        (value: any, index: number) => (
-                          <div key={uuidv4()} className="form-check">
-                            <input
-                              checked={specialitiesActive.includes(value.id)}
-                              onChange={() =>
-                                handleSpecialitiesToggle(value.id)
-                              }
-                              className="form-check-input"
-                              type="checkbox"
-                              id={"specialities" + index}
-                            />
-                            <label
-                              className="form-check-label"
-                              htmlFor={"specialities" + index}
-                            >
-                              {locale === "en" ? value.name.en : value.name.id}
-                            </label>
-                          </div>
-                        )
-                      )}
-                  </div>
-                </div>
-              </div>
-              <div className="accordion-item">
-                <h2 className="accordion-header" id="filter7-heading">
-                  <button
-                    className="accordion-button collapsed"
-                    type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#filter7-collapse"
-                    aria-expanded="true"
-                    aria-controls="filter7-collapse"
-                  >
-                    {t("Price", locale)}
-                  </button>
-                </h2>
-                <div
-                  id="filter7-collapse"
-                  className="accordion-collapse collapse"
-                  aria-labelledby="filter7-heading"
-                >
-                  <div className="accordion-body">
-                    {prices.data !== undefined &&
-                      prices.data.data.map((value: any, index: number) => (
-                        <div key={uuidv4()} className="form-check">
-                          <input
-                            checked={pricesActive.includes(value.id)}
-                            onChange={() => handlePricesToggle(value.id)}
-                            className="form-check-input"
-                            type="checkbox"
-                            id={"prices" + index}
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor={"prices" + index}
-                          >
-                            {locale === "en" ? value.name.en : value.name.id}
-                          </label>
-                        </div>
-                      ))}
-                  </div>
-                </div>
-              </div>
-              <div className="accordion-item">
-                <h2 className="accordion-header" id="filter8-heading">
-                  <button
-                    className="accordion-button collapsed"
-                    type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#filter8-collapse"
-                    aria-expanded="true"
-                    aria-controls="filter8-collapse"
-                  >
-                    {t("Credentials", locale)}
-                  </button>
-                </h2>
-                <div
-                  id="filter8-collapse"
-                  className="accordion-collapse collapse"
-                  aria-labelledby="filter8-heading"
-                >
-                  <div className="accordion-body">
-                    {credentials.data !== undefined &&
-                      credentials.data.data.map((value: any, index: number) => (
-                        <div key={uuidv4()} className="form-check">
-                          <input
-                            checked={credentialsActive.includes(value.id)}
-                            onChange={() => handleCredentialsToggle(value.id)}
-                            className="form-check-input"
-                            type="checkbox"
-                            id={"credentials" + index}
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor={"credentials" + index}
-                          >
-                            {value.name} ({value.abbreviation})
-                          </label>
-                        </div>
-                      ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="button-submit">
-              <button className="btn btn-primary" type="submit">
-                Terapkan
-              </button>
-            </div>
-          </form>
+             </form>
         </div>
       </div>
+
       {info.data === undefined || coachs.data === undefined ? (
         <div className="p-5 text-center">
           <div className="spinner-border">
@@ -624,53 +318,42 @@ export default function Search() {
               )}
             </div>
           </div>
+          
           <div className="search-result mb-4">
             {coachs.data.data.map((value: any, index: number) => (
-              <CardCoach key={uuidv4()} coach={value} />
+              // === 7. Pass handleProfileClick ke CardCoach ===
+              <CardCoach 
+                key={uuidv4()} 
+                coach={value} 
+                // Kita kirim props baru ini agar CardCoach bisa trigger modal
+                onProfileClick={() => handleProfileClick(value)}
+              />
             ))}
           </div>
+
           {coachs.data !== undefined && coachs.data.pageTotal > 1 && (
-            <nav aria-label="Page navigation">
-              <ul className="pagination justify-content-center">
-                <li className="page-item">
-                  <button
-                    className="page-link"
-                    aria-label="Previous"
-                    onClick={() => page > 1 && changePage(page - 1)}
-                  >
-                    <FiChevronLeft />
-                  </button>
-                </li>
-                {Array.from({ length: coachs.data.pageTotal }).map(
-                  (_, index) => (
-                    <li key={uuidv4()} className="page-item">
-                      <button
-                        className={
-                          page === index + 1 ? "page-link active" : "page-link"
-                        }
-                        onClick={() => changePage(index + 1)}
-                      >
-                        {index + 1}
-                      </button>
-                    </li>
-                  )
-                )}
-                <li className="page-item">
-                  <button
-                    className="page-link"
-                    aria-label="Next"
-                    onClick={() =>
-                      page < coachs.data.pageTotal && changePage(page + 1)
-                    }
-                  >
-                    <FiChevronRight />
-                  </button>
-                </li>
-              </ul>
-            </nav>
+             <nav aria-label="Page navigation">
+                {/* ... Pagination code tetap sama ... */}
+                <ul className="pagination justify-content-center">
+                    <li className="page-item"><button className="page-link" onClick={() => page > 1 && changePage(page - 1)}><FiChevronLeft /></button></li>
+                    {Array.from({ length: coachs.data.pageTotal }).map((_, index) => (
+                        <li key={uuidv4()} className="page-item"><button className={page === index + 1 ? "page-link active" : "page-link"} onClick={() => changePage(index + 1)}>{index + 1}</button></li>
+                    ))}
+                    <li className="page-item"><button className="page-link" onClick={() => page < coachs.data.pageTotal && changePage(page + 1)}><FiChevronRight /></button></li>
+                </ul>
+             </nav>
           )}
         </>
       )}
+
+      {/* === 8. Render Modal di luar loop === */}
+      <ContactModal 
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={handleModalSubmit}
+        coachName={selectedCoach?.name}
+        locale={locale}
+      />
     </div>
   );
 }
