@@ -196,11 +196,11 @@ export default function ContactModal({ isOpen, onClose, onSubmit, coachName, loc
             </div>
 
             {/* Footer */}
-            <div className="modal-footer border-top-0 justify-content-center pt-0 pb-4">
+            {/* <div className="modal-footer border-top-0 justify-content-center pt-0 pb-4">
                <small className="text-muted" style={{fontSize: '0.7rem', opacity: 0.8}}>
                   {locale === 'en' ? 'Your privacy is protected.' : 'Data privasi Anda aman.'}
                </small>
-            </div>
+            </div> */}
 
           </div>
         </div>
