@@ -11,6 +11,7 @@ import {
 } from "react-icons/fa6";
 import { FaChalkboardTeacher } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
+import { SiLinktree } from "react-icons/si";
 import Image from "next/image";
 import { useLocale } from "@/context/LocaleContext";
 import { t } from "@/helper/helper";
@@ -328,6 +329,19 @@ export default function Coach({ slug }: any) {
                       coach.data.data[0].contact.email !== "" ? (
                         <a href={"mailto:" + coach.data.data[0].contact.email}>
                           <MdEmail size={24} />{" "}
+                        </a>
+                      ) : (
+                        ""
+                      )}
+
+
+                      {coach.data.data[0].contact.linktree !== undefined &&
+                      coach.data.data[0].contact.linktree !== "" ? (
+                        <a
+                          href={coach.data.data[0].contact.linktree}
+                          target="_blank"
+                        >
+                          <SiLinktree size={24} />{" "}
                         </a>
                       ) : (
                         ""
