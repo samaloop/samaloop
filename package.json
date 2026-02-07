@@ -1,0 +1,53 @@
+{
+  "name": "dashboard-samaloop",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@ckeditor/ckeditor5-build-classic": "^43.2.0",
+    "@ckeditor/ckeditor5-react": "^9.3.1",
+    "@supabase/auth-helpers-nextjs": "^0.10.0",
+    "axios": "^1.7.7",
+    "bootstrap": "^5.3.3",
+    "dayjs": "^1.11.13",
+    "js-abbreviation-number": "^1.4.0",
+    "next": "14.2.14",
+    "react": "^18",
+    "react-bootstrap": "^2.10.5",
+    "react-copy-to-clipboard": "^5.1.0",
+    "react-dom": "^18",
+    "react-dropzone": "^14.2.9",
+    "react-easy-crop": "^5.1.0",
+    "react-feather": "^2.0.10",
+    "react-hook-form": "^7.53.0",
+    "react-icons": "^5.3.0",
+    "react-modal": "^3.16.1",
+    "react-responsive": "^10.0.0",
+    "react-select": "^5.8.1",
+    "react-syntax-highlighter": "^15.5.0",
+    "sass": "^1.79.4",
+    "sass-loader": "^16.0.2",
+    "semantic-ui-react": "^2.1.5",
+    "sharp": "^0.33.5",
+    "simplebar": "^6.2.7",
+    "simplebar-react": "^3.2.6",
+    "sweetalert2": "^11.14.1",
+    "swr": "^2.2.5",
+    "uuid": "^10.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.14",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5"
+  }
+}
