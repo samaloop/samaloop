@@ -72,6 +72,7 @@ export default function BusinessTypesCreate({
   const [instagram, setInstagram]: any = useState("");
   const [tiktok, setTiktok]: any = useState("");
   const [facebook, setFacebook]: any = useState("");
+  const [linktree, setLinktree]: any = useState("");
 
   const textChange = (name: string, e: any) => {
     if (name === "name") {
@@ -92,6 +93,8 @@ export default function BusinessTypesCreate({
       setTiktok(e.target.value);
     } else if (name === "facebook") {
       setFacebook(e.target.value);
+    } else if (name === "linktree") {
+      setLinktree(e.target.value);
     }
   };
 
@@ -447,6 +450,7 @@ export default function BusinessTypesCreate({
               instagram: instagram,
               tiktok: tiktok,
               facebook: facebook,
+              linktree: linktree,
             },
             gender: gendersSelected.value,
             age: agesSelected.value,
@@ -707,6 +711,19 @@ export default function BusinessTypesCreate({
                   className="form-control"
                   id="facebook"
                   placeholder="Facebook"
+                />
+              </div>
+              <div className="mb-3">
+                <label htmlFor="linktree" className="form-label">
+                  Linktree
+                </label>
+                <input
+                  onChange={(e) => textChange("linktree", e)}
+                  type="text"
+                  value={linktree}
+                  className="form-control"
+                  id="linktree"
+                  placeholder="linktree"
                 />
               </div>
               <hr />
