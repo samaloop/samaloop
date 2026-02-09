@@ -535,6 +535,7 @@ export default function BusinessTypesCreate({
               instagram: instagram,
               tiktok: tiktok,
               facebook: facebook,
+              linktree: linktree,
             },
             gender: gendersSelected.value,
             age: agesSelected.value,
