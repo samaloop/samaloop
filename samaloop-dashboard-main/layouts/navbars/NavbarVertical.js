@@ -147,7 +147,8 @@ const NavbarVertical = (props) => {
 						'/user/year',
 						'/user/clients',
 						'/user/client-type',
-						'/user/price'
+						'/user/price',	
+						'/user/leads'
 					],
 					children: [
 						{
@@ -228,6 +229,14 @@ const NavbarVertical = (props) => {
 							link: '/user/price',
 							activePath: [
 								'/user/price'
+							]
+						},
+						{
+							id: uuid(),
+							name: 'Leads',
+							link: '/user/leads',
+							activePath: [
+								'/user/leads'
 							]
 						},
 					]

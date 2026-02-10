@@ -24,6 +24,8 @@ export async function GET() {
         const clients: any = await supabase.from('clients').select('id', { count: 'exact', head: true });
         const client_types: any = await supabase.from('client_types').select('id', { count: 'exact', head: true });
         const prices: any = await supabase.from('prices').select('id', { count: 'exact', head: true });
+        const leads: any = await supabase.from('leads').select('id', { count: 'exact', head: true });
+        
         return NextResponse.json({
             profiles: profiles.count,
             users: users.count,
@@ -36,7 +38,8 @@ export async function GET() {
             years: years.count,
             clients: clients.count,
             client_types: client_types.count,
-            prices: prices.count
+            prices: prices.count,
+            leads: leads.count
         });
     } catch (err: any) {
         return NextResponse.json(err);
