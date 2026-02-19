@@ -12,6 +12,7 @@ import { Pagination, Scrollbar, A11y, Navigation } from "swiper/modules";
 import useSWR from "swr";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
+import { useEffect } from "react";
 
 export default function Home() {
   // === 1. Setup Hooks & State ===
@@ -20,10 +21,26 @@ export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCoach, setSelectedCoach] = useState<any>(null);
 
+  // Di dalam function Home()
+const [shuffledCoaches, setShuffledCoaches] = useState<any[]>([]); // Tambah ini
+
   const fetcher = async (url: any) =>
     await axios.get(url).then((res) => res.data);
 
   const coachs = useSWR("/api/coachs/list?page=1", fetcher);
+
+  // Tambahkan ini di bawah deklarasi SWR
+useEffect(() => {
+  if (coachs.data && coachs.data.data) {
+    // Copy data supaya nggak mutasi data asli dari SWR
+    const dataToShuffle = [...coachs.data.data];
+    
+    // Algoritma Shuffle sederhana
+    const shuffled = dataToShuffle.sort(() => Math.random() - 0.5);
+    
+    setShuffledCoaches(shuffled);
+  }
+}, [coachs.data]);
   
   // === 2. Logic Klik Profile (Sama seperti di Search) ===
   const handleProfileClick = (coach: any) => {
@@ -110,7 +127,10 @@ export default function Home() {
                 prevEl: ".swiper-button-prev-custom",
               }}
             >
-              {coachs.data.data.map((value: any, index: number) => (
+              
+              {/* {coachs.data.data.map((value: any, index: number) => ( */}
+
+              {shuffledCoaches.map((value: any) => (
                 <SwiperSlide key={uuidv4()}>
                   {/* === 4. Pasang Prop onProfileClick === */}
                   <CardCoach 

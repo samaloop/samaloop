@@ -212,11 +212,47 @@ export async function GET(req: NextRequest) {
 
 
 
+    // // ===============================
+    // //  Eksekusi query utama
+    // // ===============================
+    // query = query.order('created_at', { ascending: true }).range(range[0], range[1]);
+    // const { data, count, error } = await query;
+
+    // if (error) {
+    //     console.error('Supabase error:', error);
+    //     return NextResponse.json({ error: error.message }, { status: 500 });
+    // }
+
+    // const pageTotal = Math.ceil((count ?? 0) / limit);
+    // return NextResponse.json({ data, count, pageTotal, limit });
+    
+
+
     // ===============================
-    //  Eksekusi query utama
+    //  Eksekusi query utama (RANDOMIZED)
     // ===============================
-    query = query.order('created_at', { ascending: true }).range(range[0], range[1]);
-    const { data, count, error } = await query;
+    
+    // 1. Ambil total count coach yang aktif
+    const { count: totalCount } = await supabase
+        .from('profiles')
+        .select('id', { count: 'exact', head: true })
+        .eq('status', 'active');
+
+    const totalCoaches = totalCount ?? 0;
+    const totalPages = Math.ceil(totalCoaches / limit);
+
+    // 2. Tentukan range secara acak berdasarkan total halaman yang tersedia
+    // Jika data masih sedikit (hanya 1 halaman), randomPage akan selalu 1
+    const randomPage = totalPages > 0 ? Math.floor(Math.random() * totalPages) + 1 : 1;
+    
+    const randomRange = [
+        (randomPage - 1) * limit,
+        (randomPage * limit) - 1,
+    ];
+
+    // 3. Jalankan query dengan range acak tersebut
+    // Note: order('created_at') dihapus atau diganti supaya urutan di dalam page juga variatif
+    const { data, count, error } = await query.range(randomRange[0], randomRange[1]);
 
     if (error) {
         console.error('Supabase error:', error);
@@ -224,7 +260,7 @@ export async function GET(req: NextRequest) {
     }
 
     const pageTotal = Math.ceil((count ?? 0) / limit);
-    return NextResponse.json({ data, count, pageTotal, limit });
+    return NextResponse.json({ data, count, pageTotal, limit, currentPage: randomPage });
 }
 
 
