@@ -77,6 +77,10 @@ export function t(key: string, locale: string) {
             en: 'Share',
             id: 'Bagikan'
         },
+        'book Now': {
+            en: 'Book Now',
+            id: 'Daftar Sekarang'
+        },
         'Contact Us': {
             en: 'Contact Us',
             id: 'Hubungi Kami'
@@ -308,7 +312,60 @@ export function t(key: string, locale: string) {
         'Filter': {
             en: 'Filter',
             id: 'Saring'
-        }
+        },
+        'Coaching Registration': {
+            en: 'Coaching Registration',
+            id: 'Pendaftaran Coaching'
+        },
+        'Register for a session with': {
+            en: 'Register for a session with',
+            id: 'Daftar untuk sesi bersama'
+        },
+       
+        'Email Address': {
+            en: 'Email Address',
+            id: 'Alamat Email'
+        },
+        'WhatsApp Number': {
+            en: 'WhatsApp Number',
+            id: 'Nomor WhatsApp'
+        },
+        'Domicile': {
+            en: 'Domicile',
+            id: 'Domisili'
+        },
+        'Current Position': {
+            en: 'Current Position',
+            id: 'Jabatan Saat Ini'
+        },
+        'Organization / Company': {
+            en: 'Organization / Company',
+            id: 'Organisasi / Perusahaan'
+        },
+        'Cancel': {
+            en: 'Cancel',
+            id: 'Batal'
+        },
+        'Submit Application': {
+            en: 'Submit Application',
+            id: 'Kirim Pendaftaran'
+        },
+        'Registration successful!': {
+            en: 'Registration successful!',
+            id: 'Pendaftaran berhasil!'
+        },
+        'Failed to send data.': {
+            en: 'Failed to send data.',
+            id: 'Gagal mengirim data.'
+        },
+        'Book Coaching Now': {
+            en: 'Book Coaching Now',
+            id: 'Daftar Coaching Sekarang'
+        },
+        'Close': {
+            en: 'Close',
+            id: 'Tutup'
+        },
     }
 
     if (common[key] === undefined || common[key][locale] === undefined) {

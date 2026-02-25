@@ -20,6 +20,10 @@ import useSWR from "swr";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
+import CoachingModal from "@/components/CoachingModal";
+
+
+
 
 export default function Coach({ slug }: any) {
   const { locale } = useLocale();
@@ -49,6 +53,8 @@ export default function Coach({ slug }: any) {
         console.error("Failed to copy text: ", err);
       });
   };
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
     <div className="page-coach container mt-4">
@@ -170,7 +176,7 @@ export default function Coach({ slug }: any) {
                       }}>
                       <FaShareFromSquare size={20} />
                     </button>
-                     <div className="me-2 ">{t("Share", locale)}</div>
+                    <div className="me-2 ">{t("Share", locale)}</div>
                   </div>
 
                 </div>
@@ -251,18 +257,18 @@ export default function Coach({ slug }: any) {
                 </div>
 
                 {coach.data.data[0].contact.linkedin !== undefined ||
-                coach.data.data[0].contact.instagram !== undefined ||
-                coach.data.data[0].contact.tiktok !== undefined ||
-                coach.data.data[0].contact.facebook !== undefined ||
-                coach.data.data[0].contact.phone !== undefined ||
-                coach.data.data[0].contact.email !== undefined ? (
+                  coach.data.data[0].contact.instagram !== undefined ||
+                  coach.data.data[0].contact.tiktok !== undefined ||
+                  coach.data.data[0].contact.facebook !== undefined ||
+                  coach.data.data[0].contact.phone !== undefined ||
+                  coach.data.data[0].contact.email !== undefined ? (
                   <div className="contact mb-4">
                     <div className="font-weight-bold mb-2">
                       {t("Social Media", locale)}
                     </div>
                     <div>
                       {coach.data.data[0].contact.linkedin !== undefined &&
-                      coach.data.data[0].contact.linkedin !== "" ? (
+                        coach.data.data[0].contact.linkedin !== "" ? (
                         <a
                           href={coach.data.data[0].contact.linkedin}
                           target="_blank"
@@ -273,7 +279,7 @@ export default function Coach({ slug }: any) {
                         ""
                       )}
                       {coach.data.data[0].contact.instagram !== undefined &&
-                      coach.data.data[0].contact.instagram !== "" ? (
+                        coach.data.data[0].contact.instagram !== "" ? (
                         <a
                           href={coach.data.data[0].contact.instagram}
                           target="_blank"
@@ -284,7 +290,7 @@ export default function Coach({ slug }: any) {
                         ""
                       )}
                       {coach.data.data[0].contact.tiktok !== undefined &&
-                      coach.data.data[0].contact.tiktok !== "" ? (
+                        coach.data.data[0].contact.tiktok !== "" ? (
                         <a
                           href={coach.data.data[0].contact.tiktok}
                           target="_blank"
@@ -295,7 +301,7 @@ export default function Coach({ slug }: any) {
                         ""
                       )}
                       {coach.data.data[0].contact.facebook !== undefined &&
-                      coach.data.data[0].contact.facebook !== "" ? (
+                        coach.data.data[0].contact.facebook !== "" ? (
                         <a
                           href={coach.data.data[0].contact.facebook}
                           target="_blank"
@@ -326,7 +332,7 @@ export default function Coach({ slug }: any) {
                           );
                         })()} */}
                       {coach.data.data[0].contact.email !== undefined &&
-                      coach.data.data[0].contact.email !== "" ? (
+                        coach.data.data[0].contact.email !== "" ? (
                         <a href={"mailto:" + coach.data.data[0].contact.email}>
                           <MdEmail size={24} />{" "}
                         </a>
@@ -336,7 +342,7 @@ export default function Coach({ slug }: any) {
 
 
                       {coach.data.data[0].contact.linktree !== undefined &&
-                      coach.data.data[0].contact.linktree !== "" ? (
+                        coach.data.data[0].contact.linktree !== "" ? (
                         <a
                           href={coach.data.data[0].contact.linktree}
                           target="_blank"
@@ -351,37 +357,60 @@ export default function Coach({ slug }: any) {
                 ) : (
                   ""
                 )}
+                {/* tambahan tombol book coaching dan modalnya */}
+                <div className="mt-4 mb-4">
+                  <button
+                    onClick={() => setIsModalOpen(true)}
+                    className="w-100 btn"
+                  style={{
+                    backgroundColor: "#f59e42",
+                    //borderColor: "#000000",
+                    color: "#ffffff"
+                  }}
+                  >
+                    {t("book Now", locale)}
+                  </button>
+                </div>
 
+                {/* Komponen Modal */}
+                {coach.data && (
+                  <CoachingModal
+                    isOpen={isModalOpen}
+                    onClose={() => setIsModalOpen(false)}
+                    coach={coach.data.data[0]}
+                    locale={locale}
+                  />
+                )}
               </div>
               <div className="">
-                  <a href={"https://wa.me/6285770916736?text=Halo%20Admin%20Samaloop,%0ASaya%20mau%20bertanya%20tentang%20layanan%20coaching."} target="_blank" rel="noopener noreferrer" 
+                <a href={"https://wa.me/6285770916736?text=Halo%20Admin%20Samaloop,%0ASaya%20mau%20bertanya%20tentang%20layanan%20coaching."} target="_blank" rel="noopener noreferrer"
                   className="w-100 btn"
-                    style={{
-                      backgroundColor: "#f59e42",
-                      //borderColor: "#000000",
-                      color: "#ffffff",
-                    }}
-                  >
-                    {t("Contact Us", locale)}
-                  </a>
-                </div>
+                  style={{
+                    backgroundColor: "#f59e42",
+                    //borderColor: "#000000",
+                    color: "#ffffff",
+                  }}
+                >
+                  {t("Contact Us", locale)}
+                </a>
+              </div>
             </div>
-            
+
             <div className="col-12 col-md-9 ps-4">
               {/* <div className="subtitle">{coach.data.data[0].profession}</div> */}
               <div className="d-flex flex-wrap column-gap-2 row-gap-0 justify-content-center justify-content-md-start" >
-                 {coach.data.data[0].profile_specialities.map(
-                      (value: any, index: number) => (
-                        <div key={uuidv4()} className="subtitle">
-                          {locale === "en"
-                            ? value.speciality.name.en
-                            : value.speciality.name.id}{" Coach, "}
-                        </div>
-                      )
-                    )}
+                {coach.data.data[0].profile_specialities.map(
+                  (value: any, index: number) => (
+                    <div key={uuidv4()} className="subtitle">
+                      {locale === "en"
+                        ? value.speciality.name.en
+                        : value.speciality.name.id}{" Coach, "}
+                    </div>
+                  )
+                )}
               </div>
               <div className="text mb-5">{coach.data.data[0].profession}</div>
-                  
+
 
               <div
                 className="text mb-4"
@@ -392,9 +421,12 @@ export default function Coach({ slug }: any) {
                       : coach.data.data[0].description.id,
                 }}
               />
-              <div className="subtitle mb-4">
-                {t("Other Credentials", locale)}
-              </div>
+              {/* gak tampilin kalau other credetinals kosong */}
+              {coach.data.data[0].profile_other_credentials.length > 0 && (
+                <div className="subtitle mb-4">
+                  {t("Other Credentials", locale)}
+                </div>
+              )}
               <div className="text mb-4">
                 <ul>
                   {coach.data.data[0].profile_other_credentials.map(
@@ -409,19 +441,19 @@ export default function Coach({ slug }: any) {
               </div>
               {((locale === "en" && coach.data.data[0].awards_en) ||
                 (locale === "id" && coach.data.data[0].awards)) && (
-                <>
-                  <div className="subtitle mb-4">{t("Awards", locale)}</div>
-                  <div
-                    className="text mb-4"
-                    dangerouslySetInnerHTML={{
-                      __html:
-                        locale === "en"
-                          ? coach.data.data[0].awards_en
-                          : coach.data.data[0].awards,
-                    }}
-                  />
-                </>
-              )}
+                  <>
+                    <div className="subtitle mb-4">{t("Awards", locale)}</div>
+                    <div
+                      className="text mb-4"
+                      dangerouslySetInnerHTML={{
+                        __html:
+                          locale === "en"
+                            ? coach.data.data[0].awards_en
+                            : coach.data.data[0].awards,
+                      }}
+                    />
+                  </>
+                )}
             </div>
           </div>
           <div className="text-center">
