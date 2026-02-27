@@ -321,7 +321,7 @@ export function t(key: string, locale: string) {
             en: 'Register for a session with',
             id: 'Daftar untuk sesi bersama'
         },
-       
+
         'Email Address': {
             en: 'Email Address',
             id: 'Alamat Email'
@@ -366,6 +366,90 @@ export function t(key: string, locale: string) {
             en: 'Close',
             id: 'Tutup'
         },
+        'Samaloop Coaching Inquiry Form': {
+            en: 'Samaloop Coaching Inquiry Form',
+            id: 'Formulir Inkuiri Coaching Samaloop'
+        },
+        'Coaching Goals & Needs': {
+            en: 'Coaching Goals & Needs',
+            id: 'Tujuan & Kebutuhan Coaching'
+        },
+        'What drives you to seek coaching now? *': {
+            en: 'What drives you to seek coaching now? *',
+            id: 'Apa yang mendorong Anda mencari coaching saat ini? *'
+        },
+        'Focus areas you want to develop: *': {
+            en: 'Focus areas you want to develop: *',
+            id: 'Area fokus yang ingin Anda kembangkan: *'
+        },
+        'Leadership': { en: 'Leadership', id: 'Kepemimpinan' },
+        'Career Transition': { en: 'Career Transition', id: 'Transisi Karir' },
+        'Personal Growth': { en: 'Personal Growth', id: 'Pertumbuhan Pribadi' },
+        'Wellbeing': { en: 'Wellbeing', id: 'Kesejahteraan' },
+        'Business Development': { en: 'Business Development', id: 'Pengembangan Bisnis' },
+        'Team / Organizational': { en: 'Team / Organizational', id: 'Tim / Organisasi' },
+        'What kind of result do you want to achieve? *': {
+            en: 'What kind of result do you want to achieve? *',
+            id: 'Hasil seperti apa yang ingin Anda capai? *'
+        },
+        'Coach Preference & Logistics': {
+            en: 'Coach Preference & Logistics',
+            id: 'Preferensi Coach & Logistik'
+        },
+        'Session language preference: *': {
+            en: 'Session language preference: *',
+            id: 'Preferensi bahasa sesi: *'
+        },
+        'Session format: *': {
+            en: 'Session format: *',
+            id: 'Format sesi: *'
+        },
+        'Commitment & Ethics': {
+            en: 'Commitment & Ethics',
+            id: 'Komitmen & Etika'
+        },
+        'I understand that coaching is not therapy or counseling *': {
+            en: 'I understand that coaching is not therapy or counseling *',
+            id: 'Saya memahami bahwa coaching bukan terapi atau konseling *'
+        },
+        'I am willing to follow the sessions consistently *': {
+            en: 'I am willing to follow the sessions consistently *',
+            id: 'Saya bersedia mengikuti sesi secara konsisten *'
+        },
+        'Online': {
+            en: 'Online',
+            id: 'Online'
+        },
+        'Offline': {
+            en: 'Offline',
+            id: 'Offline'
+        },
+        'Hybrid': {
+            en: 'Hybrid',
+            id: 'Hybrid'
+        },
+        'Bahasa Indonesia': {
+            en: 'Bahasa Indonesia',
+            id: 'Bahasa Indonesia' 
+        },
+        'Bilingual': {
+            en: 'Bilingual',
+            id: 'Bilingual'
+        },
+        'Session frequency: *': {
+            en: 'Session frequency: *',
+            id: 'Frekuensi sesi: *'
+        },
+        'Weekly': { en: 'Weekly', id: 'Mingguan' },
+        'Bi-weekly': { en: 'Bi-weekly', id: 'Dua mingguan' },
+        'Monthly': { en: 'Monthly', id: 'Bulanan' },
+        'Readiness to start: *': {
+            en: 'Readiness to start: *',
+            id: 'Kesiapan untuk memulai: *'
+        },
+        'Immediately': { en: 'Immediately', id: 'Segera' },
+        'Within 1 month': { en: 'Within 1 month', id: 'Dalam 1 bulan' },
+        'Planning for future': { en: 'Planning for future', id: 'Perencanaan masa depan' },
     }
 
     if (common[key] === undefined || common[key][locale] === undefined) {

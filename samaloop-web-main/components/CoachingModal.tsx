@@ -1,12 +1,18 @@
 "use client";
 import { useState } from "react";
 import axios from "axios";
-import { IoClose, IoCheckmarkCircle } from "react-icons/io5"; // Tambahkan ikon success
+import { IoCheckmarkCircle } from "react-icons/io5";
 import { t } from "@/helper/helper";
 
 const CoachingModal = ({ coach, isOpen, onClose, locale }: any) => {
   const [loading, setLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+
+  // State untuk validasi checkbox syarat & ketentuan
+  const [agreed, setAgreed] = useState({
+    ethics: false,
+    consistency: false
+  });
 
   if (!isOpen) return null;
 
@@ -14,9 +20,9 @@ const CoachingModal = ({ coach, isOpen, onClose, locale }: any) => {
     e.preventDefault();
     setLoading(true);
 
-    const form = e.currentTarget;
-    const formData = new FormData(form);
-    
+    const formData = new FormData(e.currentTarget);
+    const focusAreas = formData.getAll("focus_areas");
+
     const payload = {
       name: formData.get("name"),
       email: formData.get("email"),
@@ -25,74 +31,171 @@ const CoachingModal = ({ coach, isOpen, onClose, locale }: any) => {
       position: formData.get("position"),
       organization: formData.get("organization"),
       coach_id: coach?.id,
+      coaching_goal: formData.get("coaching_goal"),
+      focus_areas: focusAreas,
+      expected_result: formData.get("expected_result"),
+      language_preference: formData.get("language_preference"),
+      gender_preference: formData.get("gender_preference"),
+      industry_preference: formData.get("industry_preference"),
+      session_format: formData.get("session_format"),
+      session_frequency: formData.get("session_frequency"),
+      readiness_to_start: formData.get("readiness_to_start"),
+      ethics_agreement: formData.get("ethics_agreement") === "on",
+      consistency_agreement: formData.get("consistency_agreement") === "on"
     };
 
     try {
-      await axios.post('/api/coach-registration', payload);
-      setIsSuccess(true); // Ganti alert dengan state success
-      form.reset();
+      await axios.post('/api/coach_registration', payload);
+      setIsSuccess(true);
     } catch (err) {
-      console.error("Error:", err);
       alert(t("Failed to send data.", locale));
     } finally {
       setLoading(false);
     }
   };
 
+  // Cek apakah semua syarat sudah dicentang
+  const canSubmit = agreed.ethics && agreed.consistency;
+
   return (
     <div className="modal show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.7)', zIndex: 9999, backdropFilter: 'blur(4px)' }}>
-      <div className="modal-dialog modal-dialog-centered">
-        <div className="modal-content border-0 shadow-lg" style={{ borderRadius: '15px', overflow: 'hidden' }}>
-          
-          {/* Bagian Header yang lebih elegan */}
-          <div className="modal-header border-0 p-4 pb-0 d-flex justify-content-between align-items-start">
-            {!isSuccess && (
-              <div>
-                <h4 className="fw-bold mb-0" style={{ color: '#0055A5' }}>{t("Coaching Registration", locale)}</h4>
-                <p className="text-muted small mb-0">{t("Register for a session with", locale)} <strong>{coach?.name}</strong></p>
-              </div>
-            )}
-            <button type="button" className="btn-close" onClick={() => { onClose(); setIsSuccess(false); }}></button>
+      <div className="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div className="modal-content border-0 shadow-lg" style={{ borderRadius: '15px' }}>
+          <div className="modal-header bg-light p-4">
+            <h4 className="fw-bold mb-0" style={{ color: '#0055A5' }}>{t("Samaloop Coaching Inquiry Form", locale)}</h4>
+            <button type="button" className="btn-close" onClick={onClose}></button>
           </div>
 
           <div className="modal-body p-4">
             {!isSuccess ? (
-              <form onSubmit={handleSubmit}>
-                <div className="row g-3">
-                  <div className="col-12">
-                    <input name="name" className="form-control py-2 shadow-sm border-light" placeholder={t("Full Name", locale) as string} required />
+              <form onSubmit={handleSubmit} className="row g-3">
+                {/* SEKSI 1: DATA DIRI */}
+                <h6 className="fw-bold border-bottom pb-2" style={{ color: '#0055A5' }}>{t("Personal Information", locale)}</h6>
+                <div className="col-md-6">
+                  <input name="name" className="form-control" placeholder={t("Full Name", locale) as string + " *"} required />
+                </div>
+                <div className="col-md-6">
+                  <input name="email" type="email" className="form-control" placeholder={t("Email Address", locale) as string + " *"} required />
+                </div>
+                <div className="col-md-6">
+                  <input name="phone_number" className="form-control" placeholder={t("WhatsApp Number", locale) as string + " *"} required />
+                </div>
+                <div className="col-md-6">
+                  <input name="domicile" className="form-control" placeholder={t("Domicile", locale) as string + " *"} required />
+                </div>
+                <div className="col-md-6">
+                  <input name="position" className="form-control" placeholder={t("Current Position", locale) as string + " *"} required />
+                </div>
+                <div className="col-md-6">
+                  <input name="organization" className="form-control" placeholder={t("Organization / Company", locale) as string + " *"} required />
+                </div>
+
+                {/* SEKSI 2: TUJUAN & KEBUTUHAN */}
+                <h6 className="fw-bold border-bottom pb-2 mt-4" style={{ color: '#0055A5' }}>{t("Coaching Goals & Needs", locale)}</h6>
+                <div className="col-12">
+                  <label className="small mb-1 fw-semibold">{t("What drives you to seek coaching now? *", locale)}</label>
+                  <textarea name="coaching_goal" className="form-control" rows={2} required></textarea>
+                </div>
+                <div className="col-12">
+                  <label className="small mb-1 fw-semibold">{t("Focus areas you want to develop: *", locale)}</label>
+                  <div className="d-flex flex-wrap gap-3">
+                    {["Leadership", "Career Transition", "Personal Growth", "Wellbeing", "Business Development", "Team / Organizational"].map(item => (
+                      <div key={item} className="form-check">
+                        <input className="form-check-input" type="checkbox" name="focus_areas" value={item} id={item} />
+                        <label className="form-check-label small" htmlFor={item}>{t(item, locale)}</label>
+                      </div>
+                    ))}
                   </div>
-                  <div className="col-12">
-                    <input name="email" type="email" className="form-control py-2 shadow-sm border-light" placeholder={t("Email Address", locale) as string} required />
+                </div>
+                <div className="col-12">
+                  <label className="small mb-1 fw-semibold">{t("What kind of result do you want to achieve? *", locale)}</label>
+                  <textarea name="expected_result" className="form-control" rows={2} required></textarea>
+                </div>
+
+                {/* SEKSI 3: PREFERENSI & LOGISTIK */}
+                <h6 className="fw-bold border-bottom pb-2 mt-4" style={{ color: '#0055A5' }}>{t("Coach Preference & Logistics", locale)}</h6>
+                <div className="col-md-6">
+                  <label className="small mb-1 fw-semibold">{t("Session language preference: *", locale)}</label>
+                  <select name="language_preference" className="form-select shadow-none" required>
+                    <option value="Bahasa Indonesia">{t("Bahasa Indonesia", locale)}</option>
+                    <option value="English">{t("English", locale)}</option>
+                    <option value="Bilingual">{t("Bilingual", locale)}</option>
+                  </select>
+                </div>
+
+                <div className="col-md-6">
+                  <label className="small mb-1 fw-semibold">{t("Session format: *", locale)}</label>
+                  <select name="session_format" className="form-select shadow-none" required>
+                    <option value="Online">{t("Online", locale)}</option>
+                    <option value="Offline">{t("Offline", locale)}</option>
+                    <option value="Hybrid">{t("Hybrid", locale)}</option>
+                  </select>
+                </div>
+
+                <div className="col-md-6">
+                  <label className="small mb-1 fw-semibold">{t("Session frequency: *", locale)}</label>
+                  <select name="session_frequency" className="form-select shadow-none" required>
+                    <option value="Weekly">{t("Weekly", locale)}</option>
+                    <option value="Bi-weekly">{t("Bi-weekly", locale)}</option>
+                    <option value="Monthly">{t("Monthly", locale)}</option>
+                  </select>
+                </div>
+                <div className="col-md-6">
+                  <label className="small mb-1 fw-semibold">{t("Readiness to start: *", locale)}</label>
+                  <select name="readiness_to_start" className="form-select shadow-none" required>
+                    <option value="Immediately">{t("Immediately", locale)}</option>
+                    <option value="Within 1 month">{t("Within 1 month", locale)}</option>
+                    <option value="Planning for future">{t("Planning for future", locale)}</option>
+                  </select>
+                </div>
+
+                {/* SEKSI 4: KOMITMEN & ETIKA (Hanya sebagai syarat daftar) */}
+                <h6 className="fw-bold border-bottom pb-2 mt-4" style={{ color: '#0055A5' }}>{t("Commitment & Ethics", locale)}</h6>
+                <div className="col-12">
+                  <div className="form-check mb-2">
+                    <input
+                      className="form-check-input shadow-none"
+                      type="checkbox"
+                      id="ethic"
+                      checked={agreed.ethics}
+                      onChange={(e) => setAgreed({ ...agreed, ethics: e.target.checked })}
+                    />
+                    <label className="form-check-label small" htmlFor="ethic">
+                      {t("I understand that coaching is not therapy or counseling *", locale)}
+                    </label>
                   </div>
-                  <div className="col-12">
-                    <input name="phone_number" className="form-control py-2 shadow-sm border-light" placeholder={t("WhatsApp Number", locale) as string} required />
-                  </div>
-                  <div className="col-12">
-                    <input name="domicile" className="form-control py-2 shadow-sm border-light" placeholder={t("Domicile", locale) as string} required />
-                  </div>
-                  <div className="col-md-6">
-                    <input name="position" className="form-control py-2 shadow-sm border-light" placeholder={t("Current Position", locale) as string} required />
-                  </div>
-                  <div className="col-md-6">
-                    <input name="organization" className="form-control py-2 shadow-sm border-light" placeholder={t("Organization / Company", locale) as string} required />
+                  <div className="form-check">
+                    <input
+                      className="form-check-input shadow-none"
+                      type="checkbox"
+                      id="consist"
+                      checked={agreed.consistency}
+                      onChange={(e) => setAgreed({ ...agreed, consistency: e.target.checked })}
+                    />
+                    <label className="form-check-label small" htmlFor="consist">
+                      {t("I am willing to follow the sessions consistently *", locale)}
+                    </label>
                   </div>
                 </div>
 
-                <div className="mt-4">
-                  <button 
-                    type="submit" 
-                    disabled={loading} 
-                    className="btn w-100 py-2 fw-bold text-white transition-all shadow" 
-                    style={{ backgroundColor: '#f59e42', borderRadius: '8px', border: 'none' }}
+                <div className="col-12 mt-4 text-end">
+                  <button
+                    type="submit"
+                    disabled={loading || !canSubmit}
+                    className="btn px-5 py-2 text-white fw-bold shadow-sm"
+                    style={{
+                      backgroundColor: canSubmit ? '#f59e42' : '#cccccc',
+                      borderRadius: '8px',
+                      cursor: canSubmit ? 'pointer' : 'not-allowed'
+                    }}
                   >
                     {loading ? <span className="spinner-border spinner-border-sm me-2"></span> : t("Submit Application", locale)}
                   </button>
+                  {!canSubmit && <p className="text-danger small mt-2">{t("Please accept the terms to proceed", locale)}</p>}
                 </div>
               </form>
             ) : (
-              /* --- TAMPILAN SUKSES --- */
-              <div className="text-center py-4 transition-all">
+              <div className="text-center py-5">
                 <IoCheckmarkCircle size={80} color="#28a745" className="mb-3" />
                 <h4 className="fw-bold text-dark">{t("Registration successful!", locale)}</h4>
                 <p className="text-muted">
@@ -100,11 +203,8 @@ const CoachingModal = ({ coach, isOpen, onClose, locale }: any) => {
                     ? "Please wait, your coach will contact you shortly." 
                     : "Mohon tunggu, coach Anda akan menghubungi dalam waktu dekat."}
                 </p>
-                <button 
-                  className="btn mt-3 px-5 text-white" 
-                  style={{ backgroundColor: '#f59e42', borderRadius: '8px' }}
-                  onClick={() => { onClose(); setIsSuccess(false); }}
-                >
+                <p className="text-muted">{t("Registration message success", locale)}</p>
+                <button className="btn mt-3 px-5 text-white" style={{ backgroundColor: '#f59e42', borderRadius: '8px' }} onClick={onClose}>
                   {t("Close", locale)}
                 </button>
               </div>
@@ -115,5 +215,4 @@ const CoachingModal = ({ coach, isOpen, onClose, locale }: any) => {
     </div>
   );
 };
-
 export default CoachingModal;
