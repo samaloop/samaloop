@@ -8,15 +8,15 @@ const resend = new Resend(process.env.RESEND_API_KEY!);
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    
+
     // Destructuring semua field baru dari Inquiry Form
-    const { 
-      name, 
-      email, 
-      phone, 
-      domicile, 
-      position, 
-      organization, 
+    const {
+      name,
+      email,
+      phone,
+      domicile,
+      position,
+      organization,
       coach_id,
       // Field tambahan dari form baru
       coaching_goal,
@@ -63,22 +63,33 @@ export async function POST(req: NextRequest) {
       console.error("Supabase Insert Error:", error);
       return NextResponse.json({ message: error.message }, { status: 400 });
     }
-    const { data: coachData } = await supabase
+    const { data: coachData, error: coachError } = await supabase
       .from('profiles')
-      .select('email, full_name')
+      .select('email_from_json:contact->>email, name')
       .eq('id', coach_id)
       .single();
+    
+      if (coachError) {
+      console.error("Gagal mengambil data coach dari Supabase:", coachError.message);
+    }
+
+    // 2. CEK APAKAH DATA ADA ATAU KOSONG
+    console.log("DEBUG - ID Coach yang dicari:", coach_id);
+    console.log("DEBUG - Data Coach ditemukan:", coachData);
+
+
+    const coachEmail = coachData?.email_from_json || 'loop.samaloop@gmail.com'; // Default email if coach email is null
 
     //SEND EMAIL NOTIFICATION TO COACH
-    if (coachData?.email) {
-      await resend.emails.send({
-        from: 'Samaloop Admin <admin@samaloop.com>', // Gunakan domain yang sudah terverifikasi di Resend
-        to: coachData.email,
-        cc: 'admin@samaloop.com', // Salinan untuk admin
+    if (coachData && coachData?.email_from_json) {
+      const { data, error: resendError } = await resend.emails.send({
+        from: 'onboarding@resend.dev', // Gunakan domain yang sudah terverifikasi di Resend
+        to: 'loop.samaloop@gmail.com',
+        // cc: 'admin@samaloop.com', // Salinan untuk admin
         subject: `[Samaloop] Inkuiri Coaching Baru - ${name}`,
         html: `
           <div style="font-family: sans-serif; line-height: 1.6; color: #333;">
-            <h2>Halo ${coachData.full_name},</h2>
+            <h2>Halo ${coachData.name},</h2>
             <p>Anda menerima inkuiri coaching baru melalui platform <strong>SamaLoop</strong>. Berikut detailnya:</p>
             <hr />
             <h3>Informasi Pribadi</h3>
@@ -106,16 +117,25 @@ export async function POST(req: NextRequest) {
           </div>
         `
       });
+      console.log("Mencoba mengirim email ke:", coachData.email_from_json);
+      if (resendError) {
+        console.error("Resend Error Detail:", resendError);
+      } else {
+        console.log("Email sent successfully:", data);
+      }
+    }
+    else {
+      console.warn("Data coach tidak ditemukan atau email kosong. Email notifikasi tidak dikirim.");
     }
 
-    const response = NextResponse.json({ 
-      success: true, 
-      message: "Registration successfully saved" 
+    const response = NextResponse.json({
+      success: true,
+      message: "Registration successfully saved"
     });
 
     // Set cookie untuk tracking
     response.cookies.set('user_coaching_contact', email, {
-      httpOnly: false, 
+      httpOnly: false,
       secure: process.env.NODE_ENV === 'production',
       maxAge: 60 * 60 * 24 * 30, // 30 Hari
       path: '/',

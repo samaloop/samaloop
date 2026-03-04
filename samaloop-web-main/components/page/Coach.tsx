@@ -358,7 +358,7 @@ export default function Coach({ slug }: any) {
                   ""
                 )}
                 {/* tambahan tombol book coaching dan modalnya */}
-                <div className="mt-4 mb-4">
+                {/* <div className="mt-4 mb-4">
                   <button
                     onClick={() => setIsModalOpen(true)}
                     className="w-100 btn"
@@ -370,7 +370,7 @@ export default function Coach({ slug }: any) {
                   >
                     {t("book Now", locale)}
                   </button>
-                </div>
+                </div> */}
 
                 {/* Komponen Modal */}
                 {coach.data && (
