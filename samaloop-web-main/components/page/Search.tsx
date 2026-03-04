@@ -53,8 +53,8 @@ export default function Search() {
   const [credentialsActive, setCredentialsActive]: any = useState([]);
 
   // === 4. State untuk Modal & Selected Coach ===
-  // const [isModalOpen, setIsModalOpen] = useState(false);
-  // const [selectedCoach, setSelectedCoach] = useState<any>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedCoach, setSelectedCoach] = useState<any>(null);
 
   const [page, setPage] = useState(1);
   const changePage = (page: any) => {
@@ -178,8 +178,7 @@ export default function Search() {
   // === 5. Fungsi Logika Klik Profile ===
   const handleProfileClick = (coach: any) => {
     // Cek apakah user sudah pernah input data (disimpan di localStorage)
-    // const hasRegistered = localStorage.getItem('user_lead_contact');
-    const hasRegistered = true; // Sementara kita set true dulu karena model pendaftaran user diganti
+    const hasRegistered = localStorage.getItem('user_lead_contact');
     // Tentukan URL tujuan (sesuaikan logika routing Anda)
     // Jika menggunakan LocalizedLink biasanya prefix otomatis, tapi router.push manual
     const targetUrl = locale === 'id' ? `/coach/${coach.slug}` : `/${locale}/coach/${coach.slug}`; 
@@ -189,46 +188,46 @@ export default function Search() {
       router.push(targetUrl);
     } else {
       // Jika belum, buka modal
-      // setSelectedCoach(coach);
-      // setIsModalOpen(true);
+      setSelectedCoach(coach);
+      setIsModalOpen(true);
     }
   };
 
  
 
-  // // Update tipe parameter dari string menjadi object
-  // const handleModalSubmit = async (formData: { name: string; email: string; phone: string }) => {
-  //   if (!selectedCoach) return;
+  // Update tipe parameter dari string menjadi object
+  const handleModalSubmit = async (formData: { name: string; email: string; phone: string }) => {
+    if (!selectedCoach) return;
 
-  //   try {
-  //     // Kirim Data Lengkap ke API
-  //     await axios.post('/api/leads', {
-  //       name: formData.name,
-  //       email: formData.email,
-  //       phone: formData.phone,
-  //       coach_id: selectedCoach.id,
-  //       coach_name: selectedCoach.name
-  //       ,source: 'search_page' // Bisa disesuaikan sumbernya
+    try {
+      // Kirim Data Lengkap ke API
+      await axios.post('/api/leads', {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        coach_id: selectedCoach.id,
+        coach_name: selectedCoach.name
+        ,source: 'search_page' // Bisa disesuaikan sumbernya
          
-  //     });
+      });
 
-  //     console.log("Success: Data saved");
+      console.log("Success: Data saved");
 
-  //     // Simpan penanda di LocalStorage (cukup email saja atau JSON string)
-  //     localStorage.setItem('user_lead_contact', formData.email);
+      // Simpan penanda di LocalStorage (cukup email saja atau JSON string)
+      localStorage.setItem('user_lead_contact', formData.email);
 
-  //     setIsModalOpen(false);
-  //     const targetUrl = locale === 'id' ? `/coach/${selectedCoach.slug}` : `/${locale}/coach/${selectedCoach.slug}`; 
-  //     router.push(targetUrl);
+      setIsModalOpen(false);
+      const targetUrl = locale === 'id' ? `/coach/${selectedCoach.slug}` : `/${locale}/coach/${selectedCoach.slug}`; 
+      router.push(targetUrl);
 
-  //   } catch (error) {
-  //     console.error("Gagal menyimpan lead:", error);
-  //     // Fail-safe: tetap redirect user
-  //     setIsModalOpen(false);
-  //     const targetUrl = locale === 'id' ? `/coach/${selectedCoach.slug}` : `/${locale}/coach/${selectedCoach.slug}`; 
-  //     router.push(targetUrl);
-  //   }
-  // };
+    } catch (error) {
+      console.error("Gagal menyimpan lead:", error);
+      // Fail-safe: tetap redirect user
+      setIsModalOpen(false);
+      const targetUrl = locale === 'id' ? `/coach/${selectedCoach.slug}` : `/${locale}/coach/${selectedCoach.slug}`; 
+      router.push(targetUrl);
+    }
+  };
 
   return (
     <div className="page-search container mt-4">
@@ -332,13 +331,13 @@ export default function Search() {
       )}
 
       {/* === 8. Render Modal di luar loop === */}
-      {/* <ContactModal 
+      <ContactModal 
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSubmit={handleModalSubmit}
         coachName={selectedCoach?.name}
         locale={locale}
-      /> */}
+      />
     </div>
   );
 }

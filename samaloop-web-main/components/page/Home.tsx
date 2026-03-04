@@ -45,7 +45,7 @@ useEffect(() => {
   // === 2. Logic Klik Profile (Sama seperti di Search) ===
   const handleProfileClick = (coach: any) => {
     // Cek LocalStorage
-    const hasRegistered = true; //dibuat true dulu
+    const hasRegistered = localStorage.getItem('user_lead_contact') === coach.email;
     
     // Tentukan URL tujuan
     const targetUrl = locale === 'id' ? `/coach/${coach.slug}` : `/${locale}/coach/${coach.slug}`; 
