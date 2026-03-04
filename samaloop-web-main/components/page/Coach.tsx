@@ -33,11 +33,21 @@ export default function Coach({ slug }: any) {
     if (typeof window !== "undefined") {
       const { protocol, host, pathname, search } = window.location;
       setFullUrl(`${protocol}//${host}${pathname}${search}`);
+
+
+      const storedEmail = localStorage.getItem("user_lead_contact");
+
+      if (!storedEmail) {
+        setIsBlocked(true);
+        setIsModalOpen(true);
+      }
     }
   }, []);
 
   const fetcher = async (url: any) =>
     await axios.get(url).then((res) => res.data);
+
+
 
   const coach: any = useSWR("/api/coachs/detail/" + slug, fetcher);
 
@@ -55,6 +65,7 @@ export default function Coach({ slug }: any) {
   };
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isBlocked, setIsBlocked] = useState(false);
 
   return (
     <div className="page-coach container mt-4">
@@ -398,13 +409,15 @@ export default function Coach({ slug }: any) {
 
             <div className="col-12 col-md-9 ps-4">
               {/* <div className="subtitle">{coach.data.data[0].profession}</div> */}
-              <div className="d-flex flex-wrap column-gap-2 row-gap-0 justify-content-center justify-content-md-start" >
+              <div className="d-flex flex-wrap column-gap-2 row-gap-0 justify-content-center justify-content-md-start">
                 {coach.data.data[0].profile_specialities.map(
-                  (value: any, index: number) => (
+                  (value: any, index: number, array: any[]) => (
                     <div key={uuidv4()} className="subtitle">
                       {locale === "en"
                         ? value.speciality.name.en
-                        : value.speciality.name.id}{" Coach, "}
+                        : value.speciality.name.id}
+                      {" Coach"}
+                      {index < array.length - 1 && ", "}
                     </div>
                   )
                 )}
