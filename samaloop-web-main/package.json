@@ -27,7 +27,8 @@
     "sweetalert2": "^11.14.0",
     "swiper": "^11.1.10",
     "swr": "^2.2.5",
-    "uuid": "^11.0.5"
+    "uuid": "^11.0.5",
+    "xendit-node": "^7.0.0"
   },
   "devDependencies": {
     "@types/bootstrap": "^5.2.10",

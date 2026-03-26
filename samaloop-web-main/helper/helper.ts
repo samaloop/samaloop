@@ -450,6 +450,16 @@ export function t(key: string, locale: string) {
         'Immediately': { en: 'Immediately', id: 'Segera' },
         'Within 1 month': { en: 'Within 1 month', id: 'Dalam 1 bulan' },
         'Planning for future': { en: 'Planning for future', id: 'Perencanaan masa depan' },
+        'Pay Now (Xendit)':
+        {
+            en: 'Pay Now (Xendit)',
+            id: 'Bayar Sekarang (Xendit)'
+        },
+        'Close and pay later via email':{
+            en: 'Close and pay later via email',
+            id: 'Tutup dan bayar nanti melalui email'
+        }
+
     }
 
     if (common[key] === undefined || common[key][locale] === undefined) {

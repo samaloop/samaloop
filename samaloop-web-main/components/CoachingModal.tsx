@@ -1,12 +1,50 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
-import { IoCheckmarkCircle } from "react-icons/io5";
+import { IoCheckmarkCircle, IoCardOutline } from "react-icons/io5"; // Tambah icon kartu
 import { t } from "@/helper/helper";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 const CoachingModal = ({ coach, isOpen, onClose, locale }: any) => {
   const [loading, setLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [paymentUrl, setPaymentUrl] = useState<string | null>(null); // State untuk simpan link Xendit
+
+  const [registrationId, setRegistrationId] = useState<string | null>(null);
+  const [paymentConfirmed, setPaymentConfirmed] = useState(false);
+  const supabase = createClientComponentClient();
+  useEffect(() => {
+  if (isSuccess && registrationId && !paymentConfirmed) {
+    console.log("Memulai Realtime Listener untuk ID:", registrationId);
+
+    const channel = supabase
+      .channel(`payment-check-${registrationId}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'coaching_registrations',
+          filter: `id=eq.${registrationId}`, // Pastikan ini UUID yang valid
+        },
+        (payload) => {
+          console.log("PAYLOAD REALTIME DITERIMA:", payload);
+          // Gunakan .toUpperCase() jika Anda khawatir soal perbedaan besar/kecil huruf
+          if (payload.new.payment_status?.toUpperCase() === 'SUCCESS') {
+            setPaymentConfirmed(true);
+          }
+        }
+      )
+      .subscribe((status) => {
+        console.log("Status Subscribe Realtime:", status);
+      });
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }
+}, [isSuccess, registrationId, paymentConfirmed, supabase]);
+
 
   // State untuk validasi checkbox syarat & ketentuan
   const [agreed, setAgreed] = useState({
@@ -45,10 +83,15 @@ const CoachingModal = ({ coach, isOpen, onClose, locale }: any) => {
     };
 
     try {
-      await axios.post('/api/coach_registration', payload);
-      setIsSuccess(true);
+      const res = await axios.post('/api/coach_registration', payload);
+      if (res.data.paymentUrl) {
+        setRegistrationId(res.data.id); // 5. PASTIKAN API Anda mengirimkan 'id' registrasi
+        setPaymentUrl(res.data.paymentUrl);
+        setIsSuccess(true);
+        window.open(res.data.paymentUrl, '_blank');
+      }
     } catch (err) {
-      alert(t("Failed to send data.", locale));
+      alert("Gagal memproses.");
     } finally {
       setLoading(false);
     }
@@ -58,6 +101,7 @@ const CoachingModal = ({ coach, isOpen, onClose, locale }: any) => {
   const canSubmit = agreed.ethics && agreed.consistency;
 
   return (
+
     <div className="modal show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.7)', zIndex: 9999, backdropFilter: 'blur(4px)' }}>
       <div className="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
         <div className="modal-content border-0 shadow-lg" style={{ borderRadius: '15px' }}>
@@ -194,19 +238,42 @@ const CoachingModal = ({ coach, isOpen, onClose, locale }: any) => {
                   {!canSubmit && <p className="text-danger small mt-2">{t("Please accept the terms to proceed", locale)}</p>}
                 </div>
               </form>
-            ) : (
+            ) : paymentConfirmed ? (
               <div className="text-center py-5">
                 <IoCheckmarkCircle size={80} color="#28a745" className="mb-3" />
-                <h4 className="fw-bold text-dark">{t("Registration successful!", locale)}</h4>
+                <h4 className="fw-bold">Pembayaran Berhasil!</h4>
+                <p>Akun Anda telah aktif. Silakan cek WhatsApp/Email untuk detail login.</p>
+                <button className="btn btn-primary" onClick={onClose}>Selesai</button>
+              </div>) : (
+
+              <div className="text-center py-5">
+                <IoCardOutline size={80} color="#f59e42" className="mb-3 animate__animated animate__pulse animate__infinite" />
+                <h4 className="fw-bold text-dark">{t("One last step!", locale)}</h4>
                 <p className="text-muted">
-                  {locale === "en" 
-                    ? "Please wait, your coach will contact you shortly." 
-                    : "Mohon tunggu, coach Anda akan menghubungi dalam waktu dekat."}
+                  {locale === "en"
+                    ? "Please complete your payment to finalize your registration."
+                    : "Silakan selesaikan pembayaran Anda untuk memfinalisasi pendaftaran."}
                 </p>
-                <p className="text-muted">{t("Registration message success", locale)}</p>
-                <button className="btn mt-3 px-5 text-white" style={{ backgroundColor: '#f59e42', borderRadius: '8px' }} onClick={onClose}>
-                  {t("Close", locale)}
-                </button>
+
+                <div className="d-grid gap-2 col-md-8 mx-auto mt-4">
+                  <a
+                    href={paymentUrl as string}
+                    target="_blank"
+                    className="btn btn-lg text-white fw-bold shadow-sm"
+                    style={{ backgroundColor: '#0055A5', borderRadius: '10px' }}
+                  >
+                    {t("Pay Now (Xendit)", locale)}
+                  </a>
+                  <button className="btn btn-link text-muted small" onClick={onClose}>
+                    {t("Close and pay later via email", locale)}
+                  </button>
+                </div>
+
+                <p className="mt-4 small text-secondary">
+                  {locale === "en"
+                    ? "*Your account will be created automatically after payment is confirmed."
+                    : "*Akun Anda akan dibuat secara otomatis setelah pembayaran dikonfirmasi."}
+                </p>
               </div>
             )}
           </div>
