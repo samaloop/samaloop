@@ -35,7 +35,8 @@ export async function POST(req: NextRequest) {
       .single();
 
     if (regError) throw regError;
-
+    // const successUrl = req.headers.get('referer') || `${process.env.NEXT_PUBLIC_BASE_URL}/`;
+    
     // 2. Buat Invoice Xendit
     const invoice = await Invoice.createInvoice({
       data: {
@@ -47,7 +48,7 @@ export async function POST(req: NextRequest) {
           givenNames: name,
           mobileNumber: phone,
         },
-        successRedirectUrl: `${process.env.NEXT_PUBLIC_BASE_URL}/thank-you`,
+        // successRedirectUrl: successUrl,
       }
     });
 
@@ -68,6 +69,7 @@ export async function POST(req: NextRequest) {
     // 4. Response dengan URL Pembayaran
     const response = NextResponse.json({
       success: true,
+      id: registration.id,
       paymentUrl: invoice.invoiceUrl // Frontend akan mengarahkan user ke sini
     });
 

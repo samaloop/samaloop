@@ -14,36 +14,36 @@ const CoachingModal = ({ coach, isOpen, onClose, locale }: any) => {
   const [paymentConfirmed, setPaymentConfirmed] = useState(false);
   const supabase = createClientComponentClient();
   useEffect(() => {
-  if (isSuccess && registrationId && !paymentConfirmed) {
-    console.log("Memulai Realtime Listener untuk ID:", registrationId);
+    if (isSuccess && registrationId && !paymentConfirmed) {
+      console.log("Memulai Realtime Listener untuk ID:", registrationId);
 
-    const channel = supabase
-      .channel(`payment-check-${registrationId}`)
-      .on(
-        'postgres_changes',
-        {
-          event: 'UPDATE',
-          schema: 'public',
-          table: 'coaching_registrations',
-          filter: `id=eq.${registrationId}`, // Pastikan ini UUID yang valid
-        },
-        (payload) => {
-          console.log("PAYLOAD REALTIME DITERIMA:", payload);
-          // Gunakan .toUpperCase() jika Anda khawatir soal perbedaan besar/kecil huruf
-          if (payload.new.payment_status?.toUpperCase() === 'SUCCESS') {
-            setPaymentConfirmed(true);
+      const channel = supabase
+        .channel(`payment-check-${registrationId}`)
+        .on(
+          'postgres_changes',
+          {
+            event: 'UPDATE',
+            schema: 'public',
+            table: 'coaching_registrations',
+            filter: `id=eq.${registrationId}`, // Pastikan ini UUID yang valid
+          },
+          (payload) => {
+            console.log("PAYLOAD REALTIME DITERIMA:", payload);
+            // Gunakan .toUpperCase() jika Anda khawatir soal perbedaan besar/kecil huruf
+            if (payload.new.payment_status?.toUpperCase() === 'SUCCESS') {
+              setPaymentConfirmed(true);
+            }
           }
-        }
-      )
-      .subscribe((status) => {
-        console.log("Status Subscribe Realtime:", status);
-      });
+        )
+        .subscribe((status) => {
+          console.log("Status Subscribe Realtime:", status);
+        });
 
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }
-}, [isSuccess, registrationId, paymentConfirmed, supabase]);
+      return () => {
+        supabase.removeChannel(channel);
+      };
+    }
+  }, [isSuccess, registrationId, paymentConfirmed, supabase]);
 
 
   // State untuk validasi checkbox syarat & ketentuan
@@ -233,7 +233,12 @@ const CoachingModal = ({ coach, isOpen, onClose, locale }: any) => {
                       cursor: canSubmit ? 'pointer' : 'not-allowed'
                     }}
                   >
-                    {loading ? <span className="spinner-border spinner-border-sm me-2"></span> : t("Submit Application", locale)}
+                    {loading ? (
+                      <span className="spinner-border spinner-border-sm me-2"></span>
+                    ) : (
+                      // Tambahkan info harga di sini
+                      `${t("Submit & Pay", locale)} IDR 150.000`
+                    )}
                   </button>
                   {!canSubmit && <p className="text-danger small mt-2">{t("Please accept the terms to proceed", locale)}</p>}
                 </div>

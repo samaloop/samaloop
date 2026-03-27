@@ -37,10 +37,10 @@ export default function Coach({ slug }: any) {
 
       const storedEmail = localStorage.getItem("user_lead_contact");
 
-      if (!storedEmail) {
-        setIsBlocked(true);
-        setIsModalOpen(true);
-      }
+      // if (!storedEmail) {
+      //   setIsBlocked(true);
+      //   setIsModalOpen(false);
+      // }
     }
   }, []);
 
