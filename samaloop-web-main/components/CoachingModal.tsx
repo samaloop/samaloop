@@ -13,37 +13,64 @@ const CoachingModal = ({ coach, isOpen, onClose, locale }: any) => {
   const [registrationId, setRegistrationId] = useState<string | null>(null);
   const [paymentConfirmed, setPaymentConfirmed] = useState(false);
   const supabase = createClientComponentClient();
+  // useEffect(() => {
+  //   if (isSuccess && registrationId && !paymentConfirmed) {
+  //     console.log("Memulai Realtime Listener untuk ID:", registrationId);
+
+  //     const channel = supabase
+  //       .channel(`payment-check-${registrationId}`)
+  //       .on(
+  //         'postgres_changes',
+  //         {
+  //           event: 'UPDATE',
+  //           schema: 'public',
+  //           table: 'coaching_registrations',
+  //           filter: `id=eq.${registrationId}`, // Pastikan ini UUID yang valid
+  //         },
+  //         (payload) => {
+  //           console.log("PAYLOAD REALTIME DITERIMA:", payload);
+  //           // Gunakan .toUpperCase() jika Anda khawatir soal perbedaan besar/kecil huruf
+  //           if (payload.new.payment_status?.toUpperCase() === 'SUCCESS') {
+  //             setPaymentConfirmed(true);
+  //           }
+  //         }
+  //       )
+  //       .subscribe((status) => {
+  //         console.log("Status Subscribe Realtime:", status);
+  //       });
+
+  //     return () => {
+  //       supabase.removeChannel(channel);
+  //     };
+  //   }
+  // }, [isSuccess, registrationId, paymentConfirmed, supabase]);
+
   useEffect(() => {
-    if (isSuccess && registrationId && !paymentConfirmed) {
-      console.log("Memulai Realtime Listener untuk ID:", registrationId);
+  let pollingInterval: any;
 
-      const channel = supabase
-        .channel(`payment-check-${registrationId}`)
-        .on(
-          'postgres_changes',
-          {
-            event: 'UPDATE',
-            schema: 'public',
-            table: 'coaching_registrations',
-            filter: `id=eq.${registrationId}`, // Pastikan ini UUID yang valid
-          },
-          (payload) => {
-            console.log("PAYLOAD REALTIME DITERIMA:", payload);
-            // Gunakan .toUpperCase() jika Anda khawatir soal perbedaan besar/kecil huruf
-            if (payload.new.payment_status?.toUpperCase() === 'SUCCESS') {
-              setPaymentConfirmed(true);
-            }
-          }
-        )
-        .subscribe((status) => {
-          console.log("Status Subscribe Realtime:", status);
-        });
+  if (isSuccess && registrationId && !paymentConfirmed) {
+    console.log("Memulai Polling untuk ID:", registrationId);
 
-      return () => {
-        supabase.removeChannel(channel);
-      };
-    }
-  }, [isSuccess, registrationId, paymentConfirmed, supabase]);
+    pollingInterval = setInterval(async () => {
+      const { data } = await supabase
+        .from('coaching_registrations')
+        .select('payment_status')
+        .eq('id', registrationId)
+        .single();
+
+      console.log("Cek Status Database:", data?.payment_status);
+
+      if (data?.payment_status === 'SUCCESS' || data?.payment_status === 'PAID') {
+        setPaymentConfirmed(true);
+        clearInterval(pollingInterval);
+      }
+    }, 2000); // Cek tiap 2 detik
+  }
+
+  return () => {
+    if (pollingInterval) clearInterval(pollingInterval);
+  };
+}, [isSuccess, registrationId, paymentConfirmed]);
 
 
   // State untuk validasi checkbox syarat & ketentuan
