@@ -16,7 +16,7 @@ const CoachingModal = ({ coach, isOpen, onClose, locale }: any) => {
 
   // Tambahkan state ini di dalam komponen CoachingModal
   const [paymentStep, setPaymentStep] = useState<"FORM" | "CHOOSE" | "XENDIT_PENDING" | "MANUAL_INSTRUCTION">("FORM");
-  const adminWhatsApp = "628123456789"; // Sesuaikan nomor admin
+  const adminWhatsApp = "6285770916763"; // Sesuaikan nomor admin
 
   useEffect(() => {
     let pollingInterval: any;
@@ -111,7 +111,7 @@ const CoachingModal = ({ coach, isOpen, onClose, locale }: any) => {
       <div className="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
         <div className="modal-content border-0 shadow-lg" style={{ borderRadius: '15px' }}>
           <div className="modal-header bg-light p-4">
-            <h4 className="fw-bold mb-0" style={{ color: '#0055A5' }}>{t("Samaloop Coaching Inquiry Form", locale)}</h4>
+            <h4 className="fw-bold mb-0" style={{ color: '#ff7403' }}>{t("Samaloop Coaching Inquiry Form", locale)}</h4>
             <button type="button" className="btn-close" onClick={onClose}></button>
           </div>
 
@@ -119,7 +119,7 @@ const CoachingModal = ({ coach, isOpen, onClose, locale }: any) => {
             {paymentStep === "FORM" && (
               <form onSubmit={handleSubmit} className="row g-3">
                 {/* SEKSI 1: DATA DIRI */}
-                <h6 className="fw-bold border-bottom pb-2" style={{ color: '#0055A5' }}>{t("Personal Information", locale)}</h6>
+                <h6 className="fw-bold border-bottom pb-2" style={{ color: '#ff7403' }}>{t("Personal Information", locale)}</h6>
                 <div className="col-md-6">
                   <input name="name" className="form-control" placeholder={t("Full Name", locale) as string + " *"} required />
                 </div>
@@ -140,7 +140,7 @@ const CoachingModal = ({ coach, isOpen, onClose, locale }: any) => {
                 </div>
 
                 {/* SEKSI 2: TUJUAN & KEBUTUHAN */}
-                <h6 className="fw-bold border-bottom pb-2 mt-4" style={{ color: '#0055A5' }}>{t("Coaching Goals & Needs", locale)}</h6>
+                <h6 className="fw-bold border-bottom pb-2 mt-4" style={{ color: '#ff7403' }}>{t("Coaching Goals & Needs", locale)}</h6>
                 <div className="col-12">
                   <label className="small mb-1 fw-semibold">{t("What drives you to seek coaching now? *", locale)}</label>
                   <textarea name="coaching_goal" className="form-control" rows={2} required></textarea>
@@ -162,7 +162,7 @@ const CoachingModal = ({ coach, isOpen, onClose, locale }: any) => {
                 </div>
 
                 {/* SEKSI 3: PREFERENSI & LOGISTIK */}
-                <h6 className="fw-bold border-bottom pb-2 mt-4" style={{ color: '#0055A5' }}>{t("Coach Preference & Logistics", locale)}</h6>
+                <h6 className="fw-bold border-bottom pb-2 mt-4" style={{ color: '#ff7403' }}>{t("Coach Preference & Logistics", locale)}</h6>
                 <div className="col-md-6">
                   <label className="small mb-1 fw-semibold">{t("Session language preference: *", locale)}</label>
                   <select name="language_preference" className="form-select shadow-none" required>
@@ -200,7 +200,7 @@ const CoachingModal = ({ coach, isOpen, onClose, locale }: any) => {
 
                 {/* SEKSI 4: KOMITMEN & ETIKA (Hanya sebagai syarat daftar) */}
                 {/* SEKSI 4: KOMITMEN & ETIKA */}
-                <h6 className="fw-bold border-bottom pb-2 mt-4" style={{ color: '#0055A5' }}>{t("Commitment & Ethics", locale)}</h6>
+                <h6 className="fw-bold border-bottom pb-2 mt-4" style={{ color: '#ff7403' }}>{t("Commitment & Ethics", locale)}</h6>
                 <div className="col-12">
                   <div className="form-check mb-2">
                     <input
@@ -230,7 +230,7 @@ const CoachingModal = ({ coach, isOpen, onClose, locale }: any) => {
 
                 {/* RINCIAN BIAYA (Bukan dalam bentuk Button) */}
                 <div className="col-12 mt-4">
-                  <div className="p-3 rounded-3" style={{ backgroundColor: '#f8f9fa', border: '1px dashed #dee2e6' }}>
+                  <div className="p-3 rounded-3" style={{ backgroundColor: '#fff0e3', border: '1px dashed #dee2e6' }}>
                     <div className="d-flex justify-content-between align-items-center">
                       <div>
                         <span className="fw-bold d-block" style={{ color: '#0055A5' }}>{t("Initial Consultation Fee", locale)}</span>

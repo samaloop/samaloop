@@ -28,6 +28,7 @@ import CoachingModal from "@/components/CoachingModal";
 export default function Coach({ slug }: any) {
   const { locale } = useLocale();
   const [fullUrl, setFullUrl] = useState("");
+  const [isBookButtonHovered, setIsBookButtonHovered] = useState(false);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -373,11 +374,13 @@ export default function Coach({ slug }: any) {
                   <button
                     onClick={() => setIsModalOpen(true)}
                     className="w-100 btn"
-                  style={{
-                    backgroundColor: "#f59e42",
-                    //borderColor: "#000000",
-                    color: "#ffffff"
-                  }}
+                    onMouseEnter={() => setIsBookButtonHovered(true)}
+                    onMouseLeave={() => setIsBookButtonHovered(false)}
+                    style={{
+                      backgroundColor: isBookButtonHovered ? "#e08b0b" : "#f59e42",
+                      color: "#ffffff",
+                      transition: "background-color 0.3s ease",
+                    }}
                   >
                     {t("book Now", locale)}
                   </button>
@@ -397,9 +400,9 @@ export default function Coach({ slug }: any) {
                 <a href={"https://wa.me/6285770916736?text=Halo%20Admin%20Samaloop,%0ASaya%20mau%20bertanya%20tentang%20layanan%20coaching."} target="_blank" rel="noopener noreferrer"
                   className="w-100 btn"
                   style={{
-                    backgroundColor: "#f59e42",
-                    //borderColor: "#000000",
-                    color: "#ffffff",
+                    // backgroundColor: "#f59e42",
+                    border: "2px solid #f59e42",
+                    color: "#f59e42",
                   }}
                 >
                   {t("Contact Us", locale)}
