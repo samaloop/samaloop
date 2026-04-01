@@ -408,9 +408,9 @@ export function t(key: string, locale: string) {
             en: 'Commitment & Ethics',
             id: 'Komitmen & Etika'
         },
-        'I understand that coaching is not therapy or counseling *': {
-            en: 'I understand that coaching is not therapy or counseling *',
-            id: 'Saya memahami bahwa coaching bukan terapi atau konseling *'
+        'I understand that this is a consutation session *': {
+            en: 'I understand that this is a consultation session *',
+            id: 'Saya memahami bahwa ini adalah sesi konsultasi *'
         },
         'I am willing to follow the sessions consistently *': {
             en: 'I am willing to follow the sessions consistently *',
@@ -458,7 +458,12 @@ export function t(key: string, locale: string) {
         'Close and pay later via email':{
             en: 'Close and pay later via email',
             id: 'Tutup dan bayar nanti melalui email'
+        },
+        'Administrative fee for coach matching & 1st consultation': {
+            en: 'Administrative fee for coach matching & 1st consultation',
+            id: 'Biaya administrasi untuk pencocokan coach & konsultasi pertama'
         }
+
 
     }
 

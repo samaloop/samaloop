@@ -13,64 +13,37 @@ const CoachingModal = ({ coach, isOpen, onClose, locale }: any) => {
   const [registrationId, setRegistrationId] = useState<string | null>(null);
   const [paymentConfirmed, setPaymentConfirmed] = useState(false);
   const supabase = createClientComponentClient();
-  // useEffect(() => {
-  //   if (isSuccess && registrationId && !paymentConfirmed) {
-  //     console.log("Memulai Realtime Listener untuk ID:", registrationId);
 
-  //     const channel = supabase
-  //       .channel(`payment-check-${registrationId}`)
-  //       .on(
-  //         'postgres_changes',
-  //         {
-  //           event: 'UPDATE',
-  //           schema: 'public',
-  //           table: 'coaching_registrations',
-  //           filter: `id=eq.${registrationId}`, // Pastikan ini UUID yang valid
-  //         },
-  //         (payload) => {
-  //           console.log("PAYLOAD REALTIME DITERIMA:", payload);
-  //           // Gunakan .toUpperCase() jika Anda khawatir soal perbedaan besar/kecil huruf
-  //           if (payload.new.payment_status?.toUpperCase() === 'SUCCESS') {
-  //             setPaymentConfirmed(true);
-  //           }
-  //         }
-  //       )
-  //       .subscribe((status) => {
-  //         console.log("Status Subscribe Realtime:", status);
-  //       });
-
-  //     return () => {
-  //       supabase.removeChannel(channel);
-  //     };
-  //   }
-  // }, [isSuccess, registrationId, paymentConfirmed, supabase]);
+  // Tambahkan state ini di dalam komponen CoachingModal
+  const [paymentStep, setPaymentStep] = useState<"FORM" | "CHOOSE" | "XENDIT_PENDING" | "MANUAL_INSTRUCTION">("FORM");
+  const adminWhatsApp = "628123456789"; // Sesuaikan nomor admin
 
   useEffect(() => {
-  let pollingInterval: any;
+    let pollingInterval: any;
 
-  if (isSuccess && registrationId && !paymentConfirmed) {
-    console.log("Memulai Polling untuk ID:", registrationId);
+    if (isSuccess && registrationId && !paymentConfirmed) {
+      console.log("Memulai Polling untuk ID:", registrationId);
 
-    pollingInterval = setInterval(async () => {
-      const { data } = await supabase
-        .from('coaching_registrations')
-        .select('payment_status')
-        .eq('id', registrationId)
-        .single();
+      pollingInterval = setInterval(async () => {
+        const { data } = await supabase
+          .from('coaching_registrations')
+          .select('payment_status')
+          .eq('id', registrationId)
+          .single();
 
-      console.log("Cek Status Database:", data?.payment_status);
+        console.log("Cek Status Database:", data?.payment_status);
 
-      if (data?.payment_status === 'SUCCESS' || data?.payment_status === 'PAID') {
-        setPaymentConfirmed(true);
-        clearInterval(pollingInterval);
-      }
-    }, 2000); // Cek tiap 2 detik
-  }
+        if (data?.payment_status === 'SUCCESS' || data?.payment_status === 'PAID') {
+          setPaymentConfirmed(true);
+          clearInterval(pollingInterval);
+        }
+      }, 2000); // Cek tiap 2 detik
+    }
 
-  return () => {
-    if (pollingInterval) clearInterval(pollingInterval);
-  };
-}, [isSuccess, registrationId, paymentConfirmed]);
+    return () => {
+      if (pollingInterval) clearInterval(pollingInterval);
+    };
+  }, [isSuccess, registrationId, paymentConfirmed]);
 
 
   // State untuk validasi checkbox syarat & ketentuan
@@ -112,13 +85,18 @@ const CoachingModal = ({ coach, isOpen, onClose, locale }: any) => {
     try {
       const res = await axios.post('/api/coach_registration', payload);
       if (res.data.paymentUrl) {
-        setRegistrationId(res.data.id); // 5. PASTIKAN API Anda mengirimkan 'id' registrasi
-        setPaymentUrl(res.data.paymentUrl);
+        // setRegistrationId(res.data.id); // 5. PASTIKAN API Anda mengirimkan 'id' registrasi
+        // setPaymentUrl(res.data.paymentUrl);
+        // setIsSuccess(true);
+        // window.open(res.data.paymentUrl, '_blank');
+
+        setRegistrationId(res.data.id);
+        setPaymentUrl(res.data.paymentUrl); // URL Xendit sudah siap di background
+        setPaymentStep("CHOOSE"); // <--- PINDAH KE PILIHAN PEMBAYARAN
         setIsSuccess(true);
-        window.open(res.data.paymentUrl, '_blank');
       }
     } catch (err) {
-      alert("Gagal memproses.");
+      alert("Gagal memproses pendaftaran.");
     } finally {
       setLoading(false);
     }
@@ -138,7 +116,7 @@ const CoachingModal = ({ coach, isOpen, onClose, locale }: any) => {
           </div>
 
           <div className="modal-body p-4">
-            {!isSuccess ? (
+            {paymentStep === "FORM" && (
               <form onSubmit={handleSubmit} className="row g-3">
                 {/* SEKSI 1: DATA DIRI */}
                 <h6 className="fw-bold border-bottom pb-2" style={{ color: '#0055A5' }}>{t("Personal Information", locale)}</h6>
@@ -221,6 +199,7 @@ const CoachingModal = ({ coach, isOpen, onClose, locale }: any) => {
                 </div>
 
                 {/* SEKSI 4: KOMITMEN & ETIKA (Hanya sebagai syarat daftar) */}
+                {/* SEKSI 4: KOMITMEN & ETIKA */}
                 <h6 className="fw-bold border-bottom pb-2 mt-4" style={{ color: '#0055A5' }}>{t("Commitment & Ethics", locale)}</h6>
                 <div className="col-12">
                   <div className="form-check mb-2">
@@ -232,7 +211,7 @@ const CoachingModal = ({ coach, isOpen, onClose, locale }: any) => {
                       onChange={(e) => setAgreed({ ...agreed, ethics: e.target.checked })}
                     />
                     <label className="form-check-label small" htmlFor="ethic">
-                      {t("I understand that coaching is not therapy or counseling *", locale)}
+                      {t("I understand that this is a consutation session *", locale)}
                     </label>
                   </div>
                   <div className="form-check">
@@ -249,6 +228,29 @@ const CoachingModal = ({ coach, isOpen, onClose, locale }: any) => {
                   </div>
                 </div>
 
+                {/* RINCIAN BIAYA (Bukan dalam bentuk Button) */}
+                <div className="col-12 mt-4">
+                  <div className="p-3 rounded-3" style={{ backgroundColor: '#f8f9fa', border: '1px dashed #dee2e6' }}>
+                    <div className="d-flex justify-content-between align-items-center">
+                      <div>
+                        <span className="fw-bold d-block" style={{ color: '#0055A5' }}>{t("Initial Consultation Fee", locale)}</span>
+                        <small className="text-muted">{t("Administrative fee for coach matching & 1st consultation", locale)}</small>
+                      </div>
+                      <div className="text-end">
+                        <span className="fs-5 fw-bold text-dark">IDR 150.000</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* NOTE TAMBAHAN DI BAWAH KOTAK BIAYA */}
+                  <p className="mt-2 mb-0" style={{ fontSize: '11.5px', color: '#6c757d', fontStyle: 'italic', lineHeight: '1.4' }}>
+                    * {locale === "en"
+                      ? "Please note: This initial payment is for the consultation session only. Package coaching fees (if applicable) will be discussed separately after your consultation."
+                      : "Catatan: Pembayaran awal ini hanya untuk sesi konsultasi. Biaya paket coaching selanjutnya (jika ada) akan dibahas terpisah setelah sesi konsultasi selesai."
+                    }
+                  </p>
+                </div>
+
                 <div className="col-12 mt-4 text-end">
                   <button
                     type="submit"
@@ -263,52 +265,109 @@ const CoachingModal = ({ coach, isOpen, onClose, locale }: any) => {
                     {loading ? (
                       <span className="spinner-border spinner-border-sm me-2"></span>
                     ) : (
-                      // Tambahkan info harga di sini
-                      `${t("Submit & Pay", locale)} IDR 150.000`
+                      t("Submit Application", locale)
                     )}
                   </button>
-                  {!canSubmit && <p className="text-danger small mt-2">{t("Please accept the terms to proceed", locale)}</p>}
+                  {!canSubmit && <p className="text-danger small mt-2 text-end">{t("Please accept the terms to proceed", locale)}</p>}
                 </div>
               </form>
-            ) : paymentConfirmed ? (
+            )}
+            {/* STEP 2: PILIH METODE PEMBAYARAN */}
+            {paymentStep === "CHOOSE" && (
+              <div className="text-center py-4">
+                <h5 className="fw-bold mb-4">{t("Choose Payment Method", locale)}</h5>
+                <div className="row g-3">
+                  {/* OPSI XENDIT */}
+                  <div className="col-12">
+                    <div
+                      className="p-3 border rounded-3 shadow-sm d-flex align-items-center justify-content-between"
+                      style={{ cursor: 'pointer', borderLeft: '5px solid #0055A5' }}
+                      onClick={() => {
+                        setPaymentStep("XENDIT_PENDING");
+                        window.open(paymentUrl as string, '_blank');
+                      }}
+                    >
+                      <div className="d-flex align-items-center gap-3">
+                        <IoCardOutline size={30} color="#0055A5" />
+                        <div className="text-start">
+                          <p className="mb-0 fw-bold">Otomatis (E-Wallet, VA, QRIS)</p>
+                          <small className="text-muted">Konfirmasi instan via Xendit</small>
+                        </div>
+                      </div>
+                      <span className="badge bg-primary">Rekomendasi</span>
+                    </div>
+                  </div>
+
+                  {/* OPSI MANUAL */}
+                  <div className="col-12">
+                    <div
+                      className="p-3 border rounded-3 shadow-sm d-flex align-items-center gap-3"
+                      style={{ cursor: 'pointer', borderLeft: '5px solid #f59e42' }}
+                      onClick={() => setPaymentStep("MANUAL_INSTRUCTION")}
+                    >
+                      <div className="p-2 bg-light rounded text-primary">
+                        <span className="fw-bold">BCA</span>
+                      </div>
+                      <div className="text-start">
+                        <p className="mb-0 fw-bold">Transfer Bank Manual (BCA)</p>
+                        <small className="text-muted">Konfirmasi manual oleh admin</small>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* STEP 3A: XENDIT PENDING (Tampilan yang lama) */}
+            {paymentStep === "XENDIT_PENDING" && !paymentConfirmed && (
+              <div className="text-center py-5">
+                <IoCardOutline size={80} color="#0055A5" className="mb-3 animate__animated animate__pulse animate__infinite" />
+                <h4 className="fw-bold">Menunggu Pembayaran Otomatis</h4>
+                <p>Silakan selesaikan pembayaran pada tab yang baru dibuka.</p>
+                <a href={paymentUrl as string} target="_blank" className="btn btn-primary mt-3">Buka Kembali Halaman Xendit</a>
+                <button className="btn btn-link d-block mx-auto mt-2" onClick={() => setPaymentStep("CHOOSE")}>Ganti Metode Pembayaran</button>
+              </div>
+            )}
+
+            {/* STEP 3B: MANUAL INSTRUCTION */}
+            {paymentStep === "MANUAL_INSTRUCTION" && (
+              <div className="text-center py-4">
+                <div className="p-4 bg-light rounded-4 mb-4">
+                  <p className="small text-muted mb-2 text-uppercase fw-bold">Transfer ke Rekening:</p>
+                  <h4 className="fw-bold text-primary mb-1">Bank BCA</h4>
+                  <h3 className="fw-bold mb-1">1234 567 890</h3>
+                  <p className="mb-0">a/n PT Linkar Indonesia Cendekia</p>
+                  <div className="mt-3 p-2 bg-white rounded border border-warning">
+                    <p className="mb-0 small fw-bold text-danger">Nominal: IDR 150.000</p>
+                  </div>
+                </div>
+
+                <p className="small mb-4">Setelah transfer, mohon kirim bukti bayar ke Admin untuk aktivasi akun.</p>
+
+                <div className="d-grid gap-2">
+                  <a
+                    href={`https://wa.me/${adminWhatsApp}?text=Halo%20Admin,%20saya%20sudah%20transfer%20manual%20untuk%20inkuiri%20ID:%20${registrationId}`}
+                    target="_blank"
+                    className="btn btn-success btn-lg fw-bold"
+                  >
+                    Konfirmasi via WhatsApp
+                  </a>
+                  <button className="btn btn-outline-secondary" onClick={() => setPaymentStep("CHOOSE")}>Kembali</button>
+                </div>
+              </div>
+            )}
+
+            {/* STEP FINAL: SUKSES (Tampilan centang hijau) */}
+            {paymentConfirmed && (
               <div className="text-center py-5">
                 <IoCheckmarkCircle size={80} color="#28a745" className="mb-3" />
                 <h4 className="fw-bold">Pembayaran Berhasil!</h4>
-                <p>Akun Anda telah aktif. Silakan cek WhatsApp/Email untuk detail login.</p>
+                <p>Sesi Anda akan segera dijadwalkan oleh admin.</p>
                 <button className="btn btn-primary" onClick={onClose}>Selesai</button>
-              </div>) : (
-
-              <div className="text-center py-5">
-                <IoCardOutline size={80} color="#f59e42" className="mb-3 animate__animated animate__pulse animate__infinite" />
-                <h4 className="fw-bold text-dark">{t("One last step!", locale)}</h4>
-                <p className="text-muted">
-                  {locale === "en"
-                    ? "Please complete your payment to finalize your registration."
-                    : "Silakan selesaikan pembayaran Anda untuk memfinalisasi pendaftaran."}
-                </p>
-
-                <div className="d-grid gap-2 col-md-8 mx-auto mt-4">
-                  <a
-                    href={paymentUrl as string}
-                    target="_blank"
-                    className="btn btn-lg text-white fw-bold shadow-sm"
-                    style={{ backgroundColor: '#0055A5', borderRadius: '10px' }}
-                  >
-                    {t("Pay Now (Xendit)", locale)}
-                  </a>
-                  <button className="btn btn-link text-muted small" onClick={onClose}>
-                    {t("Close and pay later via email", locale)}
-                  </button>
-                </div>
-
-                <p className="mt-4 small text-secondary">
-                  {locale === "en"
-                    ? "*Your account will be created automatically after payment is confirmed."
-                    : "*Akun Anda akan dibuat secara otomatis setelah pembayaran dikonfirmasi."}
-                </p>
               </div>
             )}
           </div>
+
         </div>
       </div>
     </div>
