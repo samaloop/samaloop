@@ -335,7 +335,7 @@ const CoachingModal = ({ coach, isOpen, onClose, locale }: any) => {
                 <div className="p-4 bg-light rounded-4 mb-4">
                   <p className="small text-muted mb-2 text-uppercase fw-bold">Transfer ke Rekening:</p>
                   <h4 className="fw-bold text-primary mb-1">Bank BCA</h4>
-                  <h3 className="fw-bold mb-1">1234 567 890</h3>
+                  <h3 className="fw-bold mb-1">740 1199 300</h3>
                   <p className="mb-0">a/n PT Linkar Indonesia Cendekia</p>
                   <div className="mt-3 p-2 bg-white rounded border border-warning">
                     <p className="mb-0 small fw-bold text-danger">Nominal: IDR 150.000</p>
