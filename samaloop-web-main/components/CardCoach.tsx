@@ -8,7 +8,8 @@ import { useLocale } from "@/context/LocaleContext";
 import { v4 as uuidv4 } from "uuid";
 import { t } from "@/helper/helper";
 
-const CardCoach = ({ coach }: any) => {
+// Tambahkan prop onProfileClick di sini
+const CardCoach = ({ coach, onProfileClick }: any) => {
   const { locale } = useLocale();
 
   return (
@@ -51,7 +52,9 @@ const CardCoach = ({ coach }: any) => {
               </div>
               <div className="info-item mb-3">
                 <FiUsers size={18} />{" "}
-                {locale === "en" ? coach.client.name.en : coach.client.name.id}
+                {locale === "en"
+                  ? coach.client.name.en
+                  : coach.client.name.id}
               </div>
               <div className="info-item">
                 <FaChalkboardTeacher size={18} />{" "}
@@ -66,15 +69,19 @@ const CardCoach = ({ coach }: any) => {
               </div>
             </div>
             <div className="col-6">
-              <div className="font-weight-bold mb-1">{t("Client Type", locale)}</div>
+              <div className="font-weight-bold mb-1">
+                {t("Client Type", locale)}
+              </div>
               <ul className="list-client-type">
-                {coach.profile_client_types.map((value: any, index: number) => (
-                  <li key={uuidv4()}>
-                    {locale === "en"
-                      ? value.client_type.name.en
-                      : value.client_type.name.id}
-                  </li>
-                ))}
+                {coach.profile_client_types.map(
+                  (value: any, index: number) => (
+                    <li key={uuidv4()}>
+                      {locale === "en"
+                        ? value.client_type.name.en
+                        : value.client_type.name.id}
+                    </li>
+                  )
+                )}
               </ul>
             </div>
           </div>
@@ -117,11 +124,27 @@ const CardCoach = ({ coach }: any) => {
             </>
           )}
         </div>
+
+        {/* --- UPDATE DI SINI --- */}
         <div className="text-center btn-profile-container">
-          <LocalizedLink href={"/coach/" + coach.slug}>
-            <div className="btn btn-profile">{t("View Profile", locale)}</div>
-          </LocalizedLink>
+          {onProfileClick ? (
+            // Jika ada prop onProfileClick (dari halaman Search), gunakan div biasa
+            <div 
+                className="btn btn-profile" 
+                onClick={onProfileClick}
+                style={{ cursor: 'pointer' }} 
+            >
+                {t("View Profile", locale)}
+            </div>
+          ) : (
+            // Jika TIDAK ada (halaman lain), gunakan Link seperti semula
+            <LocalizedLink href={"/coach/" + coach.slug}>
+              <div className="btn btn-profile">{t("View Profile", locale)}</div>
+            </LocalizedLink>
+          )}
         </div>
+        {/* --- END UPDATE --- */}
+        
       </div>
     </div>
   );

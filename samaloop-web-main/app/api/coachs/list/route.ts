@@ -212,20 +212,107 @@ export async function GET(req: NextRequest) {
 
 
 
-    // ===============================
-    //  Eksekusi query utama
-    // ===============================
-    query = query.order('created_at', { ascending: true }).range(range[0], range[1]);
-    const { data, count, error } = await query;
+    // // ===============================
+    // //  Eksekusi query utama
+    // // ===============================
+    // query = query.order('created_at', { ascending: true }).range(range[0], range[1]);
+    // const { data, count, error } = await query;
 
-    if (error) {
-        console.error('Supabase error:', error);
-        return NextResponse.json({ error: error.message }, { status: 500 });
+    // if (error) {
+    //     console.error('Supabase error:', error);
+    //     return NextResponse.json({ error: error.message }, { status: 500 });
+    // }
+
+    // const pageTotal = Math.ceil((count ?? 0) / limit);
+    // return NextResponse.json({ data, count, pageTotal, limit });
+    
+
+
+    // ===============================
+    //  Eksekusi query utama (FIXED: Search + Random)
+    // ===============================
+    
+    // Cek apakah ada parameter pencarian atau filter aktif
+    const keyword = req.nextUrl.searchParams.get('keyword');
+    const isFiltering = keyword || req.nextUrl.searchParams.get('specialities') || req.nextUrl.searchParams.get('client');
+
+    let finalData, finalCount, finalError;
+    let usedPage = parseInt(page);
+
+    if (isFiltering) {
+        // 1. KALO LAGI SEARCH/FILTER: Jangan diacak biar hasilnya akurat
+        const { data, count, error } = await query
+            .order('name', { ascending: true })
+            .range(range[0], range[1]);
+        
+        finalData = data;
+        finalCount = count;
+        finalError = error;
+    } else {
+        // 2. KALO DI BERANDA (Gak Search): Pakai logika random page
+        const { count: totalCount } = await supabase
+            .from('profiles')
+            .select('id', { count: 'exact', head: true })
+            .eq('status', 'active');
+
+        const totalCoaches = totalCount ?? 0;
+        const totalPages = Math.ceil(totalCoaches / limit);
+        
+        // Pilih halaman acak
+        const randomPage = totalPages > 0 ? Math.floor(Math.random() * totalPages) + 1 : 1;
+        usedPage = randomPage;
+
+        const randomRange = [
+            (randomPage - 1) * limit,
+            (randomPage * limit) - 1,
+        ];
+
+        const { data, count, error } = await query.range(randomRange[0], randomRange[1]);
+        
+        finalData = data;
+        finalCount = count;
+        finalError = error;
     }
 
-    const pageTotal = Math.ceil((count ?? 0) / limit);
-    return NextResponse.json({ data, count, pageTotal, limit });
+    if (finalError) {
+        console.error('Supabase error:', finalError);
+        return NextResponse.json({ error: finalError.message }, { status: 500 });
+    }
+
+    const pageTotal = Math.ceil((finalCount ?? 0) / limit);
+    return NextResponse.json({ 
+        data: finalData, 
+        count: finalCount, 
+        pageTotal, 
+        limit, 
+        currentPage: usedPage 
+    });
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // import { NextRequest, NextResponse } from 'next/server';
@@ -335,4 +422,4 @@ export async function GET(req: NextRequest) {
 //     getData.limit = limit;
 
 //     return NextResponse.json(getData);
-// }
+//      }

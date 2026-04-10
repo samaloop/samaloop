@@ -77,6 +77,14 @@ export function t(key: string, locale: string) {
             en: 'Share',
             id: 'Bagikan'
         },
+        'book Now': {
+            en: 'Book Now',
+            id: 'Daftar Sekarang'
+        },
+        'Contact Us': {
+            en: 'Contact Us',
+            id: 'Hubungi Kami'
+        },
         'Hello, I am': {
             en: 'Hello, I am',
             id: 'Halo, Saya'
@@ -304,7 +312,159 @@ export function t(key: string, locale: string) {
         'Filter': {
             en: 'Filter',
             id: 'Saring'
+        },
+        'Coaching Registration': {
+            en: 'Coaching Registration',
+            id: 'Pendaftaran Coaching'
+        },
+        'Register for a session with': {
+            en: 'Register for a session with',
+            id: 'Daftar untuk sesi bersama'
+        },
+
+        'Email Address': {
+            en: 'Email Address',
+            id: 'Alamat Email'
+        },
+        'WhatsApp Number': {
+            en: 'WhatsApp Number',
+            id: 'Nomor WhatsApp'
+        },
+        'Domicile': {
+            en: 'Domicile',
+            id: 'Domisili'
+        },
+        'Current Position': {
+            en: 'Current Position',
+            id: 'Jabatan Saat Ini'
+        },
+        'Organization / Company': {
+            en: 'Organization / Company',
+            id: 'Organisasi / Perusahaan'
+        },
+        'Cancel': {
+            en: 'Cancel',
+            id: 'Batal'
+        },
+        'Submit Application': {
+            en: 'Submit Application',
+            id: 'Kirim Pendaftaran'
+        },
+        'Registration successful!': {
+            en: 'Registration successful!',
+            id: 'Pendaftaran berhasil!'
+        },
+        'Failed to send data.': {
+            en: 'Failed to send data.',
+            id: 'Gagal mengirim data.'
+        },
+        'Book Coaching Now': {
+            en: 'Book Coaching Now',
+            id: 'Daftar Coaching Sekarang'
+        },
+        'Close': {
+            en: 'Close',
+            id: 'Tutup'
+        },
+        'Samaloop Coaching Inquiry Form': {
+            en: 'Samaloop Coaching Inquiry Form',
+            id: 'Formulir Inkuiri Coaching Samaloop'
+        },
+        'Coaching Goals & Needs': {
+            en: 'Coaching Goals & Needs',
+            id: 'Tujuan & Kebutuhan Coaching'
+        },
+        'What drives you to seek coaching now? *': {
+            en: 'What drives you to seek coaching now? *',
+            id: 'Apa yang mendorong Anda mencari coaching saat ini? *'
+        },
+        'Focus areas you want to develop: *': {
+            en: 'Focus areas you want to develop: *',
+            id: 'Area fokus yang ingin Anda kembangkan: *'
+        },
+        'Leadership': { en: 'Leadership', id: 'Kepemimpinan' },
+        'Career Transition': { en: 'Career Transition', id: 'Transisi Karir' },
+        'Personal Growth': { en: 'Personal Growth', id: 'Pertumbuhan Pribadi' },
+        'Wellbeing': { en: 'Wellbeing', id: 'Kesejahteraan' },
+        'Business Development': { en: 'Business Development', id: 'Pengembangan Bisnis' },
+        'Team / Organizational': { en: 'Team / Organizational', id: 'Tim / Organisasi' },
+        'What kind of result do you want to achieve? *': {
+            en: 'What kind of result do you want to achieve? *',
+            id: 'Hasil seperti apa yang ingin Anda capai? *'
+        },
+        'Coach Preference & Logistics': {
+            en: 'Coach Preference & Logistics',
+            id: 'Preferensi Coach & Logistik'
+        },
+        'Session language preference: *': {
+            en: 'Session language preference: *',
+            id: 'Preferensi bahasa sesi: *'
+        },
+        'Session format: *': {
+            en: 'Session format: *',
+            id: 'Format sesi: *'
+        },
+        'Commitment & Ethics': {
+            en: 'Commitment & Ethics',
+            id: 'Komitmen & Etika'
+        },
+        'I understand that this is a consutation session *': {
+            en: 'I understand that this is a consultation session *',
+            id: 'Saya memahami bahwa ini adalah sesi konsultasi *'
+        },
+        'I am willing to follow the sessions consistently *': {
+            en: 'I am willing to follow the sessions consistently *',
+            id: 'Saya bersedia mengikuti sesi secara konsisten *'
+        },
+        'Online': {
+            en: 'Online',
+            id: 'Online'
+        },
+        'Offline': {
+            en: 'Offline',
+            id: 'Offline'
+        },
+        'Hybrid': {
+            en: 'Hybrid',
+            id: 'Hybrid'
+        },
+        'Bahasa Indonesia': {
+            en: 'Bahasa Indonesia',
+            id: 'Bahasa Indonesia' 
+        },
+        'Bilingual': {
+            en: 'Bilingual',
+            id: 'Bilingual'
+        },
+        'Session frequency: *': {
+            en: 'Session frequency: *',
+            id: 'Frekuensi sesi: *'
+        },
+        'Weekly': { en: 'Weekly', id: 'Mingguan' },
+        'Bi-weekly': { en: 'Bi-weekly', id: 'Dua mingguan' },
+        'Monthly': { en: 'Monthly', id: 'Bulanan' },
+        'Readiness to start: *': {
+            en: 'Readiness to start: *',
+            id: 'Kesiapan untuk memulai: *'
+        },
+        'Immediately': { en: 'Immediately', id: 'Segera' },
+        'Within 1 month': { en: 'Within 1 month', id: 'Dalam 1 bulan' },
+        'Planning for future': { en: 'Planning for future', id: 'Perencanaan masa depan' },
+        'Pay Now (Xendit)':
+        {
+            en: 'Pay Now (Xendit)',
+            id: 'Bayar Sekarang (Xendit)'
+        },
+        'Close and pay later via email':{
+            en: 'Close and pay later via email',
+            id: 'Tutup dan bayar nanti melalui email'
+        },
+        'Administrative fee for coach matching & 1st consultation': {
+            en: 'Administrative fee for coach matching & 1st consultation',
+            id: 'Biaya administrasi untuk pencocokan coach & konsultasi pertama'
         }
+
+
     }
 
     if (common[key] === undefined || common[key][locale] === undefined) {

@@ -1124,3 +1124,9 @@ select:focus,
     margin: 0 20px !important;
   }
 }
+
+.coach-content.blocked {
+  filter: blur(6px);
+  pointer-events: none;
+  user-select: none;
+}
