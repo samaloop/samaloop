@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
         // Ambil data coach dari hasil join profiles
         const coachEmail = reg.profiles?.contact?.email || 'loop.samaloop@gmail.com';
         const coachName = reg.profiles?.name || 'Coach';
-        const adminWhatsApp = isProduction ? 'https://wa.me/6281234567890' : 'https://wa.me/6281234567890';//masih perlu ganti jadi nomor admin sebenarnya saat produksi
+        const adminWhatsApp = isProduction ? 'https://wa.me/6285770916736' : 'https://wa.me/6285770916736';//masih perlu ganti jadi nomor admin sebenarnya saat produksi
         try {
           await resend.batch.send([
             {
