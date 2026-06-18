@@ -81,9 +81,14 @@ export async function POST(req: NextRequest) {
       <hr style="border: 0; border-top: 1px solid #eee; margin: 30px 0;" />
       
       <p style="font-size: 13px; color: #777; text-align: center;">
-        Jika Anda memiliki pertanyaan, silakan hubungi kami dengan membalas email ini.<br />
-        <strong>Team SamaLoop Indonesia</strong>
+        Jika Anda memiliki pertanyaan, silakan hubungi kami.<br />
       </p>
+
+      <a href="https://wa.me/${adminWhatsApp.replace(/\D/g, '')}" 
+                     style="background-color: #25D366; color: white; padding: 12px 25px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">
+                     Hubungi Admin via WhatsApp
+                  </a>
+                  
     </div>
   `
             },
