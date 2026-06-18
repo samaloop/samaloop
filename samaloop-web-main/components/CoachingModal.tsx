@@ -299,7 +299,7 @@ const CoachingModal = ({ coach, isOpen, onClose, locale }: any) => {
                   </div>
 
                   {/* OPSI MANUAL */}
-                  <div className="col-12">
+                  {/* <div className="col-12">
                     <div
                       className="p-3 border rounded-3 shadow-sm d-flex align-items-center gap-3"
                       style={{ cursor: 'pointer', borderLeft: '5px solid #f59e42' }}
@@ -313,7 +313,7 @@ const CoachingModal = ({ coach, isOpen, onClose, locale }: any) => {
                         <small className="text-muted">Konfirmasi manual oleh admin</small>
                       </div>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             )}

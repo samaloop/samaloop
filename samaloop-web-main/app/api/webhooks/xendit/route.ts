@@ -59,7 +59,7 @@ export async function POST(req: NextRequest) {
           await resend.batch.send([
             {
               from: fromEmail,
-              to: isProduction ? reg.email : 'loop.samaloop@gmail.com', // Email pengetesan Anda
+              to: isProduction ? reg.email : 'loop.samaloop@gmail.com',
               subject: `[SamaLoop] Pembayaran Berhasil - Sesi Coaching ${coachName}`,
               html: `
     <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: auto; border: 1px solid #eee; padding: 25px; border-radius: 12px;">
@@ -90,7 +90,7 @@ export async function POST(req: NextRequest) {
             {
               from: fromEmail,
               to: isProduction ? coachEmail : 'loop.samaloop@gmail.com',
-              cc: isProduction ? 'admin@samaloop.com' : 'loop.samaloop@gmail.com', // CC ke Admin
+              cc: isProduction ? 'loopindonesia@gmail.com' : 'loop.samaloop@gmail.com', // CC ke Admin
               subject: `[SamaLoop] Inkuiri Coaching Baru (Lunas): ${reg.name}`,
               html: `<div style="font-family: sans-serif; max-width: 600px; margin: auto; border: 1px solid #eee; padding: 25px; border-radius: 12px; color: #333;">
                 <h2 style="color: #0055A5; border-bottom: 2px solid #f4f4f4; padding-bottom: 10px;">Notifikasi Inkuiri Baru</h2>
