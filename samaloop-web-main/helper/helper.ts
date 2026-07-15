@@ -81,6 +81,34 @@ export function t(key: string, locale: string) {
             en: 'Book Now',
             id: 'Daftar Sekarang'
         },
+        'Book a Discovery Call':{
+            en: 'Book a Discovery Call',
+            id: 'Jadwalkan Sesi Perkenalan'
+        }, 
+        'Have Questions?': {
+            en: 'Have Questions?',
+            id: 'Punya Pertanyaan?'
+        },
+        'Contact Admin': {
+            en: 'Contact Admin',
+            id: 'Hubungi Admin'
+        },
+        'Samaloop Discovery Call Form': {
+            en: 'Samaloop Discovery Call Form',
+            id: 'Formulir Sesi Perkenalan Samaloop'
+        },
+        'I understand that this is a Discovery call session *': {
+            en: 'I understand that this is a Discovery call session *',
+            id: 'Saya memahami bahwa ini adalah sesi perkenalan *'
+        },
+        'Initial Discovery Call Fee': {
+            en: 'Initial Discovery Call Fee',
+            id: 'Biaya Sesi Perkenalan Awal'
+        },
+        'Administrative fee for coach matching & 1st Discovery call': {
+            en: 'Administrative fee for coach matching & 1st Discovery call',
+            id: 'Biaya administrasi untuk pencocokan coach & sesi perkenalan pertama'
+        },
         'Contact Us': {
             en: 'Contact Us',
             id: 'Hubungi Kami'

@@ -343,14 +343,14 @@ export default function Coach({ slug }: any) {
                             </a>
                           );
                         })()} */}
-                      {coach.data.data[0].contact.email !== undefined &&
+                      {/* {coach.data.data[0].contact.email !== undefined &&
                         coach.data.data[0].contact.email !== "" ? (
                         <a href={"mailto:" + coach.data.data[0].contact.email}>
                           <MdEmail size={24} />{" "}
                         </a>
                       ) : (
                         ""
-                      )}
+                      )} */}
 
 
                       {coach.data.data[0].contact.linktree !== undefined &&
@@ -371,7 +371,7 @@ export default function Coach({ slug }: any) {
                 )}
                 {/* tambahan tombol book coaching dan modalnya */}
                 {/* COMMENT DULU */}
-                {/* <div className="mt-4 mb-4">
+                <div className="mt-4 mb-4">
                   <button
                     onClick={() => setIsModalOpen(true)}
                     className="w-100 btn"
@@ -383,9 +383,9 @@ export default function Coach({ slug }: any) {
                       transition: "background-color 0.3s ease",
                     }}
                   >
-                    {t("book Now", locale)}
+                    {t("Book a Discovery Call", locale)}
                   </button>
-                </div>  */}
+                </div> 
 
                 {/* Komponen Modal */}
                 {coach.data && (
@@ -406,7 +406,7 @@ export default function Coach({ slug }: any) {
                     color: "#f59e42",
                   }}
                 >
-                  {t("Contact Us", locale)}
+                  {t("Contact Admin", locale)}
                 </a>
               </div>
             </div>
