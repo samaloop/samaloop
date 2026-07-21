@@ -4,7 +4,6 @@ import axios from "axios";
 import { IoCheckmarkCircle, IoCardOutline } from "react-icons/io5"; // Tambah icon kartu
 import { t } from "@/helper/helper";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { FaPaypal } from "react-icons/fa";
 
 const CoachingModal = ({ coach, isOpen, onClose, locale }: any) => {
   const [loading, setLoading] = useState(false);
@@ -15,12 +14,9 @@ const CoachingModal = ({ coach, isOpen, onClose, locale }: any) => {
   const [paymentConfirmed, setPaymentConfirmed] = useState(false);
   const supabase = createClientComponentClient();
 
-  const [paypalUrl, setPaypalUrl] = useState<string | null>(null);
-  const [paymentStep, setPaymentStep] = useState<"FORM" | "CHOOSE" | "XENDIT_PENDING" | "PAYPAL_PENDING" | "MANUAL_INSTRUCTION">("FORM");
+  // Tambahkan state ini di dalam komponen CoachingModal
+  const [paymentStep, setPaymentStep] = useState<"FORM" | "CHOOSE" | "XENDIT_PENDING" | "MANUAL_INSTRUCTION">("FORM");
   const adminWhatsApp = "6285770916763"; // Sesuaikan nomor admin
-
-  const xenditEnabled = true;
-  const paypalEnabled = false;
 
   useEffect(() => {
     let pollingInterval: any;
@@ -88,11 +84,15 @@ const CoachingModal = ({ coach, isOpen, onClose, locale }: any) => {
 
     try {
       const res = await axios.post('/api/coach_registration', payload);
-      if (res.data.id) {
+      if (res.data.paymentUrl) {
+        // setRegistrationId(res.data.id); // 5. PASTIKAN API Anda mengirimkan 'id' registrasi
+        // setPaymentUrl(res.data.paymentUrl);
+        // setIsSuccess(true);
+        // window.open(res.data.paymentUrl, '_blank');
+
         setRegistrationId(res.data.id);
-        setPaymentUrl(res.data.paymentUrl); // URL Xendit
-        setPaypalUrl(res.data.paypalUrl);   // Tambahkan URL PayPal dari response API
-        setPaymentStep("CHOOSE");
+        setPaymentUrl(res.data.paymentUrl); // URL Xendit sudah siap di background
+        setPaymentStep("CHOOSE"); // <--- PINDAH KE PILIHAN PEMBAYARAN
         setIsSuccess(true);
       }
     } catch (err) {
@@ -111,7 +111,7 @@ const CoachingModal = ({ coach, isOpen, onClose, locale }: any) => {
       <div className="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
         <div className="modal-content border-0 shadow-lg" style={{ borderRadius: '15px' }}>
           <div className="modal-header bg-light p-4">
-            <h4 className="fw-bold mb-0" style={{ color: '#ff7403' }}>{t("Samaloop Discovery Call Form", locale)}</h4>
+            <h4 className="fw-bold mb-0" style={{ color: '#ff7403' }}>{t("Samaloop Coaching Inquiry Form", locale)}</h4>
             <button type="button" className="btn-close" onClick={onClose}></button>
           </div>
 
@@ -211,7 +211,7 @@ const CoachingModal = ({ coach, isOpen, onClose, locale }: any) => {
                       onChange={(e) => setAgreed({ ...agreed, ethics: e.target.checked })}
                     />
                     <label className="form-check-label small" htmlFor="ethic">
-                      {t("I understand that this is a Discovery call session *", locale)}
+                      {t("I understand that this is a consutation session *", locale)}
                     </label>
                   </div>
                   <div className="form-check">
@@ -233,8 +233,8 @@ const CoachingModal = ({ coach, isOpen, onClose, locale }: any) => {
                   <div className="p-3 rounded-3" style={{ backgroundColor: '#fff0e3', border: '1px dashed #dee2e6' }}>
                     <div className="d-flex justify-content-between align-items-center">
                       <div>
-                        <span className="fw-bold d-block" style={{ color: '#0055A5' }}>{t("Initial Discovery Call Fee", locale)}</span>
-                        <small className="text-muted">{t("Administrative fee for coach matching & 1st Discovery call", locale)}</small>
+                        <span className="fw-bold d-block" style={{ color: '#0055A5' }}>{t("Initial Consultation Fee", locale)}</span>
+                        <small className="text-muted">{t("Administrative fee for coach matching & 1st consultation", locale)}</small>
                       </div>
                       <div className="text-end">
                         <span className="fs-5 fw-bold text-dark">IDR 150.000</span>
@@ -245,8 +245,8 @@ const CoachingModal = ({ coach, isOpen, onClose, locale }: any) => {
                   {/* NOTE TAMBAHAN DI BAWAH KOTAK BIAYA */}
                   <p className="mt-2 mb-0" style={{ fontSize: '11.5px', color: '#6c757d', fontStyle: 'italic', lineHeight: '1.4' }}>
                     * {locale === "en"
-                      ? "Please note: This initial payment is for the Discovery call  only. Package coaching fees (if applicable) will be discussed separately after your Discovery call."
-                      : "Catatan: Pembayaran awal ini hanya untuk sesi perkenalan. Biaya paket coaching selanjutnya (jika ada) akan dibahas terpisah setelah sesi perkenalan selesai."
+                      ? "Please note: This initial payment is for the consultation session only. Package coaching fees (if applicable) will be discussed separately after your consultation."
+                      : "Catatan: Pembayaran awal ini hanya untuk sesi konsultasi. Biaya paket coaching selanjutnya (jika ada) akan dibahas terpisah setelah sesi konsultasi selesai."
                     }
                   </p>
                 </div>
@@ -281,15 +281,8 @@ const CoachingModal = ({ coach, isOpen, onClose, locale }: any) => {
                   <div className="col-12">
                     <div
                       className="p-3 border rounded-3 shadow-sm d-flex align-items-center justify-content-between"
-                      style={{ 
-                        cursor: xenditEnabled ? "pointer" : "not-allowed",
-                        opacity: xenditEnabled ? 1 : 0.5,
-                        backgroundColor: xenditEnabled ? "#fff" : "#f8f9fa",
-                        borderLeft: `5px solid ${xenditEnabled ? "#003087" : "#ccc"}`,
-                        pointerEvents: xenditEnabled ? "auto" : "none",
-                      }}
+                      style={{ cursor: 'pointer', borderLeft: '5px solid #0055A5' }}
                       onClick={() => {
-                        paypalEnabled ? setPaymentStep("PAYPAL_PENDING") : null;
                         setPaymentStep("XENDIT_PENDING");
                         window.open(paymentUrl as string, '_blank');
                       }}
@@ -305,51 +298,15 @@ const CoachingModal = ({ coach, isOpen, onClose, locale }: any) => {
                     </div>
                   </div>
 
-                  {/* OPSI PAYPAL */}
-                  <div className="col-12">
-                    <div
-                      className="p-3 border rounded-3 shadow-sm d-flex align-items-center justify-content-between"
-                      style={{
-                        cursor: paypalEnabled ? "pointer" : "not-allowed",
-                        opacity: paypalEnabled ? 1 : 0.5,
-                        backgroundColor: paypalEnabled ? "#fff" : "#f8f9fa",
-                        borderLeft: `5px solid ${paypalEnabled ? "#003087" : "#ccc"}`,
-                        pointerEvents: paypalEnabled ? "auto" : "none",
-                      }}
-                      // onClick={() => {
-                      //   if (!paypalUrl) {
-                      //     alert("Gagal memuat metode pembayaran PayPal. Silakan hubungi admin atau gunakan metode lain.");
-                      //     console.error("Link PayPal kosong:", paypalUrl);
-                      //     return;
-                      //   }
-                      onClick={
-                        xenditEnabled
-                          ? () => {
-                            setPaymentStep("XENDIT_PENDING");
-                            window.open(paymentUrl as string, "_blank");
-                          }
-                          : undefined
-                      }
-                    >
-                      <div className="d-flex align-items-center gap-3">
-                        <FaPaypal size={30} color="#003087" />
-                        <div className="text-start">
-                          <p className="mb-0 fw-bold">PayPal (International Credit Card)</p>
-                          <small className="text-muted">Pembayaran menggunakan mata uang asing / USD</small>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* OPSI MANUAL BCA */}
+                  {/* OPSI MANUAL */}
                   {/* <div className="col-12">
                     <div
                       className="p-3 border rounded-3 shadow-sm d-flex align-items-center gap-3"
                       style={{ cursor: 'pointer', borderLeft: '5px solid #f59e42' }}
                       onClick={() => setPaymentStep("MANUAL_INSTRUCTION")}
                     >
-                      <div className="p-2 bg-light rounded text-primary" style={{ width: '45px', textAlign: 'center' }}>
-                        <span className="fw-bold" style={{ fontSize: '12px' }}>BCA</span>
+                      <div className="p-2 bg-light rounded text-primary">
+                        <span className="fw-bold">BCA</span>
                       </div>
                       <div className="text-start">
                         <p className="mb-0 fw-bold">Transfer Bank Manual (BCA)</p>
@@ -369,21 +326,6 @@ const CoachingModal = ({ coach, isOpen, onClose, locale }: any) => {
                 <p>Silakan selesaikan pembayaran pada tab yang baru dibuka.</p>
                 <a href={paymentUrl as string} target="_blank" className="btn btn-primary mt-3">Buka Kembali Halaman Xendit</a>
                 <button className="btn btn-link d-block mx-auto mt-2" onClick={() => setPaymentStep("CHOOSE")}>Ganti Metode Pembayaran</button>
-              </div>
-            )}
-
-            {/* STEP 3C: PAYPAL PENDING */}
-            {paymentStep === "PAYPAL_PENDING" && !paymentConfirmed && (
-              <div className="text-center py-5">
-                <FaPaypal size={80} color="#003087" className="mb-3 animate__animated animate__pulse animate__infinite" />
-                <h4 className="fw-bold">Menunggu Pembayaran PayPal</h4>
-                <p>Silakan selesaikan pembayaran pada tab baru PayPal Anda.</p>
-                <a href={paypalUrl as string} target="_blank" className="btn text-white mt-3 fw-bold" style={{ backgroundColor: '#003087' }}>
-                  Buka Kembali Halaman PayPal
-                </a>
-                <button className="btn btn-link d-block mx-auto mt-2 text-muted" onClick={() => setPaymentStep("CHOOSE")}>
-                  Ganti Metode Pembayaran
-                </button>
               </div>
             )}
 
