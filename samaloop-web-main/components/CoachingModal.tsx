@@ -111,7 +111,7 @@ const CoachingModal = ({ coach, isOpen, onClose, locale }: any) => {
       <div className="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
         <div className="modal-content border-0 shadow-lg" style={{ borderRadius: '15px' }}>
           <div className="modal-header bg-light p-4">
-            <h4 className="fw-bold mb-0" style={{ color: '#ff7403' }}>{t("Samaloop Coaching Inquiry Form", locale)}</h4>
+            <h4 className="fw-bold mb-0" style={{ color: '#ff7403' }}>{t("Samaloop Discovery Call Form", locale)}</h4>
             <button type="button" className="btn-close" onClick={onClose}></button>
           </div>
 

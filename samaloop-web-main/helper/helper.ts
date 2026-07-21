@@ -105,6 +105,7 @@ export function t(key: string, locale: string) {
             en: 'Initial Discovery Call Fee',
             id: 'Biaya Sesi Perkenalan Awal'
         },
+
         'Administrative fee for coach matching & 1st Discovery call': {
             en: 'Administrative fee for coach matching & 1st Discovery call',
             id: 'Biaya administrasi untuk pencocokan coach & sesi perkenalan pertama'
