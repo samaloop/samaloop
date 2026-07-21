@@ -10,7 +10,7 @@ interface CKEditorProps {
 const MyCKEditor: React.FC<CKEditorProps> = ({ editorData, onChange }) => {
     return (
         <CKEditor
-            editor={ClassicEditor}
+            editor={ClassicEditor as any}
             onChange={(event: any, editor: any) => {
                 onChange(editor.getData())
             }}
