@@ -17,6 +17,21 @@ const CoachingModal = ({ coach, isOpen, onClose, locale }: any) => {
   // Tambahkan state ini di dalam komponen CoachingModal
   const [paymentStep, setPaymentStep] = useState<"FORM" | "CHOOSE" | "XENDIT_PENDING" | "MANUAL_INSTRUCTION">("FORM");
   const adminWhatsApp = "6285770916763"; // Sesuaikan nomor admin
+  
+  //fee parsing
+  const rawFee = coach?.consultation_fee;
+  const parsedFee = typeof rawFee === "number" ? rawFee : parseFloat(rawFee);
+
+  // Jika parsedFee NaN/Invalid, otomatis fallback ke 150000
+  const consultationFee = (!isNaN(parsedFee) && parsedFee > 0) ? parsedFee : 150000; 
+
+  // Formatter Rupiah
+  const formattedFee = new Intl.NumberFormat(locale === "en" ? "en-US" : "id-ID", {
+    style: "currency",
+    currency: "IDR",
+    maximumFractionDigits: 0,
+  }).format(consultationFee);
+
 
   useEffect(() => {
     let pollingInterval: any;
@@ -237,7 +252,7 @@ const CoachingModal = ({ coach, isOpen, onClose, locale }: any) => {
                         <small className="text-muted">{t("Administrative fee for coach matching & 1st consultation", locale)}</small>
                       </div>
                       <div className="text-end">
-                        <span className="fs-5 fw-bold text-dark">IDR 150.000</span>
+                        <span className="fs-5 fw-bold text-dark">{formattedFee}</span>
                       </div>
                     </div>
                   </div>

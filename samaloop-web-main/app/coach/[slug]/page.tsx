@@ -11,7 +11,7 @@ async function getCoach(slug: string) {
   const supabase = createClientComponentClient();
   const coach: any = await supabase
     .from("profiles")
-    .select("name,credential(abbreviation)", { count: "exact" })
+    .select("name,consultation_fee,credential(abbreviation)", { count: "exact" })
     .eq("slug", slug);
 
   if (coach.data.length === 0) {

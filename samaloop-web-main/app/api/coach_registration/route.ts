@@ -19,7 +19,19 @@ export async function POST(req: NextRequest) {
     const cookieStore = cookies();
     const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
 
-    
+    let amount = 150000; // Default fallback jika null / belum diset
+    //get price buat coach
+    if (coach_id) {
+      const { data: coachProfile, error: coachErr } = await supabase
+        .from('profiles')
+        .select('consultation_fee')
+        .eq('id', coach_id)
+        .single();
+
+      if (!coachErr && coachProfile?.consultation_fee) {
+        amount = Number(coachProfile.consultation_fee);
+      }
+}
 
     // 1. Insert ke tabel coaching_registrations
     const { data: registration, error: regError } = await supabase
@@ -41,7 +53,7 @@ export async function POST(req: NextRequest) {
     const invoice = await Invoice.createInvoice({
       data: {
         externalId: registration.id, // Gunakan ID registrasi sebagai referensi
-        amount: 150000, // Misal Rp 150.000
+        amount: amount, // Gunakan nilai amount yang telah ditentukan
         payerEmail: email,
         description: `Sesi Konsultasi Coaching SamaLoop - ${name}`,
         customer: {
@@ -59,7 +71,7 @@ export async function POST(req: NextRequest) {
         registration_id: registration.id,
         xendit_id: invoice.id,
         external_id: invoice.externalId,
-        amount: 150000,
+        amount: amount,
         payment_link: invoice.invoiceUrl,
         status: 'PENDING'
       });
