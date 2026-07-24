@@ -144,7 +144,7 @@ export async function POST(req: NextRequest) {
             // EMAIL UNTUK COACH (DENGAN DATA COACHEE LENGKAP)
             {
               from: fromEmail,
-              to: fromEmail,
+              to: coachEmail,
               // to: isAppProduction ? coachEmail : 'loop.samaloop@gmail.com',
               // cc: isAppProduction ? 'loopindonesia@gmail.com' : 'loop.samaloop@gmail.com',
               cc: 'loop.samaloop@gmail.com',
