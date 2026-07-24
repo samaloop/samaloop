@@ -97,8 +97,9 @@ export async function POST(req: NextRequest) {
       
       // 5. Kirim Batch Email via Resend
       if (updateSuccess) {
-        const isAppProduction = process.env.NEXT_PUBLIC_APP_ENV === 'production';
-        const fromEmail = isAppProduction ? 'SamaLoop <admin@samaloop.com>' : 'onboarding@resend.dev';
+        // const isAppProduction = process.env.NEXT_PUBLIC_APP_ENV === 'production';
+        //  const fromEmail = isAppProduction ? 'SamaLoop <admin@samaloop.com>' : 'onboarding@resend.dev';
+        const fromEmail ='SamaLoop <admin@samaloop.com>'
 
         const coachEmail = reg.profiles?.contact?.email || 'loop.samaloop@gmail.com';
         const coachPhone = reg.profiles?.contact?.phone || 'Belum tersedia'; 
@@ -143,9 +144,10 @@ export async function POST(req: NextRequest) {
             // EMAIL UNTUK COACH (DENGAN DATA COACHEE LENGKAP)
             {
               from: fromEmail,
-              to: coachEmail,
+              to: fromEmail,
               // to: isAppProduction ? coachEmail : 'loop.samaloop@gmail.com',
-              cc: isAppProduction ? 'loopindonesia@gmail.com' : 'loop.samaloop@gmail.com',
+              // cc: isAppProduction ? 'loopindonesia@gmail.com' : 'loop.samaloop@gmail.com',
+              cc: 'loop.samaloop@gmail.com',
               subject: `[SamaLoop] Inkuiri Klien Baru (Terkonfirmasi): ${reg.name}`,
               html: `
                 <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 650px; margin: 0 auto; border: 1px solid #e0e0e0; padding: 30px; border-radius: 8px; color: #333333; background-color: #ffffff;">
