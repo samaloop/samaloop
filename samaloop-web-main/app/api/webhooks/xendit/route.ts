@@ -111,7 +111,8 @@ export async function POST(req: NextRequest) {
             // EMAIL UNTUK USER (KLIEN)
             {
               from: fromEmail,
-              to: isAppProduction ? reg.email : 'loop.samaloop@gmail.com',
+              to: reg.email,
+              // to: isAppProduction ? reg.email : 'loop.samaloop@gmail.com',
               subject: `[SamaLoop] Konfirmasi Pembayaran & Detail Sesi Coaching`,
               html: `
                 <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; line-height: 1.6; color: #333333; max-width: 600px; margin: 0 auto; padding: 30px; border: 1px solid #e0e0e0; border-radius: 8px; background-color: #ffffff;">
@@ -142,7 +143,8 @@ export async function POST(req: NextRequest) {
             // EMAIL UNTUK COACH (DENGAN DATA COACHEE LENGKAP)
             {
               from: fromEmail,
-              to: isAppProduction ? coachEmail : 'loop.samaloop@gmail.com',
+              to: coachEmail,
+              // to: isAppProduction ? coachEmail : 'loop.samaloop@gmail.com',
               cc: isAppProduction ? 'loopindonesia@gmail.com' : 'loop.samaloop@gmail.com',
               subject: `[SamaLoop] Inkuiri Klien Baru (Terkonfirmasi): ${reg.name}`,
               html: `
