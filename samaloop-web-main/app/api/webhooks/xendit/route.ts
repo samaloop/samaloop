@@ -122,7 +122,7 @@ export async function POST(req: NextRequest) {
                     <p style="color: #666666; margin-top: 5px; font-size: 14px;">Inkuiri Coaching SamaLoop</p>
                   </div>
                   <p>Yth. <strong>Bpk/Ibu ${reg.name}</strong>,</p>
-                  <p>Terima kasih telah mempercayakan perjalanan pengembangan diri Anda bersama SamaLoop. Kami ingin menginformasikan bahwa pembayaran administrasi untuk inkuiri sesi coaching Anda telah <strong>berhasil kami terima</strong>.</p>
+                  <p>Terima kasih telah mempercayakan perjalanan pengembangan diri Anda bersama Samaloop. Kami ingin menginformasikan bahwa pembayaran administrasi untuk inkuiri sesi coaching Anda telah <strong>berhasil kami terima</strong>.</p>
                   <div style="background-color: #f4f7f6; border-left: 4px solid #0055A5; padding: 20px; margin: 25px 0; border-radius: 0 4px 4px 0;">
                     <h3 style="margin-top: 0; color: #0055A5; font-size: 16px;">Detail Coach Anda</h3>
                     <table style="width: 100%; border-collapse: collapse;">
@@ -132,9 +132,9 @@ export async function POST(req: NextRequest) {
                     </table>
                   </div>
                   <p style="margin-top: 20px;"><strong>Langkah Selanjutnya:</strong></p>
-                  <p style="margin-top: 5px;">Tim Administrasi SamaLoop akan segera menghubungi Anda melalui WhatsApp (ke nomor <strong>${reg.phone_number}</strong>) dalam waktu maksimal 2 hari kerja untuk mengatur jadwal sesi pertama Anda dengan Coach ${coachName}.</p>
+                  <p style="margin-top: 5px;">Silahkan hubungi Admin Samaloop melalui tombol kontak WhatsApp dibawah ini untuk konfirmasi sesi dengan coach ${coachName}.</p>
                   <div style="text-align: center; margin: 40px 0;">
-                    <a href="https://wa.me/${adminWhatsApp}" style="background-color: #0055A5; color: #ffffff; padding: 14px 28px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 14px;">Hubungi Admin SamaLoop</a>
+                    <a href="https://wa.me/${adminWhatsApp}" style="background-color: #00de04; color: #ffffff; padding: 14px 28px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 14px;">Hubungi Admin Samaloop</a>
                   </div>
                   <hr style="border: 0; border-top: 1px solid #e0e0e0; margin: 30px 0;" />
                   <p style="font-size: 12px; color: #999999; text-align: center; margin: 0;">Email ini dibuat secara otomatis. Mohon tidak membalas langsung ke alamat email ini.</p>
@@ -153,10 +153,10 @@ export async function POST(req: NextRequest) {
                 <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 650px; margin: 0 auto; border: 1px solid #e0e0e0; padding: 30px; border-radius: 8px; color: #333333; background-color: #ffffff;">
                   <div style="border-bottom: 2px solid #0055A5; padding-bottom: 15px; margin-bottom: 25px;">
                     <h2 style="color: #0055A5; margin: 0; font-size: 22px;">Inkuiri Coaching Baru</h2>
-                    <p style="color: #666666; margin-top: 5px; font-size: 14px;">Status Administrasi: <strong>LUNAS</strong></p>
+                    <p style="color: #666666; margin-top: 5px; font-size: 14px;">Detail Form Inkuiri Klien SamaLoop</p>
                   </div>
                   <p>Halo <strong>Coach ${coachName}</strong>,</p>
-                  <p>Anda telah menerima inkuiri sesi coaching baru. Klien berikut telah menyelesaikan pembayaran biaya administrasi. Berikut adalah detail lengkap dari form inkuiri klien untuk Anda pelajari sebelum sesi dimulai:</p>
+                  <p>Anda telah menerima inkuiri sesi coaching baru. Berikut adalah detail lengkap dari form inkuiri klien untuk Anda pelajari sebelum sesi dimulai:</p>
                   
                   <div style="margin: 25px 0;">
                     <h3 style="background-color: #f4f7f6; padding: 10px 15px; margin: 0; color: #0055A5; border-radius: 4px 4px 0 0; font-size: 16px;">Informasi Pribadi</h3>
@@ -191,14 +191,14 @@ export async function POST(req: NextRequest) {
                   </div>
 
                   <div style="background-color: #fff8e1; border-left: 4px solid #ffc107; padding: 15px; margin: 30px 0; border-radius: 0 4px 4px 0;">
-                    <p style="margin: 0; font-size: 14px; color: #856404;"><strong>Langkah Anda Berikutnya:</strong><br/>Tim Admin SamaLoop akan bertindak sebagai narahubung untuk mencocokkan jadwal kosong Anda dengan klien. Silakan klik tombol di bawah untuk konfirmasi ketersediaan Anda.</p>
+                    <p style="margin: 0; font-size: 14px; color: #856404;"><strong>Langkah Anda Berikutnya:</strong><br/>Silakan hubungi klien melalui informasi kontak yang tertera untuk menyepakati jadwal Sesi Perkenalan. Setelah waktu disepakati, mohon konfirmasikan kepada Admin Samaloop agar link Zoom dapat segera disiapkan.</p>
                   </div>
 
                   <div style="text-align: center; margin: 30px 0;">
-                    <a href="https://wa.me/${adminWhatsApp}?text=Halo%20Admin%20SamaLoop,%20saya%20sudah%20membaca%20detail%20inkuiri%20dari%20Klien%20${encodeURIComponent(reg.name)}%20dan%20siap%20untuk%20dijadwalkan." style="background-color: #25D366; color: white; padding: 14px 28px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 14px;">Konfirmasi ke Admin via WhatsApp</a>
+                    <a href="https://wa.me/${adminWhatsApp}?text=Halo%20Admin%20Samaloop,%20saya%20telah%20berdiskusi%20dengan%20Klien%20${encodeURIComponent(reg.name)}%20dan%20menentukan%20jadwal%20Sesi%20Perkenalan.%20Mohon%20bantuannya%20untuk%20menyiapkan%20tautan%20Zoom%20pertemuannya." style="background-color: #25D366; color: white; padding: 14px 28px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 14px;">Konfirmasi ke Admin via WhatsApp</a>
                   </div>
                   <hr style="border: 0; border-top: 1px solid #e0e0e0; margin: 30px 0;" />
-                  <p style="font-size: 11px; color: #999999; text-align: center;">Email otomatis dari sistem SamaLoop. Admin telah menerima salinan (CC) dari email ini.</p>
+                  <p style="font-size: 11px; color: #999999; text-align: center;">Email otomatis dari sistem Samaloop. Admin telah menerima salinan (CC) dari email ini.</p>
                 </div>
               `
             }
