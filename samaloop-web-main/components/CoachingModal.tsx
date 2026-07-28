@@ -4,6 +4,7 @@ import axios from "axios";
 import { IoCheckmarkCircle, IoCardOutline } from "react-icons/io5"; // Tambah icon kartu
 import { t } from "@/helper/helper";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import TermsConditions from "@/app/terms-conditions/page";
 
 const CoachingModal = ({ coach, isOpen, onClose, locale }: any) => {
   const [loading, setLoading] = useState(false);
@@ -64,7 +65,8 @@ const CoachingModal = ({ coach, isOpen, onClose, locale }: any) => {
   // State untuk validasi checkbox syarat & ketentuan
   const [agreed, setAgreed] = useState({
     ethics: false,
-    consistency: false
+    consistency: false,
+    terms: false
   });
 
   if (!isOpen) return null;
@@ -94,7 +96,8 @@ const CoachingModal = ({ coach, isOpen, onClose, locale }: any) => {
       session_frequency: formData.get("session_frequency"),
       readiness_to_start: formData.get("readiness_to_start"),
       ethics_agreement: formData.get("ethics_agreement") === "on",
-      consistency_agreement: formData.get("consistency_agreement") === "on"
+      consistency_agreement: formData.get("consistency_agreement") === "on",
+      terms_conditions: formData.get("terms_conditions") === "on"
     };
 
     try {
@@ -118,7 +121,7 @@ const CoachingModal = ({ coach, isOpen, onClose, locale }: any) => {
   };
 
   // Cek apakah semua syarat sudah dicentang
-  const canSubmit = agreed.ethics && agreed.consistency;
+  const canSubmit = agreed.ethics && agreed.consistency && agreed.terms;
 
   return (
 
@@ -229,7 +232,7 @@ const CoachingModal = ({ coach, isOpen, onClose, locale }: any) => {
                       {t("I understand that this is a consutation session *", locale)}
                     </label>
                   </div>
-                  <div className="form-check">
+                  <div className="form-check mb-2">
                     <input
                       className="form-check-input shadow-none"
                       type="checkbox"
@@ -241,6 +244,19 @@ const CoachingModal = ({ coach, isOpen, onClose, locale }: any) => {
                       {t("I am willing to follow the sessions consistently *", locale)}
                     </label>
                   </div>
+                  <div className="form-check mb-3">
+                    <input
+                      className="form-check-input shadow-none"
+                      type="checkbox"
+                      id="terms"
+                      checked={agreed.terms}
+                      onChange={(e) => setAgreed({ ...agreed, terms: e.target.checked })}
+                    />
+                    <label className="form-check-label small" htmlFor="terms">
+                      {t("I agree to the applicable terms and conditions *", locale)}
+                    </label>
+                  </div>
+                  <a href="/terms-conditions" target="_blank" className="small text-primary">{t("Read the terms and conditions Samaloop", locale)}</a>
                 </div>
 
                 {/* RINCIAN BIAYA (Bukan dalam bentuk Button) */}
@@ -249,7 +265,7 @@ const CoachingModal = ({ coach, isOpen, onClose, locale }: any) => {
                     <div className="d-flex justify-content-between align-items-center">
                       <div>
                         <span className="fw-bold d-block" style={{ color: '#0055A5' }}>{t("Initial Consultation Fee", locale)}</span>
-                        <small className="text-muted">{t("Administrative fee for coach matching & 1st consultation", locale)}</small>
+                        <small className="text-muted">{t("Administrative fee for connecting with the coach and the introductory session via Zoom meeting.", locale)}</small>
                       </div>
                       <div className="text-end">
                         <span className="fs-5 fw-bold text-dark">{formattedFee}</span>

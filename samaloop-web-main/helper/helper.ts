@@ -445,6 +445,18 @@ export function t(key: string, locale: string) {
             en: 'I am willing to follow the sessions consistently *',
             id: 'Saya bersedia mengikuti sesi secara konsisten *'
         },
+        'I agree to the applicable terms and conditions *': {
+            en: 'I agree to the applicable terms and conditions *',
+            id: 'Saya setuju dengan syarat dan ketentuan yang berlaku *'
+        },
+        'Read the terms and conditions Samaloop': {
+            en: 'Read the terms and conditions Samaloop',
+            id: 'Baca syarat dan ketentuan Samaloop'
+        },
+        'Administrative fee for connecting with the coach and the introductory session via Zoom meeting.': {
+            en: 'Administrative fee for connecting with the coach and the introductory session via Zoom meeting.',
+            id: 'Biaya administrasi untuk terhubung dengan coach dan sesi perkenalan via zoom meeting.'
+        },
         'Online': {
             en: 'Online',
             id: 'Online'
