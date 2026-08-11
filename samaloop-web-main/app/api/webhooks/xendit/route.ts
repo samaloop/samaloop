@@ -105,7 +105,7 @@ export async function POST(req: NextRequest) {
         const coachPhone = reg.profiles?.contact?.phone || 'Belum tersedia'; 
         const coachName = reg.profiles?.name || 'Coach SamaLoop';
         
-        const adminWhatsApp = '6285770916736'; 
+        const adminWhatsApp = '6285770916736';
 
         try {
           await resend.batch.send([
@@ -135,6 +135,7 @@ export async function POST(req: NextRequest) {
                   <p style="margin-top: 5px;">Silahkan hubungi Admin Samaloop melalui tombol kontak WhatsApp dibawah ini untuk konfirmasi sesi dengan coach ${coachName}.</p>
                   <div style="text-align: center; margin: 40px 0;">
                     <a href="https://wa.me/${adminWhatsApp}" style="background-color: #00de04; color: #ffffff; padding: 14px 28px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 14px;">Hubungi Admin Samaloop</a>
+                    <a href="https://wa.me/${coachPhone}" style="background-color: #00de04; color: #ffffff; padding: 14px 28px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 14px;">Hubungi Coach</a>
                   </div>
                   <hr style="border: 0; border-top: 1px solid #e0e0e0; margin: 30px 0;" />
                   <p style="font-size: 12px; color: #999999; text-align: center; margin: 0;">Email ini dibuat secara otomatis. Mohon tidak membalas langsung ke alamat email ini.</p>
@@ -196,7 +197,8 @@ export async function POST(req: NextRequest) {
 
                   <div style="text-align: center; margin: 30px 0;">
                     <a href="https://wa.me/${adminWhatsApp}?text=Halo%20Admin%20Samaloop,%20saya%20telah%20berdiskusi%20dengan%20Klien%20${encodeURIComponent(reg.name)}%20dan%20menentukan%20jadwal%20Sesi%20Perkenalan.%20Mohon%20bantuannya%20untuk%20menyiapkan%20tautan%20Zoom%20pertemuannya." style="background-color: #25D366; color: white; padding: 14px 28px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 14px;">Konfirmasi ke Admin via WhatsApp</a>
-                  </div>
+                    <a href="https://wa.me/${(reg.phone_number || '').replace(/\D/g, '')}">${reg.phone_number || '-'}" style="background-color: #25D366; color: white; padding: 14px 28px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 14px;">Hubungi Client</a>
+                    </div>
                   <hr style="border: 0; border-top: 1px solid #e0e0e0; margin: 30px 0;" />
                   <p style="font-size: 11px; color: #999999; text-align: center;">Email otomatis dari sistem Samaloop. Admin telah menerima salinan (CC) dari email ini.</p>
                 </div>
