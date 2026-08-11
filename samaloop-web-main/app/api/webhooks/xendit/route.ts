@@ -191,9 +191,50 @@ export async function POST(req: NextRequest) {
                     </table>
                   </div>
 
-                  <div style="background-color: #fff8e1; border-left: 4px solid #ffc107; padding: 15px; margin: 30px 0; border-radius: 0 4px 4px 0;">
-                    <p style="margin: 0; font-size: 14px; color: #856404;"><strong>Langkah Anda Berikutnya:</strong><br/>Silakan hubungi klien melalui informasi kontak yang tertera untuk menyepakati jadwal Sesi Perkenalan. Setelah waktu disepakati, mohon konfirmasikan kepada Admin Samaloop agar link Zoom dapat segera disiapkan.</p>
+                  <div style="background-color: #fff8e1; border-left: 4px solid #ffc107; padding: 20px; margin: 30px 0; border-radius: 0 4px 4px 0; font-family: Arial, sans-serif; box-sizing: border-box;">
+                  <p style="margin: 0 0 15px 0; font-size: 14px; color: #856404;"><strong>Langkah Anda Berikutnya:</strong></p>
+                  
+                  <!-- Container Flexbox Inline -->
+                  <div style="display: flex; flex-wrap: wrap; gap: 15px; align-items: flex-start;">
+                    
+                    <!-- Step 1 -->
+                    <div style="flex: 1 1 130px; font-size: 12px; color: #856404; line-height: 1.4;">
+                      <span style="display: inline-block; background-color: #ffc107; color: #fff; width: 22px; height: 22px; border-radius: 50%; text-align: center; line-height: 22px; font-weight: bold; margin-bottom: 8px; font-size: 11px;">1</span>
+                      <br/><strong>Hubungi Klien</strong><br/>Melalui kontak yang tersedia.
+                    </div>
+                    
+                    <!-- Step 2 -->
+                    <div style="flex: 1 1 130px; font-size: 12px; color: #856404; line-height: 1.4;">
+                      <span style="display: inline-block; background-color: #ffc107; color: #fff; width: 22px; height: 22px; border-radius: 50%; text-align: center; line-height: 22px; font-weight: bold; margin-bottom: 8px; font-size: 11px;">2</span>
+                      <br/><strong>Sepakati Jadwal</strong><br/>Tentukan waktu untuk Sesi Perkenalan.
+                    </div>
+                    
+                    <!-- Step 3 -->
+                    <div style="flex: 1 1 130px; font-size: 12px; color: #856404; line-height: 1.4;">
+                      <span style="display: inline-block; background-color: #ffc107; color: #fff; width: 22px; height: 22px; border-radius: 50%; text-align: center; line-height: 22px; font-weight: bold; margin-bottom: 8px; font-size: 11px;">3</span>
+                      <br/><strong>Pelaksanaan Sesi</strong><br/>Menggunakan ruang virtual (Zoom/GMeet).
+                    </div>
+                    
+                    <!-- Step 4 -->
+                    <div style="flex: 1 1 130px; font-size: 12px; color: #856404; line-height: 1.4;">
+                      <span style="display: inline-block; background-color: #ffc107; color: #fff; width: 22px; height: 22px; border-radius: 50%; text-align: center; line-height: 22px; font-weight: bold; margin-bottom: 8px; font-size: 11px;">4</span>
+                      <br/><strong>Isi Feedback</strong><br/>Melalui tautan formulir pada email ini.
+                    </div>
+                    
+                    <!-- Step 5 -->
+                    <div style="flex: 1 1 130px; font-size: 12px; color: #856404; line-height: 1.4;">
+                      <span style="display: inline-block; background-color: #ffc107; color: #fff; width: 22px; height: 22px; border-radius: 50%; text-align: center; line-height: 22px; font-weight: bold; margin-bottom: 8px; font-size: 11px;">5</span>
+                      <br/><strong>Konfirmasi Admin</strong><br/>Konfirmasi ke Admin Samaloop setelah selesai.
+                    </div>
+                    
+                    <!-- Step 6 -->
+                    <div style="flex: 1 1 130px; font-size: 12px; color: #856404; line-height: 1.4;">
+                      <span style="display: inline-block; background-color: #ffc107; color: #fff; width: 22px; height: 22px; border-radius: 50%; text-align: center; line-height: 22px; font-weight: bold; margin-bottom: 8px; font-size: 11px;">6</span>
+                      <br/><strong>Klaim Fee</strong><br/>Proses pengiriman fee oleh Admin.
+                    </div>
+                    
                   </div>
+                </div>
 
                   <div style="text-align: center; margin: 30px 0;">
                     <a href="https://wa.me/${adminWhatsApp}?text=Halo%20Admin%20Samaloop,%20saya%20telah%20berdiskusi%20dengan%20Klien%20${encodeURIComponent(reg.name)}%20dan%20menentukan%20jadwal%20Sesi%20Perkenalan.%20Mohon%20bantuannya%20untuk%20menyiapkan%20tautan%20Zoom%20pertemuannya." style="background-color: #25D366; color: white; padding: 14px 28px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 14px;">Konfirmasi ke Admin via WhatsApp</a>
@@ -220,3 +261,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Webhook Server Error" }, { status: 500 });
   }
 }
+
+
+
+// <div style="background-color: #fff8e1; border-left: 4px solid #ffc107; padding: 15px; margin: 30px 0; border-radius: 0 4px 4px 0;">
+//                     <p style="margin: 0; font-size: 14px; color: #856404;"><strong>Langkah Anda Berikutnya:</strong><br/>Silakan hubungi klien melalui informasi kontak yang tertera untuk menyepakati jadwal Sesi Perkenalan. Setelah waktu disepakati, mohon konfirmasikan kepada Admin Samaloop agar link Zoom dapat segera disiapkan.</p>
+//                   </div>
