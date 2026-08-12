@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { IoCheckmarkCircle, IoCardOutline } from "react-icons/io5"; // Tambah icon kartu
 import { t } from "@/helper/helper";
@@ -13,6 +13,7 @@ const CoachingModal = ({ coach, isOpen, onClose, locale }: any) => {
 
   const [registrationId, setRegistrationId] = useState<string | null>(null);
   const [paymentConfirmed, setPaymentConfirmed] = useState(false);
+  const paymentWindowRef = useRef<Window | null>(null);
   const supabase = createClientComponentClient();
 
   // Tambahkan state ini di dalam komponen CoachingModal
@@ -60,6 +61,13 @@ const CoachingModal = ({ coach, isOpen, onClose, locale }: any) => {
       if (pollingInterval) clearInterval(pollingInterval);
     };
   }, [isSuccess, registrationId, paymentConfirmed]);
+
+  // Tutup tab pembayaran Xendit otomatis setelah pembayaran terkonfirmasi
+  useEffect(() => {
+    if (paymentConfirmed && paymentWindowRef.current && !paymentWindowRef.current.closed) {
+      paymentWindowRef.current.close();
+    }
+  }, [paymentConfirmed]);
 
 
   // State untuk validasi checkbox syarat & ketentuan
@@ -315,7 +323,7 @@ const CoachingModal = ({ coach, isOpen, onClose, locale }: any) => {
                       style={{ cursor: 'pointer', borderLeft: '5px solid #0055A5' }}
                       onClick={() => {
                         setPaymentStep("XENDIT_PENDING");
-                        window.open(paymentUrl as string, '_blank');
+                        paymentWindowRef.current = window.open(paymentUrl as string, '_blank');
                       }}
                     >
                       <div className="d-flex align-items-center gap-3">
@@ -355,7 +363,15 @@ const CoachingModal = ({ coach, isOpen, onClose, locale }: any) => {
                 <IoCardOutline size={80} color="#0055A5" className="mb-3 animate__animated animate__pulse animate__infinite" />
                 <h4 className="fw-bold">Menunggu Pembayaran Otomatis</h4>
                 <p>Silakan selesaikan pembayaran pada tab yang baru dibuka.</p>
-                <a href={paymentUrl as string} target="_blank" className="btn btn-primary mt-3">Buka Kembali Halaman Xendit</a>
+                <button
+                  type="button"
+                  className="btn btn-primary mt-3"
+                  onClick={() => {
+                    paymentWindowRef.current = window.open(paymentUrl as string, '_blank');
+                  }}
+                >
+                  Buka Kembali Halaman Xendit
+                </button>
                 <button className="btn btn-link d-block mx-auto mt-2" onClick={() => setPaymentStep("CHOOSE")}>Ganti Metode Pembayaran</button>
               </div>
             )}
