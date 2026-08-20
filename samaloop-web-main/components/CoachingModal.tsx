@@ -341,7 +341,7 @@ const CoachingModal = ({ coach, isOpen, onClose, locale }: any) => {
                   </div>
 
                   {/* OPSI paypal */}
-                  {/* <div className="col-12">
+                   <div className="col-12">
                     <div
                       className="p-3 border rounded-3 shadow-sm d-flex align-items-center justify-content-between"
                       style={{ cursor: 'pointer', borderLeft: '5px solid #0055A5' }}
@@ -358,7 +358,7 @@ const CoachingModal = ({ coach, isOpen, onClose, locale }: any) => {
                         </div>
                       </div>
                     </div>
-                  </div> */}
+                  </div> 
 
 
                   {/* OPSI MANUAL */}
