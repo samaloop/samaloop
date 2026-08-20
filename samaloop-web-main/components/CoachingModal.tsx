@@ -4,7 +4,9 @@ import axios from "axios";
 import { IoCheckmarkCircle, IoCardOutline } from "react-icons/io5"; // Tambah icon kartu
 import { t } from "@/helper/helper";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import TermsConditions from "@/app/terms-conditions/page";
+// import TermsConditions from "@/app/terms-conditions/page";
+import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
+
 
 const CoachingModal = ({ coach, isOpen, onClose, locale }: any) => {
   const [loading, setLoading] = useState(false);
@@ -17,15 +19,15 @@ const CoachingModal = ({ coach, isOpen, onClose, locale }: any) => {
   const supabase = createClientComponentClient();
 
   // Tambahkan state ini di dalam komponen CoachingModal
-  const [paymentStep, setPaymentStep] = useState<"FORM" | "CHOOSE" | "XENDIT_PENDING" | "MANUAL_INSTRUCTION">("FORM");
+  const [paymentStep, setPaymentStep] = useState<"FORM" | "CHOOSE" | "XENDIT_PENDING"| "PAYPAL_PENDING" | "MANUAL_INSTRUCTION">("FORM");
   const adminWhatsApp = "6285770916763"; // Sesuaikan nomor admin
-  
+
   //fee parsing
   const rawFee = coach?.consultation_fee;
   const parsedFee = typeof rawFee === "number" ? rawFee : parseFloat(rawFee);
 
   // Jika parsedFee NaN/Invalid, otomatis fallback ke 150000
-  const consultationFee = (!isNaN(parsedFee) && parsedFee > 0) ? parsedFee : 150000; 
+  const consultationFee = (!isNaN(parsedFee) && parsedFee > 0) ? parsedFee : 150000;
 
   // Formatter Rupiah
   const formattedFee = new Intl.NumberFormat(locale === "en" ? "en-US" : "id-ID", {
@@ -316,6 +318,7 @@ const CoachingModal = ({ coach, isOpen, onClose, locale }: any) => {
               <div className="text-center py-4">
                 <h5 className="fw-bold mb-4">{t("Choose Payment Method", locale)}</h5>
                 <div className="row g-3">
+
                   {/* OPSI XENDIT */}
                   <div className="col-12">
                     <div
@@ -336,6 +339,27 @@ const CoachingModal = ({ coach, isOpen, onClose, locale }: any) => {
                       <span className="badge bg-primary">Rekomendasi</span>
                     </div>
                   </div>
+
+                  {/* OPSI paypal */}
+                  {/* <div className="col-12">
+                    <div
+                      className="p-3 border rounded-3 shadow-sm d-flex align-items-center justify-content-between"
+                      style={{ cursor: 'pointer', borderLeft: '5px solid #0055A5' }}
+                      onClick={() => {
+                        setPaymentStep("PAYPAL_PENDING");
+                        paymentWindowRef.current = window.open(paymentUrl as string, '_blank');
+                      }}
+                    >
+                      <div className="d-flex align-items-center gap-3">
+                        <IoCardOutline size={30} color="#0055A5" />
+                        <div className="text-start">
+                          <p className="mb-0 fw-bold">Paypal</p>
+                          <small className="text-muted">Konfirmasi instan via PayPal</small>
+                        </div>
+                      </div>
+                    </div>
+                  </div> */}
+
 
                   {/* OPSI MANUAL */}
                   {/* <div className="col-12">
