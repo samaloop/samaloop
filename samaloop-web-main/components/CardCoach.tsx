@@ -17,7 +17,7 @@ const CardCoach = ({ coach, onProfileClick }: any) => {
       <div className="card-body">
         <div className="experience">
           <HiOutlineBriefcase size={20} />{" "}
-          {locale === "en" ? coach.year.name.en : coach.year.name.id}
+          {locale === "en" ? coach.year?.name?.en : coach.year?.name?.id}
         </div>
         <div className="text-center main-info">
           <div className="row align-items-center">
@@ -48,22 +48,22 @@ const CardCoach = ({ coach, onProfileClick }: any) => {
             <div className="col-6">
               <div className="info-item mb-3">
                 <FiClock size={18} />{" "}
-                {locale === "en" ? coach.hour.name.en : coach.hour.name.id}{" "}
+                {locale === "en" ? coach.hour?.name?.en : coach.hour?.name?.id}{" "}
               </div>
               <div className="info-item mb-3">
                 <FiUsers size={18} />{" "}
                 {locale === "en"
-                  ? coach.client.name.en
-                  : coach.client.name.id}
+                  ? coach.client?.name?.en
+                  : coach.client?.name?.id}
               </div>
               <div className="info-item">
                 <FaChalkboardTeacher size={18} />{" "}
-                {coach.profile_methods.map((value: any, index: number) => (
+                {(coach.profile_methods ?? []).map((value: any, index: number) => (
                   <span key={uuidv4()}>
                     {index > 0 && ", "}
                     {locale === "en"
-                      ? value.method.name.en
-                      : value.method.name.id}
+                      ? value.method?.name?.en
+                      : value.method?.name?.id}
                   </span>
                 ))}
               </div>
@@ -73,12 +73,12 @@ const CardCoach = ({ coach, onProfileClick }: any) => {
                 {t("Client Type", locale)}
               </div>
               <ul className="list-client-type">
-                {coach.profile_client_types.map(
+                {(coach.profile_client_types ?? []).map(
                   (value: any, index: number) => (
                     <li key={uuidv4()}>
                       {locale === "en"
-                        ? value.client_type.name.en
-                        : value.client_type.name.id}
+                        ? value.client_type?.name?.en
+                        : value.client_type?.name?.id}
                     </li>
                   )
                 )}
@@ -89,15 +89,15 @@ const CardCoach = ({ coach, onProfileClick }: any) => {
         <div className="specialist text-center">
           {locale === "en" ? (
             <>
-              {coach.profile_specialities.map(
+              {(coach.profile_specialities ?? []).map(
                 (value: any, index: number) =>
                   index < 3 && (
                     <span key={uuidv4()} className="badge rounded-pill">
-                      {value.speciality.name.en}
+                      {value.speciality?.name?.en}
                     </span>
                   )
               )}
-              {coach.profile_specialities.length > 3 ? (
+              {(coach.profile_specialities ?? []).length > 3 ? (
                 <div>+ {coach.profile_specialities.length - 3} lainnya</div>
               ) : (
                 <div>&nbsp;</div>
@@ -105,15 +105,15 @@ const CardCoach = ({ coach, onProfileClick }: any) => {
             </>
           ) : (
             <>
-              {coach.profile_specialities.map(
+              {(coach.profile_specialities ?? []).map(
                 (value: any, index: number) =>
                   index < 3 && (
                     <span key={uuidv4()} className="badge rounded-pill">
-                      {value.speciality.name.id}
+                      {value.speciality?.name?.id}
                     </span>
                   )
               )}
-              {coach.profile_specialities.length > 3 ? (
+              {(coach.profile_specialities ?? []).length > 3 ? (
                 <div>
                   + {coach.profile_specialities.length - 3}{" "}
                   {t("Others", locale)}

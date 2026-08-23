@@ -1,5 +1,5 @@
 export async function getPayPalAccessToken() {
-  const auth = Buffer.from(`${process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID}:${process.env.PAYPAL_CLIENT_SECRET}`).toString("base64");
+  const auth = Buffer.from(`${process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID}:${process.env.PAYPAL_SECRET_KEY}`).toString("base64");
   const res = await fetch(`${process.env.PAYPAL_API_URL}/v1/oauth2/token`, {
     method: "POST",
     body: "grant_type=client_credentials",

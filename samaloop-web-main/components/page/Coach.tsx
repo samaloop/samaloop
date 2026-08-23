@@ -1,6 +1,6 @@
 "use client";
 import { GoHome } from "react-icons/go";
-import { FiClock, FiUsers } from "react-icons/fi";
+import { FiClock, FiUsers, FiArrowLeft } from "react-icons/fi";
 import {
   FaLinkedin,
   FaSquareInstagram,
@@ -93,6 +93,12 @@ export default function Coach({ slug }: any) {
             <span className="visually-hidden">Loading...</span>
           </div>
         </div>
+      ) : coach.data.data.length === 0 ? (
+        <div className="p-5 text-center">
+          <p className="mb-0">
+            {locale === "en" ? "Coach not found." : "Coach tidak ditemukan."}
+          </p>
+        </div>
       ) : (
 
         <>
@@ -110,6 +116,25 @@ export default function Coach({ slug }: any) {
               </li>
             </ol>
           </nav>
+          {coach.data.data[0].company_slug && (
+            <div className="mb-3">
+              <LocalizedLink
+                href={"/search/company/" + coach.data.data[0].company_slug}
+              >
+                <button className="btn btn-outline-secondary btn-sm">
+                  <FiArrowLeft size={16} className="me-1" />
+                  {locale === "en"
+                    ? "Back to " +
+                      (coach.data.data[0].company_name ??
+                        coach.data.data[0].company_slug) +
+                      " coach list"
+                    : "Kembali ke daftar coach " +
+                      (coach.data.data[0].company_name ??
+                        coach.data.data[0].company_slug)}
+                </button>
+              </LocalizedLink>
+            </div>
+          )}
           <div className="row">
             <div className="col-12 col-md-3">
               <div className="text-start">
@@ -134,7 +159,7 @@ export default function Coach({ slug }: any) {
                   {coach.data.data[0].name}
                 </div>
                 <div className="certificate">
-                  {coach.data.data[0].credential.logo !== undefined && (
+                  {coach.data.data[0].credential?.logo !== undefined && (
                     <Image
                       className="mb-2 me-2"
                       priority
@@ -152,11 +177,11 @@ export default function Coach({ slug }: any) {
                   )}
 
 
-                  {coach.data.data[0].profile_other_credentials.map(
+                  {(coach.data.data[0].profile_other_credentials ?? []).map(
                     (value: any, index: number) => (
 
                       <>
-                        {value.credential.logo !== null && (
+                        {value.credential?.logo != null && (
                           <Image
                             className="mb-2 me-2"
                             key={uuidv4()}
@@ -196,24 +221,24 @@ export default function Coach({ slug }: any) {
                   <div className="info-item mb-2">
                     <FiClock size={18} />{" "}
                     {locale === "en"
-                      ? coach.data.data[0].hour.name.en
-                      : coach.data.data[0].hour.name.id}{" "}
+                      ? coach.data.data[0].hour?.name?.en
+                      : coach.data.data[0].hour?.name?.id}{" "}
                   </div>
                   <div className="info-item mb-2">
                     <FiUsers size={18} />{" "}
                     {locale === "en"
-                      ? coach.data.data[0].client.name.en
-                      : coach.data.data[0].client.name.id}
+                      ? coach.data.data[0].client?.name?.en
+                      : coach.data.data[0].client?.name?.id}
                   </div>
                   <div className="info-item mb-2">
                     <FaChalkboardTeacher size={18} />{" "}
-                    {coach.data.data[0].profile_methods.map(
+                    {(coach.data.data[0].profile_methods ?? []).map(
                       (value: any, index: number) => (
                         <span key={uuidv4()}>
                           {index > 0 && ", "}
                           {locale === "en"
-                            ? value.method.name.en
-                            : value.method.name.id}
+                            ? value.method?.name?.en
+                            : value.method?.name?.id}
                         </span>
                       )
                     )}
@@ -224,12 +249,12 @@ export default function Coach({ slug }: any) {
                       {t("Client Type", locale)}
                     </div>
                     <ul>
-                      {coach.data.data[0].profile_client_types.map(
+                      {(coach.data.data[0].profile_client_types ?? []).map(
                         (value: any, index: number) => (
                           <li key={uuidv4()}>
                             {locale === "en"
-                              ? value.client_type.name.en
-                              : value.client_type.name.id}
+                              ? value.client_type?.name?.en
+                              : value.client_type?.name?.id}
                           </li>
                         )
                       )}
@@ -241,12 +266,12 @@ export default function Coach({ slug }: any) {
                     <div className="font-weight-bold mb-1">
                       {t("Specialities", locale)}
                     </div>
-                    {coach.data.data[0].profile_specialities.map(
+                    {(coach.data.data[0].profile_specialities ?? []).map(
                       (value: any, index: number) => (
                         <button key={uuidv4()} className="badge rounded-pill">
                           {locale === "en"
-                            ? value.speciality.name.en
-                            : value.speciality.name.id}
+                            ? value.speciality?.name?.en
+                            : value.speciality?.name?.id}
                         </button>
                       )
                     )}
@@ -256,24 +281,24 @@ export default function Coach({ slug }: any) {
                     <div className="font-weight-bold mb-1">
                       {t("Fee / Hour", locale)}
                     </div>
-                    {coach.data.data[0].profile_prices.map(
+                    {(coach.data.data[0].profile_prices ?? []).map(
                       (value: any, index: number) => (
                         <div key={uuidv4()}>
                           {locale === "en"
-                            ? value.price.name.en
-                            : value.price.name.id}
+                            ? value.price?.name?.en
+                            : value.price?.name?.id}
                         </div>
                       )
                     )}
                   </div>
                 </div>
 
-                {coach.data.data[0].contact.linkedin !== undefined ||
-                  coach.data.data[0].contact.instagram !== undefined ||
-                  coach.data.data[0].contact.tiktok !== undefined ||
-                  coach.data.data[0].contact.facebook !== undefined ||
-                  coach.data.data[0].contact.phone !== undefined ||
-                  coach.data.data[0].contact.email !== undefined ? (
+                {coach.data.data[0].contact?.linkedin !== undefined ||
+                  coach.data.data[0].contact?.instagram !== undefined ||
+                  coach.data.data[0].contact?.tiktok !== undefined ||
+                  coach.data.data[0].contact?.facebook !== undefined ||
+                  coach.data.data[0].contact?.phone !== undefined ||
+                  coach.data.data[0].contact?.email !== undefined ? (
                   <div className="contact mb-4">
                     <div className="font-weight-bold mb-2">
                       {t("Social Media", locale)}
@@ -414,12 +439,12 @@ export default function Coach({ slug }: any) {
             <div className="col-12 col-md-9 ps-4">
               {/* <div className="subtitle">{coach.data.data[0].profession}</div> */}
               <div className="d-flex flex-wrap column-gap-2 row-gap-0 justify-content-center justify-content-md-start">
-                {coach.data.data[0].profile_specialities.map(
+                {(coach.data.data[0].profile_specialities ?? []).map(
                   (value: any, index: number, array: any[]) => (
                     <div key={uuidv4()} className="subtitle">
                       {locale === "en"
-                        ? value.speciality.name.en
-                        : value.speciality.name.id}
+                        ? value.speciality?.name?.en
+                        : value.speciality?.name?.id}
                       {" Coach"}
                       {index < array.length - 1 && ", "}
                     </div>
@@ -433,23 +458,23 @@ export default function Coach({ slug }: any) {
                 className="text mb-4"
                 dangerouslySetInnerHTML={{
                   __html:
-                    locale === "en"
-                      ? coach.data.data[0].description.en
-                      : coach.data.data[0].description.id,
+                    (locale === "en"
+                      ? coach.data.data[0].description?.en
+                      : coach.data.data[0].description?.id) ?? "",
                 }}
               />
               {/* gak tampilin kalau other credetinals kosong */}
-              {coach.data.data[0].profile_other_credentials.length > 0 && (
+              {(coach.data.data[0].profile_other_credentials ?? []).length > 0 && (
                 <div className="subtitle mb-4">
                   {t("Other Credentials", locale)}
                 </div>
               )}
               <div className="text mb-4">
                 <ul>
-                  {coach.data.data[0].profile_other_credentials.map(
+                  {(coach.data.data[0].profile_other_credentials ?? []).map(
                     (value: any, index: number) => (
                       <li key={uuidv4()}>
-                        {value.credential.name} ({value.credential.abbreviation}
+                        {value.credential?.name} ({value.credential?.abbreviation}
                         )
                       </li>
                     )

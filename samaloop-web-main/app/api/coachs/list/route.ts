@@ -58,6 +58,11 @@ export async function GET(req: NextRequest) {
     }
 
     // ===============================
+    //  Company Affiliation Handling
+    // ===============================
+    const companySlug = req.nextUrl.searchParams.get('company');
+
+    // ===============================
     //  Base Query
     // ===============================
     let query = supabase
@@ -68,6 +73,7 @@ export async function GET(req: NextRequest) {
       slug,
       name,
       photo,
+      company_name,
       credential(id, abbreviation, logo),
       profile_other_credentials(
         credential(id, name, abbreviation, logo)
@@ -83,6 +89,14 @@ export async function GET(req: NextRequest) {
             { count: 'exact' }
         )
         .eq('status', 'active');
+
+    if (companySlug) {
+        // Halaman company: hanya tampilkan coach dari company tersebut.
+        query = query.eq('company_slug', companySlug);
+    } else {
+        // Search/homepage publik: sembunyikan semua coach yang terafiliasi company.
+        query = query.is('company_slug', null);
+    }
 
     // ===============================
     //  Filter Credential (utama + others)
@@ -234,7 +248,7 @@ export async function GET(req: NextRequest) {
     
     // Cek apakah ada parameter pencarian atau filter aktif
     const keyword = req.nextUrl.searchParams.get('keyword');
-    const isFiltering = keyword || req.nextUrl.searchParams.get('specialities') || req.nextUrl.searchParams.get('client');
+    const isFiltering = keyword || req.nextUrl.searchParams.get('specialities') || req.nextUrl.searchParams.get('client') || companySlug;
 
     let finalData, finalCount, finalError;
     let usedPage = parseInt(page);
@@ -253,7 +267,8 @@ export async function GET(req: NextRequest) {
         const { count: totalCount } = await supabase
             .from('profiles')
             .select('id', { count: 'exact', head: true })
-            .eq('status', 'active');
+            .eq('status', 'active')
+            .is('company_slug', null);
 
         const totalCoaches = totalCount ?? 0;
         const totalPages = Math.ceil(totalCoaches / limit);
