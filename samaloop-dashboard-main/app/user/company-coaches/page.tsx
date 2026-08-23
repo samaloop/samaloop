@@ -26,7 +26,7 @@ import dayjs from "dayjs";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useForm, SubmitHandler } from "react-hook-form";
 
-export default function PlacementList() {
+export default function CompanyCoachList() {
   const supabase = createClientComponentClient();
   const { userValue } = useAuth();
 
@@ -49,7 +49,11 @@ export default function PlacementList() {
         },
         {
           href: "/user/profile",
-          title: "Coachs",
+          title: "Coach",
+        },
+        {
+          href: "/user/company-coaches",
+          title: "Company Coaches",
         },
       ]);
       setMounted(true);
@@ -58,7 +62,10 @@ export default function PlacementList() {
 
   const fetcher = async (url: any) =>
     await axios.get(url).then((res) => res.data);
-  const data = useSWR("/api/profile/list?page=" + page + filter, fetcher);
+  const data = useSWR(
+    "/api/profile/list?page=" + page + "&affiliated=1" + filter,
+    fetcher
+  );
 
   const handleDeleteClick = async (id: any) => {
     Swal.fire({
@@ -80,8 +87,10 @@ export default function PlacementList() {
 
         await supabase.from("profiles").delete().eq("id", id);
 
-        const update = await axios.get("/api/profile/list?page=" + page);
-        mutate("/api/profile/list?page=" + page, update.data);
+        const update = await axios.get(
+          "/api/profile/list?page=" + page + "&affiliated=1"
+        );
+        mutate("/api/profile/list?page=" + page + "&affiliated=1", update.data);
 
         Swal.close();
       }
@@ -108,8 +117,8 @@ export default function PlacementList() {
       ])
       .eq("id", id);
 
-    const update = await axios.get("/api/profile/list?page=1");
-    mutate("/api/profile/list?page=1", update.data);
+    const update = await axios.get("/api/profile/list?page=1&affiliated=1");
+    mutate("/api/profile/list?page=1&affiliated=1", update.data);
 
     const dashboard = await axios.get("/api/dashboard");
     mutate("/api/dashboard", dashboard.data);
@@ -131,17 +140,26 @@ export default function PlacementList() {
 
   return (
     <Row>
-      <PageHeading heading="Coachs" />
+      <PageHeading heading="Company Coaches" />
       <Col xs={12} className="mb-6">
         <Card>
           <Card.Body>
+            <p className="text-muted">
+              Coach yang berafiliasi dengan perusahaan tertentu. Coach di
+              bawah ini disembunyikan dari pencarian publik (/search) dan
+              hanya bisa ditemukan lewat URL /search/company/[slug]
+              masing-masing.
+            </p>
             <div className="d-md-flex justify-content-between align-items-center border-bottom pb-4 mb-4">
               <div className="mb-3 mb-lg-0 text-center text-sm-start">
                 <h5>Total: {data.data !== undefined && data.data.count}</h5>
               </div>
               <div className="text-center text-md-start">
-                <Link href="/user/profile/create" className="btn btn-primary">
-                  Create
+                <Link
+                  href="/user/profile/create?from=company"
+                  className="btn btn-primary"
+                >
+                  Add Company Coach
                 </Link>
               </div>
             </div>
@@ -175,6 +193,7 @@ export default function PlacementList() {
                   <th>Date</th>
                   <th>Photo</th>
                   <th>Name</th>
+                  <th>Company</th>
                   <th>Status</th>
                   <th>Manage</th>
                 </tr>
@@ -182,10 +201,16 @@ export default function PlacementList() {
               <tbody>
                 {data.data === undefined ? (
                   <tr>
-                    <td colSpan={6}>
+                    <td colSpan={7}>
                       <Container className="text-center">
                         <Spinner animation="border" variant="primary" />
                       </Container>
+                    </td>
+                  </tr>
+                ) : data.data.data.length === 0 ? (
+                  <tr>
+                    <td colSpan={7} className="text-center">
+                      Belum ada coach yang berafiliasi dengan perusahaan.
                     </td>
                   </tr>
                 ) : (
@@ -205,20 +230,12 @@ export default function PlacementList() {
                           height={80}
                         />
                       </td>
+                      <td>{value.name}</td>
                       <td>
-                        {value.name}
-                        {value.company_slug && (
-                          <span
-                            className="badge bg-info ms-2"
-                            title={
-                              "Hanya bisa ditemukan lewat /search/company/" +
-                              value.company_slug +
-                              " — tidak muncul di pencarian publik"
-                            }
-                          >
-                            {value.company_name || value.company_slug}
-                          </span>
-                        )}
+                        <div>{value.company_name}</div>
+                        <small className="text-muted">
+                          /search/company/{value.company_slug}
+                        </small>
                       </td>
                       <td>
                         {value.status === "active" ? (
@@ -251,7 +268,8 @@ export default function PlacementList() {
                         <Link
                           href={
                             "/user/profile/update/" +
-                            encodeURIComponent(value.id)
+                            encodeURIComponent(value.id) +
+                            "?from=company"
                           }
                           className="text-dark"
                         >

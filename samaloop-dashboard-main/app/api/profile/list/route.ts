@@ -19,12 +19,16 @@ export async function GET(
         (parseInt(page) * limit) - 1
     ];
 
-    let query: any = supabase.from('profiles').select('id,created_at,name,photo,status,credential(abbreviation)', { count: 'exact' });
+    let query: any = supabase.from('profiles').select('id,created_at,name,photo,status,credential(abbreviation),company_slug,company_name', { count: 'exact' });
     query = query.order('created_at', { ascending: false });
     query = query.range(range[0], range[1]);
 
     if (req.nextUrl.searchParams.get('name') !== null) {
         query = query.ilike('name', '%' + req.nextUrl.searchParams.get('name') + '%');
+    }
+
+    if (req.nextUrl.searchParams.get('affiliated') !== null) {
+        query = query.not('company_slug', 'is', null);
     }
 
     const getData: any = await query;

@@ -13,7 +13,8 @@ import {
   Spinner,
 } from "react-bootstrap";
 import Swal from "sweetalert2";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
 import { useBreadcrumb } from "app/context/BreadcrumbContext";
 import useSWR, { mutate } from "swr";
@@ -34,6 +35,9 @@ export default function BusinessTypesCreate({
   const fetcher = async (url: any) =>
     await axios.get(url).then((res) => res.data);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const fromCompany = searchParams.get("from") === "company";
+  const backHref = fromCompany ? "/user/company-coaches" : "/user/profile";
 
   const customStyles = {
     menu: (provided: any) => ({
@@ -82,6 +86,31 @@ export default function BusinessTypesCreate({
     } else if (name === "linktree") {
       setLinktree(e.target.value);
     }
+  };
+
+  const companies = useSWR("/api/companies/list", fetcher);
+  const [companiesOption, setCompaniesOption]: any = useState(null);
+  useEffect(() => {
+    if (companies.data !== undefined && companiesOption === null) {
+      let companiesOptionCurrent: any = [];
+      for (const [index, value] of companies.data.data.entries()) {
+        companiesOptionCurrent.push({
+          value: value.id,
+          label: value.name,
+        });
+
+        if (index === companies.data.data.length - 1) {
+          setCompaniesOption(companiesOptionCurrent);
+        }
+      }
+      if (companies.data.data.length === 0) {
+        setCompaniesOption([]);
+      }
+    }
+  }, [companies]);
+  const [companySelected, setCompanySelected]: any = useState(null);
+  const companyChange = (selected: any) => {
+    setCompanySelected(selected);
   };
 
   const genders = useSWR("/api/genders/list", fetcher);
@@ -336,6 +365,12 @@ export default function BusinessTypesCreate({
 
       setName(data.data.data[0].name);
       setSlug(data.data.data[0].slug);
+      if (data.data.data[0].company_slug) {
+        setCompanySelected({
+          value: data.data.data[0].company_slug,
+          label: data.data.data[0].company_name,
+        });
+      }
       setPhone(data.data.data[0].contact.phone);
       setEmail(data.data.data[0].contact.email);
       setProfession(data.data.data[0].profession);
@@ -345,18 +380,24 @@ export default function BusinessTypesCreate({
       setFacebook(data.data.data[0].contact.facebook);
       setLinktree(data.data.data[0].contact.linktree);
 
-      setGendersSelected({
-        value: data.data.data[0].gender.id,
-        label: data.data.data[0].gender.name.en,
-      });
-      setAgesSelected({
-        value: data.data.data[0].age.id,
-        label: data.data.data[0].age.name.en,
-      });
-      setCredentialsSelected({
-        value: data.data.data[0].credential.id,
-        label: data.data.data[0].credential.name,
-      });
+      if (data.data.data[0].gender) {
+        setGendersSelected({
+          value: data.data.data[0].gender.id,
+          label: data.data.data[0].gender.name.en,
+        });
+      }
+      if (data.data.data[0].age) {
+        setAgesSelected({
+          value: data.data.data[0].age.id,
+          label: data.data.data[0].age.name.en,
+        });
+      }
+      if (data.data.data[0].credential) {
+        setCredentialsSelected({
+          value: data.data.data[0].credential.id,
+          label: data.data.data[0].credential.name,
+        });
+      }
 
       let otherCredentialsSelected = [];
       for (const value of data.data.data[0].profile_other_credentials) {
@@ -383,18 +424,24 @@ export default function BusinessTypesCreate({
         });
       }
 
-      setHoursSelected({
-        value: data.data.data[0].hour.id,
-        label: data.data.data[0].hour.name.en,
-      });
-      setYearsSelected({
-        value: data.data.data[0].year.id,
-        label: data.data.data[0].year.name.en,
-      });
-      setClientsSelected({
-        value: data.data.data[0].client.id,
-        label: data.data.data[0].client.name.en,
-      });
+      if (data.data.data[0].hour) {
+        setHoursSelected({
+          value: data.data.data[0].hour.id,
+          label: data.data.data[0].hour.name.en,
+        });
+      }
+      if (data.data.data[0].year) {
+        setYearsSelected({
+          value: data.data.data[0].year.id,
+          label: data.data.data[0].year.name.en,
+        });
+      }
+      if (data.data.data[0].client) {
+        setClientsSelected({
+          value: data.data.data[0].client.id,
+          label: data.data.data[0].client.name.en,
+        });
+      }
 
       let clientTypesSelected = [];
       for (const value of data.data.data[0].profile_client_types) {
@@ -510,7 +557,7 @@ export default function BusinessTypesCreate({
         photo = getPublicUrl.data.publicUrl;
       }
 
-      await supabase
+      const updateResult: any = await supabase
         .from("profiles")
         .update([
           {
@@ -540,9 +587,22 @@ export default function BusinessTypesCreate({
             gender: gendersSelected.value,
             age: agesSelected.value,
             awards_en: awardsEn,
+            company_slug: companySelected ? companySelected.value : null,
+            company_name: companySelected ? companySelected.label : null,
           },
         ])
         .eq("id", params.id);
+
+      if (updateResult.error) {
+        if (updateResult.error.code === "23505") {
+          throw new Error(
+            "Company '" +
+              (companySelected ? companySelected.label : "") +
+              "' sudah dipakai coach lain."
+          );
+        }
+        throw new Error(updateResult.error.message);
+      }
 
       await supabase
         .from("profile_other_credentials")
@@ -612,13 +672,15 @@ export default function BusinessTypesCreate({
       console.log("update2 : ", update2.data);
       mutate("/api/profile/detail/" + params.id, update2.data);
 
-      router.push("/user/profile");
+      router.push(
+        fromCompany || companySelected ? "/user/company-coaches" : "/user/profile"
+      );
 
       Swal.close();
     } catch (err: any) {
       Swal.fire({
         icon: "error",
-        text: err.response.data.error.code,
+        text: err.response?.data?.error?.code || err.message,
         confirmButtonText: "OK",
         allowOutsideClick: false,
         allowEscapeKey: false,
@@ -688,6 +750,31 @@ export default function BusinessTypesCreate({
                     defaultValue={slug}
                   />
                 </div>
+                <hr />
+                <div className="mb-3">
+                  <label htmlFor="company" className="form-label">
+                    Company
+                  </label>
+                  <Select
+                    id="company"
+                    className="react-select"
+                    isClearable
+                    value={companySelected}
+                    onChange={companyChange}
+                    options={companiesOption}
+                    isDisabled={companiesOption === null}
+                    styles={customStyles}
+                    placeholder="Public coach (tidak berafiliasi)"
+                  />
+                  <small className="text-muted">
+                    Pilih perusahaan kalau coach ini khusus untuk perusahaan
+                    tertentu. Coach akan disembunyikan dari pencarian publik
+                    (/search) dan hanya bisa ditemukan lewat
+                    /search/company/[slug]. Kosongkan untuk coach publik
+                    biasa. Kelola daftar perusahaan di menu Companies.
+                  </small>
+                </div>
+                <hr />
                 <div className="mb-3">
                   <label htmlFor="genders" className="form-label">
                     Gender
@@ -1021,6 +1108,9 @@ export default function BusinessTypesCreate({
                   </Tabs>
                 </div>
                 <div className="text-end mt-4">
+                  <Link href={backHref} className="btn btn-secondary me-2">
+                    Back
+                  </Link>
                   <Button variant="primary" type="submit">
                     Update
                   </Button>

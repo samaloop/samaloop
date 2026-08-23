@@ -149,7 +149,9 @@ const NavbarVertical = (props) => {
 						'/user/client-type',
 						'/user/price',
 						'/user/leads',
-						'/user/payments'
+						'/user/payments',
+						'/user/companies',
+						'/user/company-coaches'
 					],
 					children: [
 						{
@@ -246,6 +248,22 @@ const NavbarVertical = (props) => {
 							link: '/user/payments',
 							activePath: [
 								'/user/payments'
+							]
+						},
+						{
+							id: uuid(),
+							name: 'Companies',
+							link: '/user/companies',
+							activePath: [
+								'/user/companies'
+							]
+						},
+						{
+							id: uuid(),
+							name: 'Company Coaches',
+							link: '/user/company-coaches',
+							activePath: [
+								'/user/company-coaches'
 							]
 						},
 					]
