@@ -81,7 +81,7 @@ export default function User() {
                 <Link href="/user/profile">
                   <div className="d-flex justify-content-between align-items-center mb-3">
                     <div>
-                      <h4 className="mb-0">Coachs</h4>
+                      <h4 className="mb-0">Coaches</h4>
                     </div>
                     <div className="icon-shape icon-md bg-light-primary text-primary rounded-2">
                       <FaUsers />
@@ -96,6 +96,51 @@ export default function User() {
               </Card.Body>
             </Card>
           </Col>
+          
+ <Col lg={4} md={6} xs={12} className="mb-5">
+            <Card>
+              <Card.Body>
+                <Link href="/user/companies">
+                  <div className="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                      <h4 className="mb-0">Companies</h4>
+                    </div>
+                    <div className="icon-shape icon-md bg-light-primary text-primary rounded-2">
+                      <FaUsers />
+                    </div>
+                  </div>
+                  <div>
+                    <h1 className="fw-bold">
+                      {abbreviateNumber(data.data.companies, 0)}
+                    </h1>
+                  </div>
+                </Link>
+              </Card.Body>
+            </Card>
+          </Col>
+
+          <Col lg={4} md={6} xs={12} className="mb-5">
+            <Card>
+              <Card.Body>
+                <Link href="/user/company-coaches">
+                  <div className="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                      <h4 className="mb-0">Company Coaches</h4>
+                    </div>
+                    <div className="icon-shape icon-md bg-light-primary text-primary rounded-2">
+                      <FaUsers />
+                    </div>
+                  </div>
+                  <div>
+                    <h1 className="fw-bold">
+                      {abbreviateNumber(data.data.company_coaches, 0)}
+                    </h1>
+                  </div>
+                </Link>
+              </Card.Body>
+            </Card>
+          </Col>
+
           <Col lg={12} className="mb-5">
             <hr />
           </Col>
