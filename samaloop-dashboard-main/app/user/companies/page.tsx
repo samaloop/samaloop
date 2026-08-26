@@ -109,6 +109,7 @@ export default function CompanyList() {
               <thead>
                 <tr>
                   <th>#</th>
+                  <th>Logo</th>
                   <th>Slug</th>
                   <th>Name</th>
                   <th>Manage</th>
@@ -117,17 +118,31 @@ export default function CompanyList() {
               <tbody>
                 {data.data === undefined ? (
                   <tr>
-                    <td colSpan={4}>
+                    <td colSpan={5}>
                       <Container className="text-center">
                         <Spinner animation="border" variant="primary" />
                       </Container>
+                    </td>
+                  </tr>
+                ) : data.data.error ? (
+                  <tr>
+                    <td colSpan={5} className="text-center text-danger">
+                      Gagal memuat data: {data.data.error.message}. Pastikan
+                      tabel &quot;company&quot; sudah dibuat di database.
                     </td>
                   </tr>
                 ) : (
                   data.data.data.map((value: any, index: number) => (
                     <tr key={"data" + index}>
                       <td>{index + 1}</td>
-                      <td>{value.id}</td>
+                      <td>
+                        {value.logo !== null ? (
+                          <img src={value.logo} alt={value.name} width={50} />
+                        ) : (
+                          <span className="text-muted">Default</span>
+                        )}
+                      </td>
+                      <td>{value.slug}</td>
                       <td>{value.name}</td>
                       <td>
                         <Link

@@ -12,9 +12,10 @@ export async function POST(
     );
     const body = await req.json();
 
-    const { error }: any = await supabase.from('companies').insert({
-        id: body.id,
-        name: body.name
+    const { error }: any = await supabase.from('company').insert({
+        slug: body.slug,
+        name: body.name,
+        logo: body.logo
     });
 
     if (error !== null) {

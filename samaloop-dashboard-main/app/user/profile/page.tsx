@@ -207,16 +207,16 @@ export default function PlacementList() {
                       </td>
                       <td>
                         {value.name}
-                        {value.company_slug && (
+                        {value.company && (
                           <span
                             className="badge bg-info ms-2"
                             title={
                               "Hanya bisa ditemukan lewat /search/company/" +
-                              value.company_slug +
+                              value.company.slug +
                               " — tidak muncul di pencarian publik"
                             }
                           >
-                            {value.company_name || value.company_slug}
+                            {value.company.name}
                           </span>
                         )}
                       </td>

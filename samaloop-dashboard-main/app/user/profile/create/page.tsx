@@ -111,6 +111,7 @@ export default function BusinessTypesCreate({
         companiesOptionCurrent.push({
           value: value.id,
           label: value.name,
+          logo: value.logo,
         });
 
         if (index === companies.data.data.length - 1) {
@@ -484,20 +485,12 @@ export default function BusinessTypesCreate({
             gender: gendersSelected.value,
             age: agesSelected.value,
             awards_en: awardsEn,
-            company_slug: companySelected ? companySelected.value : null,
-            company_name: companySelected ? companySelected.label : null,
+            company: companySelected ? companySelected.value : null,
           },
         ])
         .select("id");
 
       if (profiles.error) {
-        if (profiles.error.code === "23505") {
-          throw new Error(
-            "Company '" +
-              (companySelected ? companySelected.label : "") +
-              "' sudah dipakai coach lain."
-          );
-        }
         throw new Error(profiles.error.message);
       }
 
@@ -647,6 +640,14 @@ export default function BusinessTypesCreate({
                   /search/company/[slug]. Kosongkan untuk coach publik biasa.
                   Kelola daftar perusahaan di menu Companies.
                 </small>
+                {companySelected?.logo && (
+                  <img
+                    className="mt-2 d-block"
+                    src={companySelected.logo}
+                    alt="Company logo"
+                    width={80}
+                  />
+                )}
               </div>
               <hr />
               <div className="mb-3">

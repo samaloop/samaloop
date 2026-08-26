@@ -17,10 +17,13 @@ import axios from "axios";
 import useSWR, { mutate } from "swr";
 import { useState, useEffect } from "react";
 import { useBreadcrumb } from "app/context/BreadcrumbContext";
+import { generateSlug } from "@/helper/helper";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 export default function CompanyUpdate({
   params,
 }: Readonly<{ params: { id: string } }>) {
+  const supabase = createClientComponentClient();
   const router = useRouter();
   const fetcher = async (url: any) =>
     await axios.get(url).then((res) => res.data);
@@ -50,7 +53,9 @@ export default function CompanyUpdate({
   }, [mounted, data]);
 
   type input = {
+    slug: any;
     name: any;
+    logo: any;
   };
   const { register, handleSubmit } = useForm<input>();
   const onSubmit: SubmitHandler<input> = async (input) => {
@@ -64,6 +69,39 @@ export default function CompanyUpdate({
       },
     });
     try {
+      const logoCurrent: any = data.data.data[0].logo;
+      if (input.logo.length > 0) {
+        const { data: uploaded, error: uploadError }: any =
+          await supabase.storage
+            .from("companies")
+            .upload(Date.now() + ".jpeg", input.logo[0]);
+
+        if (uploadError) {
+          throw new Error(
+            "Gagal upload logo: " +
+              uploadError.message +
+              ". Pastikan storage bucket \"companies\" (public) sudah dibuat di Supabase."
+          );
+        }
+
+        const getPublicUrl: any = supabase.storage
+          .from("companies")
+          .getPublicUrl(uploaded.path);
+
+        input.logo = getPublicUrl.data.publicUrl;
+
+        if (logoCurrent !== null) {
+          const path = logoCurrent.split("companies/");
+          if (path[1] !== undefined) {
+            await supabase.storage.from("companies").remove([path[1]]);
+          }
+        }
+      } else {
+        input.logo = logoCurrent;
+      }
+
+      input.slug = generateSlug(input.slug);
+
       await axios.post("/api/companies/update/" + params.id, input);
 
       const update = await axios.get("/api/companies/list");
@@ -78,7 +116,7 @@ export default function CompanyUpdate({
     } catch (err: any) {
       Swal.fire({
         icon: "error",
-        text: err.response.data.error,
+        text: err.response?.data?.error || err.message,
         confirmButtonText: "OK",
         allowOutsideClick: false,
         allowEscapeKey: false,
@@ -100,6 +138,12 @@ export default function CompanyUpdate({
                     <Spinner animation="border" variant="primary" />
                   </Container>
                 );
+              } else if (data.data.error) {
+                return (
+                  <Container className="text-center text-danger">
+                    Gagal memuat data: {data.data.error.message}
+                  </Container>
+                );
               } else if (data.data.data.length === 0) {
                 return (
                   <Container className="text-center">
@@ -110,15 +154,19 @@ export default function CompanyUpdate({
                 return (
                   <form onSubmit={handleSubmit(onSubmit)}>
                     <Form.Group className="mb-3">
-                      <Form.Label>Slug</Form.Label>
+                      <Form.Label>
+                        Slug <span className="text-danger">*</span>
+                      </Form.Label>
                       <Form.Control
                         type="text"
-                        disabled
-                        readOnly
-                        value={data.data.data[0].id}
+                        placeholder="mis. pln"
+                        required
+                        {...register("slug", { required: true })}
+                        defaultValue={data.data.data[0].slug}
                       />
                       <Form.Text className="text-muted">
-                        Slug tidak bisa diubah setelah dibuat.
+                        Dipakai di URL /search/company/[slug]. Huruf kecil,
+                        tanpa spasi.
                       </Form.Text>
                     </Form.Group>
                     <Form.Group className="mb-3">
@@ -132,6 +180,28 @@ export default function CompanyUpdate({
                         {...register("name", { required: true })}
                         defaultValue={data.data.data[0].name}
                       />
+                    </Form.Group>
+                    <Form.Group className="mb-3">
+                      <Form.Label>Logo</Form.Label>
+                      <Form.Control
+                        type="file"
+                        accept="image/*"
+                        placeholder="Logo"
+                        {...register("logo")}
+                      />
+                      <Form.Text className="text-muted">
+                        Opsional. Ditampilkan di header halaman
+                        /search/company/[slug] menggantikan logo Samaloop.
+                        Kalau kosong, otomatis pakai logo Samaloop default.
+                      </Form.Text>
+                      {data.data.data[0].logo !== null && (
+                        <img
+                          className="mt-2 d-block"
+                          src={data.data.data[0].logo}
+                          width={100}
+                          alt="Logo"
+                        />
+                      )}
                     </Form.Group>
                     <div className="text-end mt-4">
                       <Button variant="primary" type="submit">

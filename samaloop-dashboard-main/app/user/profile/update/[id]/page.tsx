@@ -97,6 +97,7 @@ export default function BusinessTypesCreate({
         companiesOptionCurrent.push({
           value: value.id,
           label: value.name,
+          logo: value.logo,
         });
 
         if (index === companies.data.data.length - 1) {
@@ -365,10 +366,11 @@ export default function BusinessTypesCreate({
 
       setName(data.data.data[0].name);
       setSlug(data.data.data[0].slug);
-      if (data.data.data[0].company_slug) {
+      if (data.data.data[0].company) {
         setCompanySelected({
-          value: data.data.data[0].company_slug,
-          label: data.data.data[0].company_name,
+          value: data.data.data[0].company.id,
+          label: data.data.data[0].company.name,
+          logo: data.data.data[0].company.logo,
         });
       }
       setPhone(data.data.data[0].contact.phone);
@@ -587,20 +589,12 @@ export default function BusinessTypesCreate({
             gender: gendersSelected.value,
             age: agesSelected.value,
             awards_en: awardsEn,
-            company_slug: companySelected ? companySelected.value : null,
-            company_name: companySelected ? companySelected.label : null,
+            company: companySelected ? companySelected.value : null,
           },
         ])
         .eq("id", params.id);
 
       if (updateResult.error) {
-        if (updateResult.error.code === "23505") {
-          throw new Error(
-            "Company '" +
-              (companySelected ? companySelected.label : "") +
-              "' sudah dipakai coach lain."
-          );
-        }
         throw new Error(updateResult.error.message);
       }
 
@@ -773,6 +767,21 @@ export default function BusinessTypesCreate({
                     /search/company/[slug]. Kosongkan untuk coach publik
                     biasa. Kelola daftar perusahaan di menu Companies.
                   </small>
+                  {companySelected &&
+                    companiesOption?.find(
+                      (c: any) => c.value === companySelected.value
+                    )?.logo && (
+                      <img
+                        className="mt-2 d-block"
+                        src={
+                          companiesOption.find(
+                            (c: any) => c.value === companySelected.value
+                          ).logo
+                        }
+                        alt="Company logo"
+                        width={80}
+                      />
+                    )}
                 </div>
                 <hr />
                 <div className="mb-3">

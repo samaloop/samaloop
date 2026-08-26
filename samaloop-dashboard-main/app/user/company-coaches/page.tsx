@@ -232,9 +232,17 @@ export default function CompanyCoachList() {
                       </td>
                       <td>{value.name}</td>
                       <td>
-                        <div>{value.company_name}</div>
+                        {value.company?.logo && (
+                          <img
+                            src={value.company.logo}
+                            alt={value.company.name}
+                            width={40}
+                            className="mb-1 d-block"
+                          />
+                        )}
+                        <div>{value.company?.name}</div>
                         <small className="text-muted">
-                          /search/company/{value.company_slug}
+                          /search/company/{value.company?.slug}
                         </small>
                       </td>
                       <td>

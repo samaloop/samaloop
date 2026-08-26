@@ -11,7 +11,7 @@ export async function GET(
         String(process.env.NEXT_PUBLIC_SUPABASE_URL),
         String(process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY)
     );
-    const getData = await supabase.from('companies').select('id,name').eq('id', params.id);
+    const getData = await supabase.from('company').select('id,slug,name,logo').eq('id', params.id);
 
     return NextResponse.json(getData);
 }

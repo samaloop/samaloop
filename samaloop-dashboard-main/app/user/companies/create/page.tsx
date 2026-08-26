@@ -10,8 +10,10 @@ import { mutate } from "swr";
 import { useState, useEffect } from "react";
 import { useBreadcrumb } from "app/context/BreadcrumbContext";
 import { generateSlug } from "@/helper/helper";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 export default function CompanyCreate() {
+  const supabase = createClientComponentClient();
   const router = useRouter();
 
   const { breadcrumbStore } = useBreadcrumb();
@@ -38,8 +40,9 @@ export default function CompanyCreate() {
   }, [mounted]);
 
   type input = {
-    id: any;
+    slug: any;
     name: any;
+    logo: any;
   };
   const { register, handleSubmit } = useForm<input>();
   const onSubmit: SubmitHandler<input> = async (input) => {
@@ -53,9 +56,31 @@ export default function CompanyCreate() {
       },
     });
     try {
+      let logo = null;
+      if (input.logo.length > 0) {
+        const { data, error: uploadError }: any = await supabase.storage
+          .from("companies")
+          .upload(Date.now() + ".jpeg", input.logo[0]);
+
+        if (uploadError) {
+          throw new Error(
+            "Gagal upload logo: " +
+              uploadError.message +
+              ". Pastikan storage bucket \"companies\" (public) sudah dibuat di Supabase."
+          );
+        }
+
+        const getPublicUrl: any = supabase.storage
+          .from("companies")
+          .getPublicUrl(data.path);
+
+        logo = getPublicUrl.data.publicUrl;
+      }
+
       await axios.post("/api/companies/create", {
-        id: generateSlug(input.id),
+        slug: generateSlug(input.slug),
         name: input.name,
+        logo: logo,
       });
 
       const update = await axios.get("/api/companies/list");
@@ -67,7 +92,7 @@ export default function CompanyCreate() {
     } catch (err: any) {
       Swal.fire({
         icon: "error",
-        text: err.response.data.error,
+        text: err.response?.data?.error || err.message,
         confirmButtonText: "OK",
         allowOutsideClick: false,
         allowEscapeKey: false,
@@ -91,11 +116,11 @@ export default function CompanyCreate() {
                   type="text"
                   placeholder="mis. pln"
                   required
-                  {...register("id", { required: true })}
+                  {...register("slug", { required: true })}
                 />
                 <Form.Text className="text-muted">
                   Dipakai di URL /search/company/[slug]. Huruf kecil, tanpa
-                  spasi, tidak bisa diubah setelah dibuat.
+                  spasi.
                 </Form.Text>
               </Form.Group>
               <Form.Group className="mb-3">
@@ -110,6 +135,20 @@ export default function CompanyCreate() {
                 />
                 <Form.Text className="text-muted">
                   Dipakai sebagai judul di halaman /search/company/[slug].
+                </Form.Text>
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label>Logo</Form.Label>
+                <Form.Control
+                  type="file"
+                  accept="image/*"
+                  placeholder="Logo"
+                  {...register("logo")}
+                />
+                <Form.Text className="text-muted">
+                  Opsional. Ditampilkan di header halaman
+                  /search/company/[slug] menggantikan logo Samaloop. Kalau
+                  kosong, otomatis pakai logo Samaloop default.
                 </Form.Text>
               </Form.Group>
               <div className="text-end mt-4">

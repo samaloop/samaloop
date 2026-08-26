@@ -5,8 +5,8 @@ import { cookies } from 'next/headers';
 export async function GET() {
     const cookieStore = cookies();
     const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
-    let query: any = supabase.from('companies').select('id,name', { count: 'exact' });
-    query = query.order('created_at', { ascending: true });
+    let query: any = supabase.from('company').select('id,slug,name,logo', { count: 'exact' });
+    query = query.order('id', { ascending: true });
     const getData: any = await query;
     return NextResponse.json(getData);
 }

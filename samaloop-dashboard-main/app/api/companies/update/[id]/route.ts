@@ -13,8 +13,10 @@ export async function POST(
     );
     const body = await req.json();
 
-    const { error }: any = await supabase.from('companies').update({
-        name: body.name
+    const { error }: any = await supabase.from('company').update({
+        slug: body.slug,
+        name: body.name,
+        logo: body.logo
     }).eq('id', params.id);
 
     if (error !== null) {
