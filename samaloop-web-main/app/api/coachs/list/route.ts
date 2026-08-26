@@ -61,6 +61,10 @@ export async function GET(req: NextRequest) {
     //  Company Affiliation Handling
     // ===============================
     const companySlug = req.nextUrl.searchParams.get('company');
+    let company = ',company(id,slug,name,logo)';
+    if (companySlug) {
+        company = ',company!inner(id,slug,name,logo)';
+    }
 
     // ===============================
     //  Base Query
@@ -73,7 +77,6 @@ export async function GET(req: NextRequest) {
       slug,
       name,
       photo,
-      company_name,
       credential(id, abbreviation, logo),
       profile_other_credentials(
         credential(id, name, abbreviation, logo)
@@ -85,6 +88,7 @@ export async function GET(req: NextRequest) {
       ${price}
       ${specialities}
       ${year}
+      ${company}
     `,
             { count: 'exact' }
         )
@@ -92,10 +96,10 @@ export async function GET(req: NextRequest) {
 
     if (companySlug) {
         // Halaman company: hanya tampilkan coach dari company tersebut.
-        query = query.eq('company_slug', companySlug);
+        query = query.eq('company.slug', companySlug);
     } else {
         // Search/homepage publik: sembunyikan semua coach yang terafiliasi company.
-        query = query.is('company_slug', null);
+        query = query.is('company', null);
     }
 
     // ===============================
@@ -268,7 +272,7 @@ export async function GET(req: NextRequest) {
             .from('profiles')
             .select('id', { count: 'exact', head: true })
             .eq('status', 'active')
-            .is('company_slug', null);
+            .is('company', null);
 
         const totalCoaches = totalCount ?? 0;
         const totalPages = Math.ceil(totalCoaches / limit);

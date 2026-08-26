@@ -116,21 +116,21 @@ export default function Coach({ slug }: any) {
               </li>
             </ol>
           </nav>
-          {coach.data.data[0].company_slug && (
+          {coach.data.data[0].company?.slug && (
             <div className="mb-3">
               <LocalizedLink
-                href={"/search/company/" + coach.data.data[0].company_slug}
+                href={"/search/company/" + coach.data.data[0].company.slug}
               >
                 <button className="btn btn-outline-secondary btn-sm">
                   <FiArrowLeft size={16} className="me-1" />
                   {locale === "en"
                     ? "Back to " +
-                      (coach.data.data[0].company_name ??
-                        coach.data.data[0].company_slug) +
+                      (coach.data.data[0].company.name ??
+                        coach.data.data[0].company.slug) +
                       " coach list"
                     : "Kembali ke daftar coach " +
-                      (coach.data.data[0].company_name ??
-                        coach.data.data[0].company_slug)}
+                      (coach.data.data[0].company.name ??
+                        coach.data.data[0].company.slug)}
                 </button>
               </LocalizedLink>
             </div>

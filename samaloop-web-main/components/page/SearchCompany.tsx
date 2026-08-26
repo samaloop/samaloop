@@ -35,7 +35,7 @@ const SearchCompany = ({ slug }: { slug: string }) => {
       ) : (
         <>
           <div className="info mb-4">
-            <div className="title">Daftar coach {coachs.data.data[0].company_name ?? slug}</div>
+            <div className="title">Daftar coach {coachs.data.data[0].company?.name ?? slug}</div>
           </div>
           <div className="search-result mb-4">
             {coachs.data.data.map((value: any) => (
