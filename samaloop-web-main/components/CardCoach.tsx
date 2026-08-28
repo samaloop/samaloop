@@ -137,8 +137,16 @@ const CardCoach = ({ coach, onProfileClick }: any) => {
                 {t("View Profile", locale)}
             </div>
           ) : (
-            // Jika TIDAK ada (halaman lain), gunakan Link seperti semula
-            <LocalizedLink href={"/coach/" + coach.slug}>
+            // Jika TIDAK ada (halaman lain), gunakan Link seperti semula.
+            // Coach yang terafiliasi company diarahkan ke halaman detail
+            // company-nya sendiri, bukan /coach/[slug] publik.
+            <LocalizedLink
+              href={
+                coach.company?.slug
+                  ? "/search/company/" + coach.company.slug + "/" + coach.slug
+                  : "/coach/" + coach.slug
+              }
+            >
               <div className="btn btn-profile">{t("View Profile", locale)}</div>
             </LocalizedLink>
           )}

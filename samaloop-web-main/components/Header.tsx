@@ -19,28 +19,21 @@ const Header = () => {
   const navbarCollapseRef: any = useRef<HTMLInputElement>();
   const [activeSection, setActiveSection] = useState("");
 
-  // Halaman unlisted /search/company/[slug]: header tidak boleh punya
+  // Halaman unlisted /search/company/[slug] (list maupun detail coach di
+  // bawahnya, /search/company/[slug]/[coachSlug]): header tidak boleh punya
   // navigasi keluar, dan logo mengikuti company yang bersangkutan.
+  // (/coach/[slug] untuk coach company sudah di-redirect ke sini sebelum
+  // sempat dirender, jadi Header tidak perlu tahu soal /coach/[slug].)
   const companySlugMatch = pathname.match(/^\/search\/company\/([^/]+)/);
   const companySlug = companySlugMatch?.[1];
-
-  // Halaman detail /coach/[slug]: kalau coach itu terafiliasi company,
-  // logo header ikut logo company-nya juga (nav tetap normal, tidak disembunyikan).
-  const coachSlugMatch = pathname.match(/^\/coach\/([^/]+)/);
-  const coachSlug = coachSlugMatch?.[1];
 
   const fetcher = async (url: any) => await axios.get(url).then((res) => res.data);
   const companyData = useSWR(
     companySlug ? `/api/coachs/list?company=${companySlug}` : null,
     fetcher
   );
-  const coachData = useSWR(
-    coachSlug ? `/api/coachs/detail/${coachSlug}` : null,
-    fetcher
-  );
-  const companyLogo =
-    companyData.data?.data?.[0]?.company?.logo ??
-    coachData.data?.data?.[0]?.company?.logo;
+  const companyLogo = companyData.data?.data?.[0]?.company?.logo;
+  const isCompanyContext = !!companySlug;
 
   const handleScroll = () => {
     const sections = document.querySelectorAll("section");
@@ -141,31 +134,32 @@ const Header = () => {
   return (
     <nav className="navbar navbar-expand-lg bg-white sticky-top">
       <div className="container">
-        {companySlug ? (
-          <span className="navbar-brand">
+        {isCompanyContext ? (
+          <span className="navbar-brand company-logo-wrap">
             <Image
+              className="company-logo-img"
               priority
               src={companyLogo ?? "/images/logo.png"}
               alt="Logo"
               width={160}
               height={50}
+              style={{ objectFit: "contain", objectPosition: "left center" }}
             />
           </span>
         ) : (
           <LocalizedLink href={"/"} className="navbar-brand">
             <Image
               priority
-              src={companyLogo ?? "/images/logo.png"}
+              src="/images/logo.png"
               alt="Logo"
               width={160}
               height={50}
             />
           </LocalizedLink>
         )}
-        {companySlug && languageSwitcherUI}
         {pathname !== "/en/coach-form" &&
         pathname !== "/coach-form" &&
-        !companySlug ? (
+        !isCompanyContext ? (
           <>
             <button
               ref={toggleRef}

@@ -543,6 +543,37 @@ select:focus,
   color: #000000;
 }
 
+.company-coach-header {
+  font-family: "Montserrat";
+  text-align: center;
+  padding: 24px 0 8px;
+}
+
+.company-coach-header .title {
+  font-size: 32px;
+  font-weight: 800;
+  color: #0055a5;
+  margin-bottom: 10px;
+}
+
+.company-coach-header .title span {
+  color: #f36d24;
+}
+
+.company-coach-header .accent-bar {
+  width: 64px;
+  height: 4px;
+  border-radius: 2px;
+  margin: 0 auto 14px;
+  background: linear-gradient(90deg, #feb933 0%, #f36d24 100%);
+}
+
+.company-coach-header .subtitle {
+  font-size: 15px;
+  font-weight: 500;
+  color: #6c757d;
+}
+
 .page-search .search-result {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
@@ -705,6 +736,19 @@ select:focus,
 .toast-container {
   top: 80px !important;
   opacity: 0.9;
+}
+
+.company-logo-wrap {
+  display: inline-flex;
+  align-items: center;
+  height: 50px;
+  max-width: 200px;
+}
+
+.company-logo-img {
+  width: auto !important;
+  height: 100% !important;
+  max-width: 200px;
 }
 
 .toast .toast-body {
@@ -1028,6 +1072,19 @@ select:focus,
   .swiper-button-prev-custom,
   .swiper-button-next-custom {
     display: none !important;
+  }
+
+  .company-logo-wrap {
+    height: 36px;
+    max-width: 130px;
+  }
+
+  .company-logo-img {
+    max-width: 130px;
+  }
+
+  .company-coach-header .title {
+    font-size: 24px;
   }
 
   .page-coach .name,

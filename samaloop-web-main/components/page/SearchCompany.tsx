@@ -1,5 +1,5 @@
 "use client";
-import CardCoach from "@/components/CardCoach";
+import CardCoachCompany from "@/components/CardCoachCompany";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import useSWR from "swr";
 import axios from "axios";
@@ -34,12 +34,20 @@ const SearchCompany = ({ slug }: { slug: string }) => {
         </div>
       ) : (
         <>
-          <div className="info mb-4">
-            <div className="title">Daftar coach {coachs.data.data[0].company?.name ?? slug}</div>
+          <div className="company-coach-header mb-4">
+            <div className="title">
+              Daftar Coach{" "}
+              <span>{coachs.data.data[0].company?.name ?? slug}</span>
+            </div>
+            <div className="accent-bar" />
+            <div className="subtitle">
+              {coachs.data.count} coach siap mendampingi perjalanan coaching
+              Anda
+            </div>
           </div>
           <div className="search-result mb-4">
             {coachs.data.data.map((value: any) => (
-              <CardCoach key={uuidv4()} coach={value} />
+              <CardCoachCompany key={uuidv4()} coach={value} />
             ))}
           </div>
           {coachs.data.pageTotal > 1 && (

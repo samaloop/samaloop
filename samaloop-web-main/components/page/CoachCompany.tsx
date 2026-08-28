@@ -1,6 +1,6 @@
 "use client";
 import { GoHome } from "react-icons/go";
-import { FiClock, FiUsers } from "react-icons/fi";
+import { FiClock, FiUsers, FiArrowLeft } from "react-icons/fi";
 import {
   FaLinkedin,
   FaSquareInstagram,
@@ -22,10 +22,10 @@ import { useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import CoachingModal from "@/components/CoachingModal";
 
-
-
-
-export default function Coach({ slug }: any) {
+// Halaman detail coach untuk coach yang terafiliasi company (unlisted).
+// Sengaja dipisah dari components/page/Coach.tsx karena rencananya desain
+// halaman ini akan dibuat berbeda dari halaman coach publik biasa.
+export default function CoachCompany({ slug, companySlug }: any) {
   const { locale } = useLocale();
   const [fullUrl, setFullUrl] = useState("");
   const [isBookButtonHovered, setIsBookButtonHovered] = useState(false);
@@ -34,21 +34,11 @@ export default function Coach({ slug }: any) {
     if (typeof window !== "undefined") {
       const { protocol, host, pathname, search } = window.location;
       setFullUrl(`${protocol}//${host}${pathname}${search}`);
-
-
-      const storedEmail = localStorage.getItem("user_lead_contact");
-
-      // if (!storedEmail) {
-      //   setIsBlocked(true);
-      //   setIsModalOpen(false);
-      // }
     }
   }, []);
 
   const fetcher = async (url: any) =>
     await axios.get(url).then((res) => res.data);
-
-
 
   const coach: any = useSWR("/api/coachs/detail/" + slug, fetcher);
 
@@ -66,7 +56,6 @@ export default function Coach({ slug }: any) {
   };
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isBlocked, setIsBlocked] = useState(false);
 
   return (
     <div className="page-coach container mt-4">
@@ -102,7 +91,7 @@ export default function Coach({ slug }: any) {
       ) : (
 
         <>
-          <nav aria-label="breadcrumb">
+          {/* <nav aria-label="breadcrumb">
             <ol className="breadcrumb">
               <li className="breadcrumb-item">
                 <LocalizedLink href={"/"}>
@@ -115,7 +104,20 @@ export default function Coach({ slug }: any) {
                 </LocalizedLink>
               </li>
             </ol>
-          </nav>
+          </nav> */}
+          <div className="mb-3">
+            <LocalizedLink href={"/search/company/" + companySlug}>
+              <button className="btn btn-outline-secondary btn-sm">
+                <FiArrowLeft size={16} className="me-1" />
+                {locale === "en"
+                  ? "Back to " +
+                    (coach.data.data[0].company?.name ?? companySlug) +
+                    " coach list"
+                  : "Kembali ke daftar coach " +
+                    (coach.data.data[0].company?.name ?? companySlug)}
+              </button>
+            </LocalizedLink>
+          </div>
           <div className="row">
             <div className="col-12 col-md-3">
               <div className="text-start">
@@ -198,7 +200,7 @@ export default function Coach({ slug }: any) {
                   </div>
 
                 </div>
-                <div className="other-info">
+                {/* <div className="other-info">
                   <div className="info-item mb-2">
                     <FiClock size={18} />{" "}
                     {locale === "en"
@@ -272,7 +274,7 @@ export default function Coach({ slug }: any) {
                       )
                     )}
                   </div>
-                </div>
+                </div> */}
 
                 {coach.data.data[0].contact?.linkedin !== undefined ||
                   coach.data.data[0].contact?.instagram !== undefined ||
@@ -329,36 +331,6 @@ export default function Coach({ slug }: any) {
                       ) : (
                         ""
                       )}
-                      {/* {coach.data.data[0].contact.phone &&
-                        (() => {
-                          let phoneNumber =
-                            coach.data.data[0].contact.phone.replace(
-                              /[^0-9]/g,
-                              ""
-                            );
-                          if (phoneNumber.startsWith("0")) {
-                            phoneNumber = "62" + phoneNumber.substring(1);
-                          }
-                          return (
-                            <a
-                              href={`https://wa.me/${phoneNumber}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              <FaWhatsapp size={24} />
-                            </a>
-                          );
-                        })()} */}
-                      {/* {coach.data.data[0].contact.email !== undefined &&
-                        coach.data.data[0].contact.email !== "" ? (
-                        <a href={"mailto:" + coach.data.data[0].contact.email}>
-                          <MdEmail size={24} />{" "}
-                        </a>
-                      ) : (
-                        ""
-                      )} */}
-
-
                       {coach.data.data[0].contact.linktree !== undefined &&
                         coach.data.data[0].contact.linktree !== "" ? (
                         <a
@@ -375,8 +347,6 @@ export default function Coach({ slug }: any) {
                 ) : (
                   ""
                 )}
-                {/* tambahan tombol book coaching dan modalnya */}
-                {/* COMMENT DULU */}
                 <div className="mt-4 mb-4">
                   <button
                     onClick={() => setIsModalOpen(true)}
@@ -391,9 +361,8 @@ export default function Coach({ slug }: any) {
                   >
                     {t("Book a Discovery Call", locale)}
                   </button>
-                </div> 
+                </div>
 
-                {/* Komponen Modal */}
                 {coach.data && (
                   <CoachingModal
                     isOpen={isModalOpen}
@@ -407,7 +376,6 @@ export default function Coach({ slug }: any) {
                 <a href={"https://wa.me/6285770916736?text=Halo%20Admin%20Samaloop,%0ASaya%20mau%20bertanya%20tentang%20layanan%20coaching."} target="_blank" rel="noopener noreferrer"
                   className="w-100 btn"
                   style={{
-                    // backgroundColor: "#f59e42",
                     border: "2px solid #f59e42",
                     color: "#f59e42",
                   }}
@@ -418,7 +386,6 @@ export default function Coach({ slug }: any) {
             </div>
 
             <div className="col-12 col-md-9 ps-4">
-              {/* <div className="subtitle">{coach.data.data[0].profession}</div> */}
               <div className="d-flex flex-wrap column-gap-2 row-gap-0 justify-content-center justify-content-md-start">
                 {(coach.data.data[0].profile_specialities ?? []).map(
                   (value: any, index: number, array: any[]) => (
@@ -444,7 +411,6 @@ export default function Coach({ slug }: any) {
                       : coach.data.data[0].description?.id) ?? "",
                 }}
               />
-              {/* gak tampilin kalau other credetinals kosong */}
               {(coach.data.data[0].profile_other_credentials ?? []).length > 0 && (
                 <div className="subtitle mb-4">
                   {t("Other Credentials", locale)}

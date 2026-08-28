@@ -77,7 +77,9 @@ export async function GET(req: NextRequest) {
       slug,
       name,
       photo,
-      credential(id, abbreviation, logo),
+      profession,
+      department(id, name),
+      credential(id, name, abbreviation, logo),
       profile_other_credentials(
         credential(id, name, abbreviation, logo)
       )

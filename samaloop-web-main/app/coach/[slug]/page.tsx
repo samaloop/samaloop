@@ -1,17 +1,18 @@
 import type { Metadata } from "next";
 import CoachComponent from "@/components/page/Coach";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { cache } from "react";
 
 type Props = Readonly<{
   params: { slug: string };
 }>;
 
-async function getCoach(slug: string) {
+const getCoach = cache(async (slug: string) => {
   const supabase = createClientComponentClient();
   const coach: any = await supabase
     .from("profiles")
-    .select("name,consultation_fee,credential(abbreviation)", { count: "exact" })
+    .select("name,consultation_fee,credential(abbreviation),company(slug)", { count: "exact" })
     .eq("slug", slug);
 
   if (coach.data.length === 0) {
@@ -19,7 +20,7 @@ async function getCoach(slug: string) {
   } else {
     return coach.data[0];
   }
-}
+});
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const coach = await getCoach(params.slug);
@@ -43,5 +44,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function Coach({ params }: Props) {
+  const coach = await getCoach(params.slug);
+
+  if (coach.company?.slug) {
+    redirect(`/search/company/${coach.company.slug}/${params.slug}`);
+  }
+
   return <CoachComponent slug={params.slug} />;
 }
