@@ -1,17 +1,6 @@
 "use client";
-import { GoHome } from "react-icons/go";
-import { FiClock, FiUsers, FiArrowLeft } from "react-icons/fi";
-import {
-  FaLinkedin,
-  FaSquareInstagram,
-  FaTiktok,
-  FaFacebook,
-  FaShareFromSquare,
-  FaWhatsapp,
-} from "react-icons/fa6";
-import { FaChalkboardTeacher } from "react-icons/fa";
-import { MdEmail } from "react-icons/md";
-import { SiLinktree } from "react-icons/si";
+import { FiArrowLeft } from "react-icons/fi";
+import { FaShareFromSquare } from "react-icons/fa6";
 import Image from "next/image";
 import { useLocale } from "@/context/LocaleContext";
 import { t } from "@/helper/helper";
@@ -91,20 +80,6 @@ export default function CoachCompany({ slug, companySlug }: any) {
       ) : (
 
         <>
-          {/* <nav aria-label="breadcrumb">
-            <ol className="breadcrumb">
-              <li className="breadcrumb-item">
-                <LocalizedLink href={"/"}>
-                  <GoHome size={20} />
-                </LocalizedLink>
-              </li>
-              <li className="breadcrumb-item" aria-current="page">
-                <LocalizedLink className="active" href={"/coach/slug/" + slug}>
-                  {coach.data.data[0].name}
-                </LocalizedLink>
-              </li>
-            </ol>
-          </nav> */}
           <div className="mb-3">
             <LocalizedLink href={"/search/company/" + companySlug}>
               <button className="btn btn-outline-secondary btn-sm">
@@ -141,212 +116,34 @@ export default function CoachCompany({ slug, companySlug }: any) {
                   <br />
                   {coach.data.data[0].name}
                 </div>
-                <div className="certificate">
-                  {coach.data.data[0].credential?.logo !== undefined && (
-                    <Image
-                      className="mb-2 me-2"
-                      priority
-                      src={coach.data.data[0].credential.logo}
-                      alt="photo"
-                      width={50}
-                      height={15}
-                      style={{
-                        maxWidth: "100%",
-                        width: "auto",
-                        height: "auto",
-                      }}
-                    />
 
-                  )}
-
-
-                  {(coach.data.data[0].profile_other_credentials ?? []).map(
-                    (value: any, index: number) => (
-
-                      <>
-                        {value.credential?.logo != null && (
-                          <Image
-                            className="mb-2 me-2"
-                            key={uuidv4()}
-                            priority
-                            src={value.credential.logo}
-                            alt="photo"
-                            width={50}
-                            height={15}
-                            style={{
-                              maxWidth: "100%",
-                              width: "auto",
-                              height: "auto",
-                            }}
-                          />
-                        )}
-                      </>
-
-                    )
-                  )}
-
-                  <div className="d-flex align-items-center justify-content-center justify-content-md-start mt-2 gap-2">
-                    <button
-                      onClick={handleShowToast}
-                      className="btn p-1"
-                      title={t("Copy link", locale) as string}
-                      style={{
-                        backgroundColor: "#f59e42",
-                        color: "#ffffff",
-                      }}>
-                      <FaShareFromSquare size={20} />
-                    </button>
-                    <div className="me-2 ">{t("Share", locale)}</div>
-                  </div>
-
-                </div>
-                {/* <div className="other-info">
-                  <div className="info-item mb-2">
-                    <FiClock size={18} />{" "}
-                    {locale === "en"
-                      ? coach.data.data[0].hour?.name?.en
-                      : coach.data.data[0].hour?.name?.id}{" "}
-                  </div>
-                  <div className="info-item mb-2">
-                    <FiUsers size={18} />{" "}
-                    {locale === "en"
-                      ? coach.data.data[0].client?.name?.en
-                      : coach.data.data[0].client?.name?.id}
-                  </div>
-                  <div className="info-item mb-2">
-                    <FaChalkboardTeacher size={18} />{" "}
-                    {(coach.data.data[0].profile_methods ?? []).map(
-                      (value: any, index: number) => (
+                {(coach.data.data[0].profile_specialities ?? []).length > 0 && (
+                  <div className="coach-type-tagline px-2">
+                    {(coach.data.data[0].profile_specialities ?? []).map(
+                      (value: any, index: number, array: any[]) => (
                         <span key={uuidv4()}>
-                          {index > 0 && ", "}
                           {locale === "en"
-                            ? value.method?.name?.en
-                            : value.method?.name?.id}
+                            ? value.speciality?.name?.en
+                            : value.speciality?.name?.id}
+                          {" Coach"}
+                          {index < array.length - 1 && ", "}
                         </span>
                       )
                     )}
                   </div>
-
-                  <div className="info-item my-4 client-type">
-                    <div className="font-weight-bold mb-1">
-                      {t("Client Type", locale)}
-                    </div>
-                    <ul>
-                      {(coach.data.data[0].profile_client_types ?? []).map(
-                        (value: any, index: number) => (
-                          <li key={uuidv4()}>
-                            {locale === "en"
-                              ? value.client_type?.name?.en
-                              : value.client_type?.name?.id}
-                          </li>
-                        )
-                      )}
-
-
-                    </ul>
-                  </div>
-                  <div className="info-item specialist">
-                    <div className="font-weight-bold mb-1">
-                      {t("Specialities", locale)}
-                    </div>
-                    {(coach.data.data[0].profile_specialities ?? []).map(
-                      (value: any, index: number) => (
-                        <button key={uuidv4()} className="badge rounded-pill">
-                          {locale === "en"
-                            ? value.speciality?.name?.en
-                            : value.speciality?.name?.id}
-                        </button>
-                      )
-                    )}
-                  </div>
-
-                  <div className="info-item fee">
-                    <div className="font-weight-bold mb-1">
-                      {t("Fee / Hour", locale)}
-                    </div>
-                    {(coach.data.data[0].profile_prices ?? []).map(
-                      (value: any, index: number) => (
-                        <div key={uuidv4()}>
-                          {locale === "en"
-                            ? value.price?.name?.en
-                            : value.price?.name?.id}
-                        </div>
-                      )
-                    )}
-                  </div>
-                </div> */}
-
-                {coach.data.data[0].contact?.linkedin !== undefined ||
-                  coach.data.data[0].contact?.instagram !== undefined ||
-                  coach.data.data[0].contact?.tiktok !== undefined ||
-                  coach.data.data[0].contact?.facebook !== undefined ||
-                  coach.data.data[0].contact?.phone !== undefined ||
-                  coach.data.data[0].contact?.email !== undefined ? (
-                  <div className="contact mb-4">
-                    <div className="font-weight-bold mb-2">
-                      {t("Social Media", locale)}
-                    </div>
-                    <div>
-                      {coach.data.data[0].contact.linkedin !== undefined &&
-                        coach.data.data[0].contact.linkedin !== "" ? (
-                        <a
-                          href={coach.data.data[0].contact.linkedin}
-                          target="_blank"
-                        >
-                          <FaLinkedin size={24} />
-                        </a>
-                      ) : (
-                        ""
-                      )}
-                      {coach.data.data[0].contact.instagram !== undefined &&
-                        coach.data.data[0].contact.instagram !== "" ? (
-                        <a
-                          href={coach.data.data[0].contact.instagram}
-                          target="_blank"
-                        >
-                          <FaSquareInstagram size={24} />
-                        </a>
-                      ) : (
-                        ""
-                      )}
-                      {coach.data.data[0].contact.tiktok !== undefined &&
-                        coach.data.data[0].contact.tiktok !== "" ? (
-                        <a
-                          href={coach.data.data[0].contact.tiktok}
-                          target="_blank"
-                        >
-                          <FaTiktok size={24} />
-                        </a>
-                      ) : (
-                        ""
-                      )}
-                      {coach.data.data[0].contact.facebook !== undefined &&
-                        coach.data.data[0].contact.facebook !== "" ? (
-                        <a
-                          href={coach.data.data[0].contact.facebook}
-                          target="_blank"
-                        >
-                          <FaFacebook size={24} />
-                        </a>
-                      ) : (
-                        ""
-                      )}
-                      {coach.data.data[0].contact.linktree !== undefined &&
-                        coach.data.data[0].contact.linktree !== "" ? (
-                        <a
-                          href={coach.data.data[0].contact.linktree}
-                          target="_blank"
-                        >
-                          <SiLinktree size={24} />{" "}
-                        </a>
-                      ) : (
-                        ""
-                      )}
-                    </div>
-                  </div>
-                ) : (
-                  ""
                 )}
+
+                <div className="d-flex justify-content-center justify-content-md-start mt-2">
+                  <button
+                    onClick={handleShowToast}
+                    className="btn share-button"
+                    title={t("Copy link", locale) as string}
+                  >
+                    <FaShareFromSquare size={16} className="me-2" />
+                    {t("Share", locale)}
+                  </button>
+                </div>
+
                 <div className="mt-4 mb-4">
                   <button
                     onClick={() => setIsModalOpen(true)}
@@ -386,22 +183,19 @@ export default function CoachCompany({ slug, companySlug }: any) {
             </div>
 
             <div className="col-12 col-md-9 ps-4">
-              <div className="d-flex flex-wrap column-gap-2 row-gap-0 justify-content-center justify-content-md-start">
-                {(coach.data.data[0].profile_specialities ?? []).map(
-                  (value: any, index: number, array: any[]) => (
-                    <div key={uuidv4()} className="subtitle">
-                      {locale === "en"
-                        ? value.speciality?.name?.en
-                        : value.speciality?.name?.id}
-                      {" Coach"}
-                      {index < array.length - 1 && ", "}
-                    </div>
-                  )
-                )}
-              </div>
-              <div className="text mb-5">{coach.data.data[0].profession}</div>
+              {coach.data.data[0].profession && (
+                <div className="profession-highlight mb-5">
+                  {coach.data.data[0].profession}
+                </div>
+              )}
 
 
+              {(coach.data.data[0].description?.en ||
+                coach.data.data[0].description?.id) && (
+                <div className="subtitle mb-4">
+                  {locale === "en" ? "About Me" : "Tentang Saya"}
+                </div>
+              )}
               <div
                 className="text mb-4"
                 dangerouslySetInnerHTML={{

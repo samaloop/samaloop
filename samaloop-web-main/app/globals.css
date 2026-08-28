@@ -703,6 +703,45 @@ select:focus,
   margin-right: 0 !important;
 }
 
+.page-coach .coach-type-tagline {
+  font-family: "Montserrat";
+  font-size: 15px;
+  font-weight: 600;
+  color: #f36d24;
+  margin-top: 4px;
+  margin-bottom: 12px;
+}
+
+.page-coach .profession-highlight {
+  display: inline-block;
+  background: #fff0e3;
+  color: #f36d24;
+  font-weight: 700;
+  font-size: 16px;
+  padding: 8px 20px;
+  border-radius: 20px;
+}
+
+.page-coach .share-button {
+  display: inline-flex;
+  align-items: center;
+  background: linear-gradient(90deg, #feb933 0%, #f36d24 100%);
+  color: #ffffff !important;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 8px 20px;
+  border-radius: 24px;
+  border: none;
+  box-shadow: 0 2px 6px rgba(243, 109, 36, 0.35);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.page-coach .share-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(243, 109, 36, 0.45);
+  color: #ffffff !important;
+}
+
 .language {
   margin-left: 20px;
   position: relative;
