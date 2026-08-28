@@ -114,6 +114,31 @@ export default function BusinessTypesCreate({
     setCompanySelected(selected);
   };
 
+  const departments = useSWR("/api/departments/list", fetcher);
+  const [departmentsOption, setDepartmentsOption]: any = useState(null);
+  useEffect(() => {
+    if (departments.data !== undefined && departmentsOption === null) {
+      let departmentsOptionCurrent: any = [];
+      for (const [index, value] of departments.data.data.entries()) {
+        departmentsOptionCurrent.push({
+          value: value.id,
+          label: value.name,
+        });
+
+        if (index === departments.data.data.length - 1) {
+          setDepartmentsOption(departmentsOptionCurrent);
+        }
+      }
+      if (departments.data.data.length === 0) {
+        setDepartmentsOption([]);
+      }
+    }
+  }, [departments]);
+  const [departmentSelected, setDepartmentSelected]: any = useState(null);
+  const departmentChange = (selected: any) => {
+    setDepartmentSelected(selected);
+  };
+
   const genders = useSWR("/api/genders/list", fetcher);
   const [gendersOption, setGendersOption]: any = useState(null);
   useEffect(() => {
@@ -373,6 +398,12 @@ export default function BusinessTypesCreate({
           logo: data.data.data[0].company.logo,
         });
       }
+      if (data.data.data[0].department) {
+        setDepartmentSelected({
+          value: data.data.data[0].department.id,
+          label: data.data.data[0].department.name,
+        });
+      }
       setPhone(data.data.data[0].contact.phone);
       setEmail(data.data.data[0].contact.email);
       setProfession(data.data.data[0].profession);
@@ -590,6 +621,7 @@ export default function BusinessTypesCreate({
             age: agesSelected.value,
             awards_en: awardsEn,
             company: companySelected ? companySelected.value : null,
+            department: departmentSelected ? departmentSelected.value : null,
           },
         ])
         .eq("id", params.id);
@@ -782,6 +814,27 @@ export default function BusinessTypesCreate({
                         width={80}
                       />
                     )}
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="department" className="form-label">
+                    Department
+                  </label>
+                  <Select
+                    id="department"
+                    className="react-select"
+                    isClearable
+                    value={departmentSelected}
+                    onChange={departmentChange}
+                    options={departmentsOption}
+                    isDisabled={departmentsOption === null}
+                    styles={customStyles}
+                    placeholder="Tidak ada"
+                  />
+                  <small className="text-muted">
+                    Opsional. Label departemen/level coach (mis. &quot;Loop
+                    Senior Coach&quot;). Kelola daftar department di menu
+                    Departments.
+                  </small>
                 </div>
                 <hr />
                 <div className="mb-3">
