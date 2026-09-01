@@ -3,6 +3,8 @@ import { createClient } from '@supabase/supabase-js';
 import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
+const UmpanBalikClient= "https://forms.gle/6dHzg2znbJ5LPoZd8";
+const UmpanBalikCoach= "https://forms.gle/yEfL9uBVs3wBuvYw6";
 
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -132,11 +134,16 @@ export async function POST(req: NextRequest) {
                     </table>
                   </div>
                   <p style="margin-top: 20px;"><strong>Langkah Selanjutnya:</strong></p>
-                  <p style="margin-top: 5px;">Silahkan hubungi Admin Samaloop melalui tombol kontak WhatsApp dibawah ini untuk konfirmasi sesi dengan coach ${coachName}.</p>
+                  <p style="margin-top: 5px;">Silahkan hubungi coach melalui tombol kontak WhatsApp dibawah ini untuk konfirmasi jadwal sesi dengan coach ${coachName}. Jika ada pertanyaan atau kendala hubungi admin samaloop melalui kontak yang tersedia</p>
                   <div style="text-align: center; margin: 40px 0;">
                     <a href="https://wa.me/${adminWhatsApp}" style="background-color: #00de04; color: #ffffff; padding: 14px 28px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 14px;">Hubungi Admin Samaloop</a>
                     <a href="https://wa.me/${coachPhone}" style="background-color: #00de04; color: #ffffff; padding: 14px 28px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 14px;">Hubungi Coach</a>
                   </div>
+                  
+                  <div style="background-color: #faf3cf; padding: 20px; margin: 25px 0; border-radius: 0 4px 4px 0; rounded: 4px; border-left: 4px solid #ffc107;">
+                  <p style="margin-top: 5px;">Untuk membantu kami terus meningkatkan kualitas pelayanan Samaloop, mohon kesediaan Anda untuk meluangkan waktu mengisi formulir umpan balik pada tautan berikut: <br><br> <a href="${UmpanBalikClient}" target="_blank" style="color: #007bff; text-decoration: underline;">Buat Umpan Balik</a> <br><br> <span style="font-weight: bold;">Masukan Anda sangat berharga bagi kami</span></p>
+                  </div>
+
                   <hr style="border: 0; border-top: 1px solid #e0e0e0; margin: 30px 0;" />
                   <p style="font-size: 12px; color: #999999; text-align: center; margin: 0;">Email ini dibuat secara otomatis. Mohon tidak membalas langsung ke alamat email ini.</p>
                 </div>
@@ -237,12 +244,17 @@ export async function POST(req: NextRequest) {
                 </div>
 
                   <div style="text-align: center; margin: 30px 0;">
-                    <a href="https://wa.me/${adminWhatsApp}?text=Halo%20Admin%20Samaloop,%20saya%20telah%20berdiskusi%20dengan%20Klien%20${encodeURIComponent(reg.name)}%20dan%20menentukan%20jadwal%20Sesi%20Perkenalan.%20Mohon%20bantuannya%20untuk%20menyiapkan%20tautan%20Zoom%20pertemuannya." style="background-color: #25D366; color: white; padding: 14px 28px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 14px;">Konfirmasi ke Admin via WhatsApp</a>
-                    <a href="https://wa.me/${(reg.phone_number || '').replace(/\D/g, '')}">${reg.phone_number || '-'}" style="background-color: #25D366; color: white; padding: 14px 28px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 14px;">Hubungi Client</a>
+                    <a href="https://wa.me/${adminWhatsApp}?text=Halo%20Admin%20Samaloop,%20saya%20telah%20berdiskusi%20dengan%20Klien%20${encodeURIComponent(reg.name)}%20dan%20menentukan%20jadwal%20Sesi%20Perkenalan.%20Mohon%20bantuannya%20untuk%20menyiapkan%20tautan%20Zoom%20pertemuannya." style="background-color: #25D366; color: white; padding: 14px 28px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 14px;">Konfirmasi Admin</a>
+                    <a href="https://wa.me/${(reg.phone_number || '').replace(/\D/g, '')}"${reg.phone_number || '-'}" style="background-color: #25D366; color: white; padding: 14px 28px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 14px;">Hubungi Client</a>
                     </div>
+
+                  <div style="background-color: #faf3cf; padding: 20px; margin: 25px 0; border-radius: 0 4px 4px 0; rounded: 4px; border-left: 4px solid #ffc107;">
+                  <p style="margin-top: 5px;">Untuk membantu kami terus meningkatkan kualitas pelayanan Samaloop, mohon kesediaan Anda untuk meluangkan waktu mengisi formulir umpan balik pada tautan berikut: <br><br> <a href="${UmpanBalikCoach}" target="_blank" style="color: #007bff; text-decoration: underline;">Buat Umpan Balik</a> <br><br> <span style="font-weight: bold;">Masukan Anda sangat berharga bagi kami</span></p>
+                  </div>
+
                   <hr style="border: 0; border-top: 1px solid #e0e0e0; margin: 30px 0;" />
                   <p style="font-size: 11px; color: #999999; text-align: center;">Email otomatis dari sistem Samaloop. Admin telah menerima salinan (CC) dari email ini.</p>
-                </div>
+                </div> 
               `
             }
           ]);
