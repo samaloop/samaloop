@@ -144,7 +144,7 @@ export default function CoachCompany({ slug, companySlug }: any) {
                   </button>
                 </div>
 
-                <div className="mt-4 mb-4">
+                {/* <div className="mt-4 mb-4">
                   <button
                     onClick={() => setIsModalOpen(true)}
                     className="w-100 btn"
@@ -158,7 +158,7 @@ export default function CoachCompany({ slug, companySlug }: any) {
                   >
                     {t("Book a Discovery Call", locale)}
                   </button>
-                </div>
+                </div> */}
 
                 {coach.data && (
                   <CoachingModal
