@@ -169,8 +169,14 @@ export default function CoachCompany({ slug, companySlug }: any) {
                   />
                 )}
               </div>
-              <div className="">
-                <a href={"https://wa.me/6285770916736?text=Halo%20Admin%20Samaloop,%0ASaya%20mau%20bertanya%20tentang%20layanan%20coaching."} target="_blank" rel="noopener noreferrer"
+              <div className="mt-3">
+                <a
+                  href={
+                    coach.data.data[0].company?.button_link ??
+                    "https://wa.me/6285770916736?text=Halo%20Admin%20Samaloop,%0ASaya%20mau%20bertanya%20tentang%20layanan%20coaching."
+                  }
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="w-100 btn"
                   style={{
                     border: "2px solid #f59e42",
@@ -180,22 +186,10 @@ export default function CoachCompany({ slug, companySlug }: any) {
                     fontWeight: 700,
                   }}
                 >
-                  {t("Contact Admin", locale)}
+                  {coach.data.data[0].company?.button_text ??
+                    t("Contact Admin", locale)}
                 </a>
               </div>
-              {coach.data.data[0].company?.button_text &&
-                coach.data.data[0].company?.button_link && (
-                  <div className="mt-3">
-                    <a
-                      href={coach.data.data[0].company.button_link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-100 btn company-cta-button"
-                    >
-                      {coach.data.data[0].company.button_text}
-                    </a>
-                  </div>
-                )}
             </div>
 
             <div className="col-12 col-md-9 ps-4">
