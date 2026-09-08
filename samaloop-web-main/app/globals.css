@@ -703,6 +703,22 @@ select:focus,
   margin-right: 0 !important;
 }
 
+.company-cta-button {
+  display: inline-block;
+  background-color: #0055a5;
+  color: #ffffff !important;
+  font-weight: 700;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 24px;
+  transition: background-color 0.2s ease;
+}
+
+.company-cta-button:hover {
+  background-color: #00427f;
+  color: #ffffff !important;
+}
+
 .page-coach .coach-type-tagline {
   font-family: "Montserrat";
   font-size: 15px;

@@ -44,6 +44,17 @@ const SearchCompany = ({ slug }: { slug: string }) => {
               {coachs.data.count} coach siap mendampingi perjalanan coaching
               Anda
             </div>
+            {coachs.data.data[0].company?.button_text &&
+              coachs.data.data[0].company?.button_link && (
+                <a
+                  href={coachs.data.data[0].company.button_link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn company-cta-button mt-3"
+                >
+                  {coachs.data.data[0].company.button_text}
+                </a>
+              )}
           </div>
           <div className="search-result mb-4">
             {coachs.data.data.map((value: any) => (

@@ -61,9 +61,9 @@ export async function GET(req: NextRequest) {
     //  Company Affiliation Handling
     // ===============================
     const companySlug = req.nextUrl.searchParams.get('company');
-    let company = ',company(id,slug,name,logo)';
+    let company = ',company(id,slug,name,logo,button_text,button_link)';
     if (companySlug) {
-        company = ',company!inner(id,slug,name,logo)';
+        company = ',company!inner(id,slug,name,logo,button_text,button_link)';
     }
 
     // ===============================

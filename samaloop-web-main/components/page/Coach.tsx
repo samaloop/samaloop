@@ -407,9 +407,11 @@ export default function Coach({ slug }: any) {
                 <a href={"https://wa.me/6285770916736?text=Halo%20Admin%20Samaloop,%0ASaya%20mau%20bertanya%20tentang%20layanan%20coaching."} target="_blank" rel="noopener noreferrer"
                   className="w-100 btn"
                   style={{
-                    // backgroundColor: "#f59e42",
                     border: "2px solid #f59e42",
                     color: "#f59e42",
+                    padding: "12px 24px",
+                    borderRadius: "8px",
+                    fontWeight: 700,
                   }}
                 >
                   {t("Contact Admin", locale)}

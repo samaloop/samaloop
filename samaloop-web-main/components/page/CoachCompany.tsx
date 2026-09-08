@@ -175,11 +175,27 @@ export default function CoachCompany({ slug, companySlug }: any) {
                   style={{
                     border: "2px solid #f59e42",
                     color: "#f59e42",
+                    padding: "12px 24px",
+                    borderRadius: "8px",
+                    fontWeight: 700,
                   }}
                 >
                   {t("Contact Admin", locale)}
                 </a>
               </div>
+              {coach.data.data[0].company?.button_text &&
+                coach.data.data[0].company?.button_link && (
+                  <div className="mt-3">
+                    <a
+                      href={coach.data.data[0].company.button_link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-100 btn company-cta-button"
+                    >
+                      {coach.data.data[0].company.button_text}
+                    </a>
+                  </div>
+                )}
             </div>
 
             <div className="col-12 col-md-9 ps-4">
