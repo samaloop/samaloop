@@ -15,7 +15,9 @@ export async function POST(
     const { error }: any = await supabase.from('company').insert({
         slug: body.slug,
         name: body.name,
-        logo: body.logo
+        logo: body.logo,
+        button_text: body.button_text || null,
+        button_link: body.button_link || null
     });
 
     if (error !== null) {

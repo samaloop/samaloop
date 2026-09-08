@@ -43,6 +43,8 @@ export default function CompanyCreate() {
     slug: any;
     name: any;
     logo: any;
+    button_text: any;
+    button_link: any;
   };
   const { register, handleSubmit } = useForm<input>();
   const onSubmit: SubmitHandler<input> = async (input) => {
@@ -56,6 +58,18 @@ export default function CompanyCreate() {
       },
     });
     try {
+      if (
+        (input.button_text !== "" && input.button_link === "") ||
+        (input.button_text === "" && input.button_link !== "")
+      ) {
+        Swal.fire({
+          icon: "error",
+          text: "Button Text dan Button Link harus diisi berdua, atau dikosongkan berdua.",
+          confirmButtonText: "OK",
+        });
+        return;
+      }
+
       let logo = null;
       if (input.logo.length > 0) {
         const { data, error: uploadError }: any = await supabase.storage
@@ -81,6 +95,8 @@ export default function CompanyCreate() {
         slug: generateSlug(input.slug),
         name: input.name,
         logo: logo,
+        button_text: input.button_text,
+        button_link: input.button_link,
       });
 
       const update = await axios.get("/api/companies/list");
@@ -149,6 +165,30 @@ export default function CompanyCreate() {
                   Opsional. Ditampilkan di header halaman
                   /search/company/[slug] menggantikan logo Samaloop. Kalau
                   kosong, otomatis pakai logo Samaloop default.
+                </Form.Text>
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label>Button Text</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="mis. Hubungi Tim PLN"
+                  {...register("button_text")}
+                />
+                <Form.Text className="text-muted">
+                  Opsional. Kalau diisi (bersama Button Link di bawah),
+                  tombol ini akan menggantikan tombol &quot;Hubungi
+                  Admin&quot; di halaman coach untuk company ini.
+                </Form.Text>
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label>Button Link</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="mis. https://wa.me/6281234567890"
+                  {...register("button_link")}
+                />
+                <Form.Text className="text-muted">
+                  URL tujuan tombol di atas (link WhatsApp, form, dsb).
                 </Form.Text>
               </Form.Group>
               <div className="text-end mt-4">

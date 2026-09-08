@@ -56,6 +56,8 @@ export default function CompanyUpdate({
     slug: any;
     name: any;
     logo: any;
+    button_text: any;
+    button_link: any;
   };
   const { register, handleSubmit } = useForm<input>();
   const onSubmit: SubmitHandler<input> = async (input) => {
@@ -69,6 +71,18 @@ export default function CompanyUpdate({
       },
     });
     try {
+      if (
+        (input.button_text !== "" && input.button_link === "") ||
+        (input.button_text === "" && input.button_link !== "")
+      ) {
+        Swal.fire({
+          icon: "error",
+          text: "Button Text dan Button Link harus diisi berdua, atau dikosongkan berdua.",
+          confirmButtonText: "OK",
+        });
+        return;
+      }
+
       const logoCurrent: any = data.data.data[0].logo;
       if (input.logo.length > 0) {
         const { data: uploaded, error: uploadError }: any =
@@ -202,6 +216,34 @@ export default function CompanyUpdate({
                           alt="Logo"
                         />
                       )}
+                    </Form.Group>
+                    <Form.Group className="mb-3">
+                      <Form.Label>Button Text</Form.Label>
+                      <Form.Control
+                        type="text"
+                        placeholder="mis. Hubungi Tim PLN"
+                        {...register("button_text")}
+                        defaultValue={data.data.data[0].button_text || ""}
+                      />
+                      <Form.Text className="text-muted">
+                        Opsional. Kalau diisi (bersama Button Link di
+                        bawah), tombol ini akan menggantikan tombol
+                        &quot;Hubungi Admin&quot; di halaman coach untuk
+                        company ini.
+                      </Form.Text>
+                    </Form.Group>
+                    <Form.Group className="mb-3">
+                      <Form.Label>Button Link</Form.Label>
+                      <Form.Control
+                        type="text"
+                        placeholder="mis. https://wa.me/6281234567890"
+                        {...register("button_link")}
+                        defaultValue={data.data.data[0].button_link || ""}
+                      />
+                      <Form.Text className="text-muted">
+                        URL tujuan tombol di atas (link WhatsApp, form,
+                        dsb).
+                      </Form.Text>
                     </Form.Group>
                     <div className="text-end mt-4">
                       <Button variant="primary" type="submit">
