@@ -27,7 +27,7 @@ const [shuffledCoaches, setShuffledCoaches] = useState<any[]>([]); // Tambah ini
   const fetcher = async (url: any) =>
     await axios.get(url).then((res) => res.data);
 
-  const coachs = useSWR("/api/coachs/list?page=1", fetcher);
+  const coachs = useSWR("/api/coachs/list?random=true", fetcher);
 
   // Tambahkan ini di bawah deklarasi SWR
 useEffect(() => {

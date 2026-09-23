@@ -47,8 +47,49 @@ export default function Search() {
   const [credentialsActive, setCredentialsActive]: any = useState([]);
 
   const [page, setPage] = useState(1);
-  const changePage = (page: any) => {
-    setPage(page);
+
+  const changePage = (newPage: number) => {
+    setPage(newPage);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const getPaginationRange = (currentPage: number, totalPages: number) => {
+    const maxVisible = 5;
+    if (totalPages <= maxVisible) {
+      return Array.from({ length: totalPages }, (_, i) => i + 1);
+    }
+
+    const showLeftDots = currentPage > 3;
+    const showRightDots = currentPage < totalPages - 2;
+
+    if (!showLeftDots && showRightDots) {
+      return [1, 2, 3, 4, "RIGHT_DOTS", totalPages];
+    }
+
+    if (showLeftDots && !showRightDots) {
+      return [
+        1,
+        "LEFT_DOTS",
+        totalPages - 3,
+        totalPages - 2,
+        totalPages - 1,
+        totalPages,
+      ];
+    }
+
+    if (showLeftDots && showRightDots) {
+      return [
+        1,
+        "LEFT_DOTS",
+        currentPage - 1,
+        currentPage,
+        currentPage + 1,
+        "RIGHT_DOTS",
+        totalPages,
+      ];
+    }
+
+    return Array.from({ length: totalPages }, (_, i) => i + 1);
   };
 
   const [queryParams, setQueryParams]: any = useState({
@@ -64,7 +105,7 @@ export default function Search() {
   useEffect(() => {
     setPage(1);
 
-    let keywordCurrenct:any = searchParams.get("keyword") !== null ? searchParams.get("keyword") : "";
+    let keywordCurrenct: any = searchParams.get("keyword") !== null ? searchParams.get("keyword") : "";
     setKeyword(keywordCurrenct);
     setSpecialitiesActive(
       searchParams.get("specialities") !== null
@@ -167,7 +208,7 @@ export default function Search() {
     setCredentialsActive(credentialsActiveCurrent);
   };
 
-  const changeFilter = (keywordCurrent?:string) => {
+  const changeFilter = (keywordCurrent?: string) => {
     setQueryParams({
       page: page,
       keyword: keywordCurrent !== undefined ? keywordCurrent : keyword,
@@ -634,34 +675,68 @@ export default function Search() {
               <ul className="pagination justify-content-center">
                 <li className="page-item">
                   <button
-                    className="page-link"
+                    className={page === 1 ? "page-link disabled" : "page-link"}
                     aria-label="Previous"
                     onClick={() => page > 1 && changePage(page - 1)}
+                    disabled={page === 1}
                   >
                     <FiChevronLeft />
                   </button>
                 </li>
-                {Array.from({ length: coachs.data.pageTotal }).map(
-                  (_, index) => (
+                {getPaginationRange(page, coachs.data.pageTotal).map((item) => {
+                  if (item === "LEFT_DOTS") {
+                    return (
+                      <li key={uuidv4()} className="page-item">
+                        <button
+                          className="page-link"
+                          title="Lompat 5 Halaman ke Belakang"
+                          aria-label="Jump 5 pages backward"
+                          onClick={() => changePage(Math.max(1, page - 5))}
+                        >
+                          &hellip;
+                        </button>
+                      </li>
+                    );
+                  }
+                  if (item === "RIGHT_DOTS") {
+                    return (
+                      <li key={uuidv4()} className="page-item">
+                        <button
+                          className="page-link"
+                          title="Lompat 5 Halaman ke Depan"
+                          aria-label="Jump 5 pages forward"
+                          onClick={() =>
+                            changePage(
+                              Math.min(coachs.data.pageTotal, page + 5)
+                            )
+                          }
+                        >
+                          &hellip;
+                        </button>
+                      </li>
+                    );
+                  }
+                  return (
                     <li key={uuidv4()} className="page-item">
                       <button
                         className={
-                          page === index + 1 ? "page-link active" : "page-link"
+                          page === item ? "page-link active" : "page-link"
                         }
-                        onClick={() => changePage(index + 1)}
+                        onClick={() => changePage(item as number)}
                       >
-                        {index + 1}
+                        {item}
                       </button>
                     </li>
-                  )
-                )}
+                  );
+                })}
                 <li className="page-item">
                   <button
-                    className="page-link"
+                    className={page === coachs.data.pageTotal ? "page-link disabled" : "page-link"}
                     aria-label="Next"
                     onClick={() =>
                       page < coachs.data.pageTotal && changePage(page + 1)
                     }
+                    disabled={page === coachs.data.pageTotal}
                   >
                     <FiChevronRight />
                   </button>

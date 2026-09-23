@@ -252,24 +252,14 @@ export async function GET(req: NextRequest) {
     //  Eksekusi query utama (FIXED: Search + Random)
     // ===============================
     
-    // Cek apakah ada parameter pencarian atau filter aktif
-    const keyword = req.nextUrl.searchParams.get('keyword');
-    const isFiltering = keyword || req.nextUrl.searchParams.get('specialities') || req.nextUrl.searchParams.get('client') || companySlug;
+    // Cek apakah parameter random diaktifkan (misal dari Homepage)
+    const isRandom = req.nextUrl.searchParams.get('random') === 'true';
 
     let finalData, finalCount, finalError;
     let usedPage = parseInt(page);
 
-    if (isFiltering) {
-        // 1. KALO LAGI SEARCH/FILTER: Jangan diacak biar hasilnya akurat
-        const { data, count, error } = await query
-            .order('name', { ascending: true })
-            .range(range[0], range[1]);
-        
-        finalData = data;
-        finalCount = count;
-        finalError = error;
-    } else {
-        // 2. KALO DI BERANDA (Gak Search): Pakai logika random page
+    if (isRandom) {
+        // 1. KALO REQUEST RANDOM (Homepage): Pakai logika random page
         const { count: totalCount } = await supabase
             .from('profiles')
             .select('id', { count: 'exact', head: true })
@@ -289,6 +279,15 @@ export async function GET(req: NextRequest) {
         ];
 
         const { data, count, error } = await query.range(randomRange[0], randomRange[1]);
+        
+        finalData = data;
+        finalCount = count;
+        finalError = error;
+    } else {
+        // 2. KALO HALAMAN SEARCH: Jangan diacak (urut berdasarkan nama)
+        const { data, count, error } = await query
+            .order('name', { ascending: true })
+            .range(range[0], range[1]);
         
         finalData = data;
         finalCount = count;
